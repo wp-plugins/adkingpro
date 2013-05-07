@@ -27,7 +27,7 @@
     // INSTALL
 
     global $akp_db_version;
-    $akp_db_version = "1.1";
+    $akp_db_version = "1.0";
 
     function akp_install() {
        global $wpdb;
