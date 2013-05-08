@@ -1,7 +1,7 @@
 === Ad King Pro ===
 Contributors: ashdurham
 Donate link: http://durham.net.au/
-Tags: advertising, ads, adverts, stats, statistics, promotions, banners, tracking, detailed, adkingpro, ad king pro, page, post, reporting, reports, csv, pdf
+Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf
 Requires at least: 3.0.1
 Tested up to: 3.5.1
 Stable tag: 1.0
