@@ -52,7 +52,7 @@ function adkingpro_func( $atts ) {
             endwhile;
             wp_reset_query();
         }
-        
+        akp_log_impression($post_id);
 	return $output;
 }
 add_shortcode( 'adkingpro', 'adkingpro_func' );

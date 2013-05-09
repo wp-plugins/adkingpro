@@ -4,7 +4,7 @@ Donate link: http://durham.net.au/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf
 Requires at least: 3.0.1
 Tested up to: 3.5.1
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,7 +49,7 @@ Nine times out of ten it will be due to your own scripts being added above the s
 
 = I want to track clicks on a banner that scrolls to or opens a flyout div on my site. Is it possible? =
 
-Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the banner is given a number of classes to allow for styling, one being "banner{banner_id}". Use this in a jquery click event and prevent the default action of the click to make it do the action you require
+Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the banner is given a number of classes to allow for styling, one being "banner{banner_id}", where you would replace the "{banner_id}" for the number in the required adverts class. Use this in a jquery click event and prevent the default action of the click to make it do the action you require
 
 == Screenshots ==
 
@@ -60,10 +60,20 @@ Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the
 
 == Changelog ==
 
-= 1.0 =
-* Gotta start somewhere
-
-== Upgrade Notice ==
+= 1.1 =
+* Addition of impressions
+* Addition of impression settings
+* Update to settings page
+* Update to PDF output - display of banner refined
 
 = 1.0 =
 * Initial
+
+== Upgrade Notice ==
+
+= 1.1 =
+* Added tracking impressions and settings
+* Banner rendering in PDF improved
+
+= 1.0 =
+* Gotta start somewhere

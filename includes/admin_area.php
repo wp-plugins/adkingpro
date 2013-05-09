@@ -2,6 +2,7 @@
 
 // Default Options
 add_option( 'expiry_time', '+6 hours' );
+add_option( 'impression_expiry_time', '+0 hours' );
 add_option( 'week_starts', 'monday' );
 
 // Register Adverts
@@ -160,6 +161,7 @@ function akp_edit_adverts_columns( $columns ) {
     $columns = array(
         'cb' => '<input type="checkbox" />',
         'banner_id' => __( 'Banner ID' ),
+        'impressions' => __( 'Impressions' ),
         'clicks' => __( 'Clicks' ),
         'title' => __( 'URL' ),
         'advert_type' => __( 'Advert Type'),
@@ -201,6 +203,12 @@ function akp_columns($column_name, $ID) {
             echo $ID;
             break;
         
+        case 'impressions' :
+            global $wpdb;
+            $impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE post_id = '$ID'");
+            echo $impressions[0]->impressions;
+            break;
+        
         case 'clicks' :
             global $wpdb;
             $clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$ID'");
@@ -216,6 +224,67 @@ function akp_get_featured_image($post_ID) {
     if ($post_thumbnail_id) {
         $post_thumbnail_img = wp_get_attachment_image_src($post_thumbnail_id, 'custom_thumbnail');
         return $post_thumbnail_img[0];
+    }
+}
+
+function akp_log_impression($post_id) {
+    $timestamp = current_time('timestamp');
+    $expire = strtotime(get_option('impression_expiry_time'), $timestamp);
+    $ip_address = $_SERVER['REMOTE_ADDR'];
+    global $wpdb;
+    $ip = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."akp_impressions_expire WHERE ip_address = '$ip_address' AND post_id = '$post_id'");
+    if ($ip != null) {
+        if ($ip->expire < $timestamp) {
+            $wpdb->query( $wpdb->prepare( 
+                    "DELETE FROM ".$wpdb->prefix."akp_impressions_expire
+                     WHERE post_id = %d
+                     AND ip_address = %s
+                    ",
+                    $post_id, $ip_address
+                    )
+            );
+            $wpdb->query( $wpdb->prepare( 
+                    "INSERT INTO ".$wpdb->prefix."akp_impressions_log
+                    ( post_id, ip_address, timestamp )
+                    VALUES ( %d, %s, %d )", 
+                    array(
+                        $post_id, 
+                        $ip_address, 
+                        $timestamp
+                    ) 
+            ) );
+            $wpdb->query( $wpdb->prepare( 
+                    "INSERT INTO ".$wpdb->prefix."akp_impressions_expire
+                    ( post_id, ip_address, expire )
+                    VALUES ( %d, %s, %d )", 
+                    array(
+                        $post_id, 
+                        $ip_address, 
+                        $expire
+                    ) 
+            ) );
+        }
+    } else {
+        $wpdb->query( $wpdb->prepare( 
+                "INSERT INTO ".$wpdb->prefix."akp_impressions_log
+                ( post_id, ip_address, timestamp )
+                VALUES ( %d, %s, %d )", 
+                array(
+                    $post_id, 
+                    $ip_address, 
+                    $timestamp
+                ) 
+        ) );
+        $wpdb->query( $wpdb->prepare( 
+                "INSERT INTO ".$wpdb->prefix."akp_impressions_expire
+                ( post_id, ip_address, expire )
+                VALUES ( %d, %s, %d )", 
+                array(
+                    $post_id, 
+                    $ip_address, 
+                    $expire
+                ) 
+        ) );
     }
 }
 
@@ -251,11 +320,13 @@ function akp_dashboard() {
                 
                 // Get All Time Click Count
                 $all_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$post_id'");
+                $all_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE post_id = '$post_id'");
                 
                 // Get This Month Click Count
                 $month_start = mktime(0, 0, 0, date('n', current_time('timestamp')), 1, date('Y', current_time('timestamp')));
                 $month_end = mktime(23, 59, 59, date('n', current_time('timestamp')), date('t', current_time('timestamp')), date('Y', current_time('timestamp')));
                 $month_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$month_start' AND '$month_end' AND post_id = '$post_id'");
+                $month_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$month_start' AND '$month_end' AND post_id = '$post_id'");
                 
                 // Get This Week click count
                 $start_week = get_option('week_starts');
@@ -271,11 +342,13 @@ function akp_dashboard() {
                 $week_start = mktime(0, 0, 0, $month, $day, $year);
                 $week_end = mktime(23, 59, 59, date('n', strtotime("+7 days", $week_start)), date('j', strtotime("+7 days", $week_start)), date('Y', strtotime("+7 days", $week_start)));
                 $week_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$week_start' AND '$week_end' AND post_id = '$post_id'");
+                $week_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$week_start' AND '$week_end' AND post_id = '$post_id'");
                 
                 // Get Today Click count
                 $today_start = mktime(0, 0, 0, date('n', current_time('timestamp')), date('j', current_time('timestamp')), date('Y', current_time('timestamp')));
                 $today_end = mktime(23, 59, 59, date('n', current_time('timestamp')), date('j', current_time('timestamp')), date('Y', current_time('timestamp')));
                 $today_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$today_start' AND '$today_end' AND post_id = '$post_id'");
+                $today_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$today_start' AND '$today_end' AND post_id = '$post_id'");
 
                 ?>
                 <li class="banner_stat">
@@ -283,10 +356,10 @@ function akp_dashboard() {
                         <a href='<?= admin_url("post.php?post=".$post_id."&action=edit") ?>'><img src='<?= $image ?>' /></a>
                     </div>
                     <div class='stats'>
-                        <div class='stat'><h4>All Time</h4><span><?= $all_clicks[0]->clicks ?></span></div>
-                        <div class='stat'><h4>This Month</h4><span><?= $month_clicks[0]->clicks ?></span></div>
-                        <div class='stat'><h4>This Week</h4><span><?= $week_clicks[0]->clicks ?></span></div>
-                        <div class='stat'><h4>Today</h4><span><?= $today_clicks[0]->clicks ?></span></div>
+                        <div class='stat'><h4>All Time</h4><span title="Impressions: <?= $all_impressions[0]->impressions ?>" alt="Impressions: <?= $all_impressions[0]->impressions ?>"><?= $all_clicks[0]->clicks ?></span></div>
+                        <div class='stat'><h4>This Month</h4><span title="<?= $month_impressions[0]->impressions ?>" alt="<?= $month_impressions[0]->impressions ?>"><?= $month_clicks[0]->clicks ?></span></div>
+                        <div class='stat'><h4>This Week</h4><span title="<?= $week_impressions[0]->impressions ?>" alt="<?= $week_impressions[0]->impressions ?>"><?= $week_clicks[0]->clicks ?></span></div>
+                        <div class='stat'><h4>Today</h4><span title="<?= $today_impressions[0]->impressions ?>" alt="<?= $today_impressions[0]->impressions ?>"><?= $today_clicks[0]->clicks ?></span></div>
                     </div>
                     <br style="clear: both;" />
                 </li>
@@ -314,6 +387,7 @@ add_action('admin_menu', 'adkingpro_settings');
 
 function register_akp_options() {
   register_setting( 'akp-options', 'expiry_time' );
+  register_setting( 'akp-options', 'impression_expiry_time' );
   register_setting( 'akp-options', 'week_start' );
 }
 add_action( 'admin_init', 'register_akp_options' );
@@ -329,10 +403,31 @@ function akp_settings_output() {
 <?php do_settings_sections('akp-options'); ?>
     <table class="form-table">
         <tr valign="top">
-        <th scope="row">Expiry Time Length</th>
+        <th scope="row">Click Expiry Time Length (per IP)</th>
         <td>
             <?php $expiry = get_option('expiry_time'); ?>
             <select name="expiry_time">
+                <option value="+0 hours"<?php if ($expiry == "+0 hours") : ?> selected<?php endif; ?>>None</option>
+                <option value="+1 hour"<?php if ($expiry == "+1 hours") : ?> selected<?php endif; ?>>1 Hour</option>
+                <option value="+2 hours"<?php if ($expiry == "+2 hours") : ?> selected<?php endif; ?>>2 Hours</option>
+                <option value="+4 hours"<?php if ($expiry == "+4 hours") : ?> selected<?php endif; ?>>4 Hours</option>
+                <option value="+6 hours"<?php if ($expiry == "+6 hours") : ?> selected<?php endif; ?>>6 Hours</option>
+                <option value="+8 hours"<?php if ($expiry == "+8 hours") : ?> selected<?php endif; ?>>8 Hours</option>
+                <option value="+10 hours"<?php if ($expiry == "+10 hours") : ?> selected<?php endif; ?>>10 Hours</option>
+                <option value="+16 hours"<?php if ($expiry == "+16 hours") : ?> selected<?php endif; ?>>16 Hours</option>
+                <option value="+24 hours"<?php if ($expiry == "+24 hours") : ?> selected<?php endif; ?>>24 Hours</option>
+            </select>
+        </td>
+        <td></td>
+        </tr>
+        
+        <tr valign="top">
+        <th scope="row">Impression Expiry Time Length (per IP)</th>
+        <td>
+            <?php $expiry = get_option('impression_expiry_time'); ?>
+            <select name="impression_expiry_time">
+                <option value="+0 hours"<?php if ($expiry == "+0 hours") : ?> selected<?php endif; ?>>None</option>
+                <option value="+1 hour"<?php if ($expiry == "+1 hours") : ?> selected<?php endif; ?>>1 Hour</option>
                 <option value="+2 hours"<?php if ($expiry == "+2 hours") : ?> selected<?php endif; ?>>2 Hours</option>
                 <option value="+4 hours"<?php if ($expiry == "+4 hours") : ?> selected<?php endif; ?>>4 Hours</option>
                 <option value="+6 hours"<?php if ($expiry == "+6 hours") : ?> selected<?php endif; ?>>6 Hours</option>
@@ -385,7 +480,8 @@ function akp_settings_output() {
         <p>Nine times out of ten it will be due to your own scripts being added above the standard area where all the plugins are included. 
             If you move your javascript files below the function, "wp_head()" in the "header.php" file of your theme, it should fix your problem.</p>
         <h4>Q. I want to track clicks on a banner that scrolls to or opens a flyout div on my site. Is it possible?</h4>
-        <p>Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the banner is given a number of classes to allow for styling, one being "banner{banner_id}".
+        <p>Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the banner is given a number of classes to allow for styling, one being "banner{banner_id}",
+            where you would replace the "{banner_id}" for the number in the required adverts class.
             Use this in a jquery click event and prevent the default action of the click to make it do the action you require:</p>
         <pre>$(".adkingprobanner.banner{banner_id}").click(
         function(e) {
@@ -417,11 +513,13 @@ function akp_detailed_output() {
                 
         // Get All Time Click Count
         $all_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$post_id'");
+        $all_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE post_id = '$post_id'");
 
         // Get This Month Click Count
         $month_start = mktime(0, 0, 0, date('n', current_time('timestamp')), 1, date('Y', current_time('timestamp')));
         $month_end = mktime(23, 59, 59, date('n', current_time('timestamp')), date('t', current_time('timestamp')), date('Y', current_time('timestamp')));
         $month_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$month_start' AND '$month_end' AND post_id = '$post_id'");
+        $month_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$month_start' AND '$month_end' AND post_id = '$post_id'");
 
         // Get This Week click count
         $start_week = get_option('week_starts');
@@ -437,11 +535,13 @@ function akp_detailed_output() {
         $week_start = mktime(0, 0, 0, $month, $day, $year);
         $week_end = mktime(23, 59, 59, date('n', strtotime("+7 days", $week_start)), date('j', strtotime("+7 days", $week_start)), date('Y', strtotime("+7 days", $week_start)));
         $week_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$week_start' AND '$week_end' AND post_id = '$post_id'");
+        $week_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$week_start' AND '$week_end' AND post_id = '$post_id'");
 
         // Get Today Click count
         $today_start = mktime(0, 0, 0, date('n', current_time('timestamp')), date('j', current_time('timestamp')), date('Y', current_time('timestamp')));
         $today_end = mktime(23, 59, 59, date('n', current_time('timestamp')), date('j', current_time('timestamp')), date('Y', current_time('timestamp')));
         $today_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$today_start' AND '$today_end' AND post_id = '$post_id'");
+        $today_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$today_start' AND '$today_end' AND post_id = '$post_id'");
         
         // Initilize Detail log
         $all_clicks_detailed = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$post_id' ORDER BY timestamp DESC");
@@ -456,10 +556,10 @@ function akp_detailed_output() {
             </div>
             <div class='stats'>
                 <h2>Summary</h2>
-                <div class='stat'><h4>All Time</h4><span><?= $all_clicks[0]->clicks ?></span></div>
-                <div class='stat'><h4>This Month</h4><span><?= $month_clicks[0]->clicks ?></span></div>
-                <div class='stat'><h4>This Week</h4><span><?= $week_clicks[0]->clicks ?></span></div>
-                <div class='stat'><h4>Today</h4><span><?= $today_clicks[0]->clicks ?></span></div>
+                <div class='stat'><h4>All Time</h4><span title="Impressions: <?= $all_impressions[0]->impressions ?>" alt="Impressions: <?= $all_impressions[0]->impressions ?>"><?= $all_clicks[0]->clicks ?></span></div>
+                <div class='stat'><h4>This Month</h4><span title="Impressions: <?= $month_impressions[0]->impressions ?>" alt="Impressions: <?= $month_impressions[0]->impressions ?>"><?= $month_clicks[0]->clicks ?></span></div>
+                <div class='stat'><h4>This Week</h4><span title="Impressions: <?= $week_impressions[0]->impressions ?>" alt="Impressions: <?= $week_impressions[0]->impressions ?>"><?= $week_clicks[0]->clicks ?></span></div>
+                <div class='stat'><h4>Today</h4><span title="Impressions: <?= $today_impressions[0]->impressions ?>" alt="Impressions: <?= $today_impressions[0]->impressions ?>"><?= $today_clicks[0]->clicks ?></span></div>
             </div>
             <div class='detailed'>
                 <h2>Detailed</h2>
@@ -472,6 +572,7 @@ function akp_detailed_output() {
                 </div>
                 <div class="detailed_details">
                     <div class="akp_detailed_all_details" style="display: block;">
+                        <br /><strong>Impressions: </strong><?= $all_impressions[0]->impressions ?><br />
                         <div class="akp_reporting">
                             <strong>Download report: </strong> <a class="akp_csv" rel="all/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="all/<?= $post_id ?>">PDF</a>
                         </div>
@@ -500,6 +601,7 @@ function akp_detailed_output() {
                         </table>
                     </div>
                     <div class="akp_detailed_month_details">
+                        <br /><strong>Impressions: </strong><?= $month_impressions[0]->impressions ?><br />
                         <div class="akp_reporting">
                             <strong>Download report: </strong> <a class="akp_csv" rel="month/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="month/<?= $post_id ?>">PDF</a>
                         </div>
@@ -528,6 +630,7 @@ function akp_detailed_output() {
                         </table>
                     </div>
                     <div class="akp_detailed_week_details">
+                        <br /><strong>Impressions: </strong><?= $week_impressions[0]->impressions ?><br />
                         <div class="akp_reporting">
                             <strong>Download report: </strong> <a class="akp_csv" rel="week/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="week/<?= $post_id ?>">PDF</a>
                         </div>
@@ -556,6 +659,7 @@ function akp_detailed_output() {
                         </table>
                     </div>
                     <div class="akp_detailed_day_details">
+                        <br /><strong>Impressions: </strong><?= $today_impressions[0]->impressions ?><br />
                         <div class="akp_reporting">
                             <strong>Download report: </strong> <a class="akp_csv" rel="today/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="today/<?= $post_id ?>">PDF</a>
                         </div>

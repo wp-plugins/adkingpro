@@ -80,7 +80,9 @@ function akp_date_range_ajax() {
         $date_start = mktime(0, 0, 0, date('m', strtotime(str_replace('/', '-', $from_date))), date('d', strtotime(str_replace('/', '-', $from_date))), date('Y', strtotime(str_replace('/', '-', $from_date))));
         $date_end = mktime(23, 59, 59, date('m', strtotime(str_replace('/', '-', $to_date))), date('d', strtotime(str_replace('/', '-', $to_date))), date('Y', strtotime(str_replace('/', '-', $to_date))));
         $date_clicks = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$date_start' AND '$date_end' AND post_id = '$banner_id' ORDER BY timestamp DESC");
+        $date_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$date_start' AND '$date_end' AND post_id = '$banner_id'");
         ?>
+        <br /><strong>Impressions: </strong><?= $date_impressions[0]->impressions ?><br />
         <div class="akp_reporting">
             <strong>Download report: </strong> <a class="akp_csv" rel="daterange/<?= $banner_id ?>">CSV</a> <a class="akp_pdf" rel="daterange/<?= $banner_id ?>">PDF</a>
         </div>
@@ -201,6 +203,7 @@ function akp_output_pdf() {
         switch ($set) {
             case 'all':
                 $clicks_detailed = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$post_id' ORDER BY timestamp DESC");
+                $impressions_detailed = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE post_id = '$post_id'");
                 $title = "Clicks made All-time";
                 break;
                 
@@ -208,6 +211,7 @@ function akp_output_pdf() {
                 $month_start = mktime(0, 0, 0, date('n', current_time('timestamp')), 1, date('Y', current_time('timestamp')));
                 $month_end = mktime(23, 59, 59, date('n', current_time('timestamp')), date('t', current_time('timestamp')), date('Y', current_time('timestamp')));
                 $clicks_detailed = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$month_start' AND '$month_end' AND post_id = '$post_id' ORDER BY timestamp DESC");
+                $impressions_detailed = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$month_start' AND '$month_end' AND post_id = '$post_id'");
                 $title = "Clicks made in the month of ".date('F', current_time('timestamp'))." in ".date('Y', current_time('timestamp'));
                 break;
             
@@ -225,6 +229,7 @@ function akp_output_pdf() {
                 $week_start = mktime(0, 0, 0, $month, $day, $year);
                 $week_end = mktime(23, 59, 59, date('n', strtotime("+7 days", $week_start)), date('j', strtotime("+7 days", $week_start)), date('Y', strtotime("+7 days", $week_start)));
                 $clicks_detailed = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$week_start' AND '$week_end' AND post_id = '$post_id' ORDER BY timestamp DESC");
+                $impressions_detailed = $wpdb->get_results("SELECT COUNT(*) FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$week_start' AND '$week_end' AND post_id = '$post_id'");
                 $title = "Clicks made in the week between ".date('jS F Y', $week_start)." to ".date('jS F Y', $week_end);
                 break;
             
@@ -232,6 +237,7 @@ function akp_output_pdf() {
                 $today_start = mktime(0, 0, 0, date('n', current_time('timestamp')), date('j', current_time('timestamp')), date('Y', current_time('timestamp')));
                 $today_end = mktime(23, 59, 59, date('n', current_time('timestamp')), date('j', current_time('timestamp')), date('Y', current_time('timestamp')));
                 $clicks_detailed = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$today_start' AND '$today_end' AND post_id = '$post_id' ORDER BY timestamp DESC");
+                $impressions_detailed = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$today_start' AND '$today_end' AND post_id = '$post_id'");
                 $title = "Clicks made on the ".date('jS F Y', $today_start);
                 break;
             
@@ -241,9 +247,11 @@ function akp_output_pdf() {
                 $date_start = mktime(0, 0, 0, date('m', strtotime(str_replace('/', '-', $from_date))), date('d', strtotime(str_replace('/', '-', $from_date))), date('Y', strtotime(str_replace('/', '-', $from_date))));
                 $date_end = mktime(23, 59, 59, date('m', strtotime(str_replace('/', '-', $to_date))), date('d', strtotime(str_replace('/', '-', $to_date))), date('Y', strtotime(str_replace('/', '-', $to_date))));
                 $clicks_detailed = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$date_start' AND '$date_end' AND post_id = '$post_id' ORDER BY timestamp DESC");
+                $impressions_detailed = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$date_start' AND '$date_end' AND post_id = '$post_id'");
                 $title = "Clicks made between ".date('jS F Y', $date_start)." to ".date('jS F Y', $date_end);
                 break;
         }
+        $impressions = $impressions_detailed[0]->impressions;
         
         $pdf = new FPDF('P','mm','A4');
         $pdf->AliasNbPages();
@@ -259,12 +267,40 @@ function akp_output_pdf() {
         endwhile;
         wp_reset_query();
         
-        $pdf->Image(str_replace('http://'.$_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT'], $image), 15, 6, 0, 20);
+        $imagesize = getimagesize(str_replace('http://'.$_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT'], $image));
+        $imagesize[0] = ($imagesize[0] * 25.4) / 72;
+        $imagesize[1] = ($imagesize[1] * 25.4) / 72;
+        $imw = 190;
+        $imh = 20;
+        if ($imagesize[0] > $imagesize[1]) {
+            if ($imagesize[0] > 190) {
+                $wpc = 190 / $imagesize[0];
+                $imh = $imagesize[1] * $wpc;
+            } else {
+                $imh = $imagesize[1];
+                $imw = $imagesize[0];
+            }
+        } else {
+            if ($imagesize[1] > 20) {
+                $wph = 20 / $imagesize[1];
+                $imw = $imagesize[0] * $wph;
+            } else {
+                $imh = $imagesize[1];
+                $imw = $imagesize[0];
+            }
+        }
         
-        $pdf->SetX(15); $pdf->SetY($pdf->GetY()+ 25);
+        $pdf->Image(str_replace('http://'.$_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT'], $image), 10, 6, $imw, $imh);
+        
+        $pdf->SetX(15); $pdf->SetY($pdf->GetY()+ $imh + 5);
         $pdf->SetFont('Arial','BU',10);
         $pdf->Cell(95,8,$title,0,0,'L');
         $pdf->Cell(95,8,"Banner ID: #".$post_id,0,0,'R');
+        $pdf->Ln(15);
+        
+        $pdf->SetX(10);
+        $pdf->SetFont('Arial','BU',10);
+        $pdf->Cell(190,8,"Impressions: ".$impressions,0,0,'L');
         $pdf->Ln(15);
         
         $pdf->SetFillColor(227,227,227);
