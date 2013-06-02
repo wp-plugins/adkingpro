@@ -56,7 +56,7 @@ jQuery(document).ready(function($) {
         var from_date = $(this).parent().parent().parent().find(".from_adkingpro_date").val();
         var to_date = $(this).parent().parent().parent().find(".to_adkingpro_date").val();
         $.post(ajaxurl, {action: 'akpoutputcsv', ajaxnonce : ajaxnonce, set: info[0], id:info[1], from_date:from_date, to_date:to_date}, function(response) {
-            window.location = response
+            window.location = response;
         });
     });
     
@@ -65,7 +65,7 @@ jQuery(document).ready(function($) {
         var from_date = $(this).parent().parent().parent().find(".from_adkingpro_date").val();
         var to_date = $(this).parent().parent().parent().find(".to_adkingpro_date").val();
         $.post(ajaxurl, {action: 'akpoutputpdf', ajaxnonce : ajaxnonce, set: info[0], id:info[1], from_date:from_date, to_date:to_date}, function(response) {
-            window.location = response
+            window.location = response;
         });
     });
 });

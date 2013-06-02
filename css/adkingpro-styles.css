@@ -206,6 +206,7 @@
     line-height: 30px;
     font-size: 14px;
     text-align: left;
+    padding: 0 5px;
 }
 
 .akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table tfoot th {
@@ -216,11 +217,16 @@
 .akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table td {
     height: 30px;
     line-height: 30px;
+    padding: 0 5px;
 }
 
 .akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table tbody tr:nth-child(odd) {
     background-color: #ccc;
 }
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table .center {text-align: center;}
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table .right {text-align: right;}
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table .bold {font-weight:bold;}
 
 .akp_detailed_stats .banner_detailed_stat .detailed .detailed_details .akp_reporting {
     margin: 20px 0 0;

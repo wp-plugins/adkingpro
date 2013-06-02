@@ -1,10 +1,10 @@
 === Ad King Pro ===
 Contributors: ashdurham
-Donate link: http://durham.net.au/
+Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf
 Requires at least: 3.0.1
 Tested up to: 3.5.1
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,11 @@ Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the
 
 == Changelog ==
 
+= 1.2 =
+* Addition of revenue allocation and calculation
+* Addition of PDF themes
+* Fix to week starts dropdown
+
 = 1.1 =
 * Addition of impressions
 * Addition of impression settings
@@ -70,6 +75,10 @@ Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the
 * Initial
 
 == Upgrade Notice ==
+
+= 1.2 =
+* Themes now available for PDF reporting
+* Now track how much your advertising is making you by entering revenue pricing for impressions and clicks
 
 = 1.1 =
 * Added tracking impressions and settings

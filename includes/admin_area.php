@@ -4,6 +4,8 @@
 add_option( 'expiry_time', '+6 hours' );
 add_option( 'impression_expiry_time', '+0 hours' );
 add_option( 'week_starts', 'monday' );
+add_option( 'revenue_currency', '$' );
+add_option( 'pdf_theme', 'default' );
 
 // Register Adverts
 function akp_create_post_type() {
@@ -57,6 +59,7 @@ function akp_change_meta_boxes()
     add_meta_box('postimagediv', __('Advert Image'), 'post_thumbnail_meta_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('postremoveurllink', __('Remove Link from Advert?'), 'akp_remove_url_link', 'adverts_posts', 'advanced', 'high');
     add_meta_box('postclickstatsdiv', __('Advert Stats'), 'akp_post_click_stats', 'adverts_posts', 'advanced', 'low');
+    add_meta_box('revenuevaluesdiv', __('Advert Revenue'), 'akp_revenue_values', 'adverts_posts', 'side', 'low');
 }
 add_action('do_meta_boxes', 'akp_change_meta_boxes');
 
@@ -76,6 +79,20 @@ function akp_remove_url_link($object, $box) {
     echo '<input type="checkbox" value="1" name="akp_remove_url" id="akp_remove_url"', $remove_url ? ' checked="checked"' : '', ' />';
 }
 
+// Add checkbox to remove URL Link off advert
+function akp_revenue_values($object, $box) {
+    global $post;
+    $revenue_impression = get_post_meta( $post->ID, 'akp_revenue_per_impression', true );
+    $revenue_click = get_post_meta( $post->ID, 'akp_revenue_per_click', true );
+    
+    echo '<div class="misc-pub-section"><label for="akp_revenue_per_impression">Revenue Per Impression:</label>';
+    echo '<input type="text" name="akp_revenue_per_impression" value="', $revenue_impression ? $revenue_impression : '0.00', '" style="width: 70px;float: right;margin-top: -3px;" />';
+    echo '</div>';
+    echo '<div class="misc-pub-section"><label for="akp_revenue_per_click">Revenue Per Click:</label>';
+    echo '<input type="text" name="akp_revenue_per_click" value="', $revenue_click ? $revenue_click : '0.00', '" style="width: 70px;float: right;margin-top: -3px;" />';
+    echo '</div>';
+}
+
 // Process the custom metabox fields
 function akp_save_custom_fields( ) {
 	global $post;	
@@ -91,6 +108,9 @@ function akp_save_custom_fields( ) {
                 update_post_meta( $post->ID, 'akp_remove_url', $_POST['akp_remove_url'] );
             else
                 update_post_meta( $post->ID, 'akp_remove_url', 0 );
+            
+            update_post_meta( $post->ID, 'akp_revenue_per_impression', $_POST['akp_revenue_per_impression'] );
+            update_post_meta( $post->ID, 'akp_revenue_per_click', $_POST['akp_revenue_per_click'] );
 	}
 }
 
@@ -102,6 +122,8 @@ function akp_return_fields( $id = NULL ) {
         if (is_null($id)) $id = $post->ID;
 	$output = array();
         $output['akp_remove_url'] = get_post_meta( $id, 'akp_remove_url' );
+        $output['akp_revenue_per_impression'] = get_post_meta( $id, 'akp_revenue_per_impression' );
+        $output['akp_revenue_per_click'] = get_post_meta( $id, 'akp_revenue_per_click' );
         
         return $output;
 }
@@ -205,14 +227,20 @@ function akp_columns($column_name, $ID) {
         
         case 'impressions' :
             global $wpdb;
+            $revenue = get_post_meta($ID, 'akp_revenue_per_impression');
+            if ($revenue[0] == '') $revenue[0] = '0.00';
+            $sign = get_option('revenue_currency');
             $impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE post_id = '$ID'");
-            echo $impressions[0]->impressions;
+            echo $sign.$revenue[0]." x ".$impressions[0]->impressions;
             break;
         
         case 'clicks' :
             global $wpdb;
+            $revenue = get_post_meta($ID, 'akp_revenue_per_click');
+            if ($revenue[0] == '') $revenue[0] = '0.00';
+            $sign = get_option('revenue_currency');
             $clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$ID'");
-            echo $clicks[0]->clicks;
+            echo $sign.$revenue[0]." x ".$clicks[0]->clicks;
             break;
     }
 }
@@ -389,6 +417,8 @@ function register_akp_options() {
   register_setting( 'akp-options', 'expiry_time' );
   register_setting( 'akp-options', 'impression_expiry_time' );
   register_setting( 'akp-options', 'week_start' );
+  register_setting( 'akp-options', 'revenue_currency' );
+  register_setting( 'akp-options', 'pdf_theme' );
 }
 add_action( 'admin_init', 'register_akp_options' );
 
@@ -445,16 +475,46 @@ function akp_settings_output() {
         <td>
             <?php $start = get_option('week_starts'); ?>
             <select name="week_starts">
-                <option value="monday"<?php if ($expiry == "monday") : ?> selected<?php endif; ?>>Monday</option>
-                <option value="tuesday"<?php if ($expiry == "+tuesday") : ?> selected<?php endif; ?>>Tuesday</option>
-                <option value="wednesday"<?php if ($expiry == "wednesday") : ?> selected<?php endif; ?>>Wednesday</option>
-                <option value="thursday"<?php if ($expiry == "thursday") : ?> selected<?php endif; ?>>Thursday</option>
-                <option value="friday"<?php if ($expiry == "friday") : ?> selected<?php endif; ?>>Friday</option>
-                <option value="saturday"<?php if ($expiry == "saturday") : ?> selected<?php endif; ?>>Saturday</option>
-                <option value="sunday"<?php if ($expiry == "sunday") : ?> selected<?php endif; ?>>Sunday</option>
+                <option value="monday"<?php if ($start == "monday") : ?> selected<?php endif; ?>>Monday</option>
+                <option value="tuesday"<?php if ($start == "tuesday") : ?> selected<?php endif; ?>>Tuesday</option>
+                <option value="wednesday"<?php if ($start == "wednesday") : ?> selected<?php endif; ?>>Wednesday</option>
+                <option value="thursday"<?php if ($start == "thursday") : ?> selected<?php endif; ?>>Thursday</option>
+                <option value="friday"<?php if ($start == "friday") : ?> selected<?php endif; ?>>Friday</option>
+                <option value="saturday"<?php if ($start == "saturday") : ?> selected<?php endif; ?>>Saturday</option>
+                <option value="sunday"<?php if ($start == "sunday") : ?> selected<?php endif; ?>>Sunday</option>
             </select>
         </td>
         <td>* Week starts at midnight on the day chosen.</td>
+        </tr>
+        
+        <tr valign="top">
+        <th scope="row">Revenue Currency Sign</th>
+        <td>
+            <?php $sign = get_option('revenue_currency'); ?>
+            <input type="text" name="revenue_currency" value="<?= $sign ?>" />
+        </td>
+        <td>* This sign will be used throughout the reporting section</td>
+        </tr>
+        
+        <tr valign="top">
+        <th scope="row">PDF Theme</th>
+        <td>
+            <?php $theme = get_option('pdf_theme'); ?>
+            <select name="pdf_theme">
+                <?php
+                    $folder = scandir(str_replace("includes/","",plugin_dir_path(__FILE__)).'themes/');
+                    $exclude = array('.', '..');
+                    foreach ($folder as $f) {
+                        if (!in_array($f, $exclude)) {
+                            $selected = '';
+                            if ($theme == $f) $selected = ' selected';
+                            echo '<option value="'.$f.'"'.$selected.'>'.ucwords(str_replace(array('-', '_'), ' ', $f)).'</option>';
+                        }
+                    }
+                ?>
+            </select>
+        </td>
+        <td>* More themes can be downloaded from <a href="http://durham.net.au/wordpress/plugins/ad-king-pro/" target="_blank">my website</a></td>
         </tr>
     </table>
 <?php submit_button(); ?>
@@ -462,8 +522,8 @@ function akp_settings_output() {
 </div>
 <div class="akp_faq_help">
     <div class="akp_faq">
-        <h2>FAQ</h2>
-        <h3>Shortcodes</h3>
+        <h2>How To</h2>
+        <h3>Use Shortcodes</h3>
         <p>Shortcodes can be used in any page or post on your site. By default:</p>
         <pre>[adkingpro]</pre>
         <p>is defaulting to the advert type 'Sidebar' and randomly chosing from that. You can define your own advert type and display the adverts attached to that type by:</p>
@@ -472,10 +532,16 @@ function akp_settings_output() {
         <pre>[adkingpro banner="{banner_id}"]</pre>
         <p>To add this into a template, just use the "do_shortcode" function:</p>
         <pre>&lt;?= do_shortcode("[adkingpro]"); ?&gt;</pre>
+        <h3>Install PDF Themes</h3>
+        <p>Download themes from <a href="http://durham.net.au/wordpress/plugins/ad-king-pro/" target="_blank">my plugin page</a>. Locate the themes folder in the adkingpro plugin folder, generally located:</p>
+        <pre>/wp-content/plugins/adkingpro/themes/</pre>
+        <p>Unzip the downloaded zip file and upload the entire folder into the themes folder mentioned above.</p>
+        <p>Once uploaded, return to this page and your theme will be present in the PDF Theme dropdown to the left. Choose the theme and save the options. Next time you generate a report, the theme you have chosen will be used.</p>
+        <p>The ability to upload the zip file straight from here will be added soon</p>
     </div>
     
     <div class="akp_help">
-        <h2>Help</h2>
+        <h2>FAQ</h2>
         <h4>Q. After activating this plugin, my site has broken! Why?</h4>
         <p>Nine times out of ten it will be due to your own scripts being added above the standard area where all the plugins are included. 
             If you move your javascript files below the function, "wp_head()" in the "header.php" file of your theme, it should fix your problem.</p>
@@ -507,19 +573,48 @@ function akp_detailed_output() {
     query_posts(array(
         'post_type'=>'adverts_posts'
         ));
+    $currency_sign = get_option('revenue_currency');
     while (have_posts()) : the_post();
         $post_id = get_the_ID();
         $image = akp_get_featured_image($post_id);
-                
+        $dets = akp_return_fields($post_id);
         // Get All Time Click Count
         $all_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$post_id'");
         $all_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE post_id = '$post_id'");
+        
+        $all_impression_cost = $dets['akp_revenue_per_impression'][0];
+        $all_click_cost = $dets['akp_revenue_per_click'][0];
+        
+        $all_per_impression = $currency_sign.number_format($all_impression_cost, 2);
+        $all_impression_total = $all_impression_cost * $all_impressions[0]->impressions;
+        $all_impression_total_output = $currency_sign.number_format($all_impression_total, 2);
+        
+        $all_per_click = $currency_sign.number_format($all_click_cost, 2);
+        $all_click_total = $all_click_cost * $all_clicks[0]->clicks;
+        $all_click_total_output = $currency_sign.number_format($all_click_total, 2);
+        
+        $all_total_made = $all_impression_total + $all_click_total;
+        $all_total_made_output = $currency_sign.number_format($all_total_made, 2);
 
         // Get This Month Click Count
         $month_start = mktime(0, 0, 0, date('n', current_time('timestamp')), 1, date('Y', current_time('timestamp')));
         $month_end = mktime(23, 59, 59, date('n', current_time('timestamp')), date('t', current_time('timestamp')), date('Y', current_time('timestamp')));
         $month_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$month_start' AND '$month_end' AND post_id = '$post_id'");
         $month_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$month_start' AND '$month_end' AND post_id = '$post_id'");
+        
+        $month_impression_cost = $dets['akp_revenue_per_impression'][0];
+        $month_click_cost = $dets['akp_revenue_per_click'][0];
+        
+        $month_per_impression = $currency_sign.number_format($month_impression_cost, 2);
+        $month_impression_total = $month_impression_cost * $month_impressions[0]->impressions;
+        $month_impression_total_output = $currency_sign.number_format($month_impression_total, 2);
+        
+        $month_per_click = $currency_sign.number_format($month_click_cost, 2);
+        $month_click_total = $month_click_cost * $month_clicks[0]->clicks;
+        $month_click_total_output = $currency_sign.number_format($month_click_total, 2);
+        
+        $month_total_made = $month_impression_total + $month_click_total;
+        $month_total_made_output = $currency_sign.number_format($month_total_made, 2);
 
         // Get This Week click count
         $start_week = get_option('week_starts');
@@ -537,11 +632,39 @@ function akp_detailed_output() {
         $week_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$week_start' AND '$week_end' AND post_id = '$post_id'");
         $week_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$week_start' AND '$week_end' AND post_id = '$post_id'");
 
+        $week_impression_cost = $dets['akp_revenue_per_impression'][0];
+        $week_click_cost = $dets['akp_revenue_per_click'][0];
+        
+        $week_per_impression = $currency_sign.number_format($week_impression_cost, 2);
+        $week_impression_total = $week_impression_cost * $week_impressions[0]->impressions;
+        $week_impression_total_output = $currency_sign.number_format($week_impression_total, 2);
+        
+        $week_per_click = $currency_sign.number_format($week_click_cost, 2);
+        $week_click_total = $week_click_cost * $week_clicks[0]->clicks;
+        $week_click_total_output = $currency_sign.number_format($week_click_total, 2);
+        
+        $week_total_made = $week_impression_total + $week_click_total;
+        $week_total_made_output = $currency_sign.number_format($week_total_made, 2);
+        
         // Get Today Click count
         $today_start = mktime(0, 0, 0, date('n', current_time('timestamp')), date('j', current_time('timestamp')), date('Y', current_time('timestamp')));
         $today_end = mktime(23, 59, 59, date('n', current_time('timestamp')), date('j', current_time('timestamp')), date('Y', current_time('timestamp')));
         $today_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$today_start' AND '$today_end' AND post_id = '$post_id'");
         $today_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$today_start' AND '$today_end' AND post_id = '$post_id'");
+        
+        $today_impression_cost = $dets['akp_revenue_per_impression'][0];
+        $today_click_cost = $dets['akp_revenue_per_click'][0];
+        
+        $today_per_impression = $currency_sign.number_format($today_impression_cost, 2);
+        $today_impression_total = $today_impression_cost * $today_impressions[0]->impressions;
+        $today_impression_total_output = $currency_sign.number_format($today_impression_total, 2);
+        
+        $today_per_click = $currency_sign.number_format($today_click_cost, 2);
+        $today_click_total = $today_click_cost * $today_clicks[0]->clicks;
+        $today_click_total_output = $currency_sign.number_format($today_click_total, 2);
+        
+        $today_total_made = $today_impression_total + $today_click_total;
+        $today_total_made_output = $currency_sign.number_format($today_total_made, 2);
         
         // Initilize Detail log
         $all_clicks_detailed = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$post_id' ORDER BY timestamp DESC");
@@ -572,7 +695,34 @@ function akp_detailed_output() {
                 </div>
                 <div class="detailed_details">
                     <div class="akp_detailed_all_details" style="display: block;">
-                        <br /><strong>Impressions: </strong><?= $all_impressions[0]->impressions ?><br />
+                        <br />
+                        <table>
+                            <tr>
+                                <td></td>
+                                <th class="center">Count</th>
+                                <th class="center">Cost Per</th>
+                                <th class="center">Total</th>
+                            </tr>
+                            <tr>
+                                <td>Impressions</td>
+                                <td class="center"><?= $all_impressions[0]->impressions ?></td>
+                                <td class="right"><?= $all_per_impression ?></td>
+                                <td class="right"><?= $all_impression_total_output ?></td>
+                            </tr>
+                            <tr>
+                                <td>Clicks</td>
+                                <td class="center"><?= $all_clicks[0]->clicks ?></td>
+                                <td class="right"><?= $all_per_click ?></td>
+                                <td class="right"><?= $all_click_total_output ?></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td class="right bold">TOTAL</td>
+                                <td class="right bold"><?= $all_total_made_output ?></td>
+                            </tr>
+                        </table>
+                        <br />
                         <div class="akp_reporting">
                             <strong>Download report: </strong> <a class="akp_csv" rel="all/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="all/<?= $post_id ?>">PDF</a>
                         </div>
@@ -601,7 +751,34 @@ function akp_detailed_output() {
                         </table>
                     </div>
                     <div class="akp_detailed_month_details">
-                        <br /><strong>Impressions: </strong><?= $month_impressions[0]->impressions ?><br />
+                        <br />
+                        <table>
+                            <tr>
+                                <td></td>
+                                <th class="center">Count</th>
+                                <th class="center">Cost Per</th>
+                                <th class="center">Total</th>
+                            </tr>
+                            <tr>
+                                <td>Impressions</td>
+                                <td class="center"><?= $month_impressions[0]->impressions ?></td>
+                                <td class="right"><?= $month_per_impression ?></td>
+                                <td class="right"><?= $month_impression_total_output ?></td>
+                            </tr>
+                            <tr>
+                                <td>Clicks</td>
+                                <td class="center"><?= $month_clicks[0]->clicks ?></td>
+                                <td class="right"><?= $month_per_click ?></td>
+                                <td class="right"><?= $month_click_total_output ?></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td class="right bold">TOTAL</td>
+                                <td class="right bold"><?= $month_total_made_output ?></td>
+                            </tr>
+                        </table>
+                        <br />
                         <div class="akp_reporting">
                             <strong>Download report: </strong> <a class="akp_csv" rel="month/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="month/<?= $post_id ?>">PDF</a>
                         </div>
@@ -630,7 +807,34 @@ function akp_detailed_output() {
                         </table>
                     </div>
                     <div class="akp_detailed_week_details">
-                        <br /><strong>Impressions: </strong><?= $week_impressions[0]->impressions ?><br />
+                        <br />
+                        <table>
+                            <tr>
+                                <td></td>
+                                <th class="center">Count</th>
+                                <th class="center">Cost Per</th>
+                                <th class="center">Total</th>
+                            </tr>
+                            <tr>
+                                <td>Impressions</td>
+                                <td class="center"><?= $week_impressions[0]->impressions ?></td>
+                                <td class="right"><?= $week_per_impression ?></td>
+                                <td class="right"><?= $week_impression_total_output ?></td>
+                            </tr>
+                            <tr>
+                                <td>Clicks</td>
+                                <td class="center"><?= $week_clicks[0]->clicks ?></td>
+                                <td class="right"><?= $week_per_click ?></td>
+                                <td class="right"><?= $week_click_total_output ?></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td class="right bold">TOTAL</td>
+                                <td class="right bold"><?= $week_total_made_output ?></td>
+                            </tr>
+                        </table>
+                        <br />
                         <div class="akp_reporting">
                             <strong>Download report: </strong> <a class="akp_csv" rel="week/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="week/<?= $post_id ?>">PDF</a>
                         </div>
@@ -659,7 +863,34 @@ function akp_detailed_output() {
                         </table>
                     </div>
                     <div class="akp_detailed_day_details">
-                        <br /><strong>Impressions: </strong><?= $today_impressions[0]->impressions ?><br />
+                        <br />
+                        <table>
+                            <tr>
+                                <td></td>
+                                <th class="center">Count</th>
+                                <th class="center">Cost Per</th>
+                                <th class="center">Total</th>
+                            </tr>
+                            <tr>
+                                <td>Impressions</td>
+                                <td class="center"><?= $today_impressions[0]->impressions ?></td>
+                                <td class="right"><?= $today_per_impression ?></td>
+                                <td class="right"><?= $today_impression_total_output ?></td>
+                            </tr>
+                            <tr>
+                                <td>Clicks</td>
+                                <td class="center"><?= $today_clicks[0]->clicks ?></td>
+                                <td class="right"><?= $today_per_click ?></td>
+                                <td class="right"><?= $today_click_total_output ?></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td class="right bold">TOTAL</td>
+                                <td class="right bold"><?= $today_total_made_output ?></td>
+                            </tr>
+                        </table>
+                        <br />
                         <div class="akp_reporting">
                             <strong>Download report: </strong> <a class="akp_csv" rel="today/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="today/<?= $post_id ?>">PDF</a>
                         </div>
