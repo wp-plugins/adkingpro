@@ -1,7 +1,7 @@
 === Ad King Pro ===
 Contributors: ashdurham
 Donate link: http://durham.net.au/donate/
-Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf
+Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes
 Requires at least: 3.0.1
 Tested up to: 3.5.1
 Stable tag: 1.2
@@ -23,6 +23,16 @@ to give a true reading of the click rate you are receiving.
 Reports of clicks per banner are given on the dashboard, and in detail on the Ad King Pro dashboard page. Stats are given daily, weekly, monthly and all time. The day the week
 starts for you is also modifiable within the settings section. Giving your advertisers a detailed view of the clicks they received on your site 
 is important, so with Ad King Pro, you can export a banners stats in either CSV or PDF format.
+
+NEW! in version 1.2 - 
+
+Now assign adverts an impression and click price. The details section and PDF will then calculate and display how much you have earnt from 
+your advertising. Revenue made from advertising is what it is there for, give detailed reports of your advertisers banners with an outline of how 
+much you are owed.
+
+Choose how your PDF reports look by choosing a PDF theme from the settings. The amount of themes are a bit light on at the moment, but please
+feel free to contact me if you would like to implement your own custom branded design. Visit [my website](http://durham.net.au/wordpress/plugins/adkingpro/) to
+make a request for development (and design if required).
 
 --
 
@@ -55,8 +65,9 @@ Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the
 
 1. Wordpress Dashboard with AdKingPro activated
 2. Advert section of wordpress admin
-3. AdKingPro stat section
-4. AdKingPro settings and FAQ/Help
+3. Adding/Editing an Advert and its options
+4. AdKingPro stat section
+5. AdKingPro settings and FAQ/Help
 
 == Changelog ==
 
