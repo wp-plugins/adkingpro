@@ -4,7 +4,7 @@ Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes
 Requires at least: 3.0.1
 Tested up to: 3.5.1
-Stable tag: 1.2
+Stable tag: 1.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,9 +24,7 @@ Reports of clicks per banner are given on the dashboard, and in detail on the Ad
 starts for you is also modifiable within the settings section. Giving your advertisers a detailed view of the clicks they received on your site 
 is important, so with Ad King Pro, you can export a banners stats in either CSV or PDF format.
 
-NEW! in version 1.2 - 
-
-Now assign adverts an impression and click price. The details section and PDF will then calculate and display how much you have earnt from 
+Assign adverts an impression and click price. The details section and PDF will then calculate and display how much you have earnt from 
 your advertising. Revenue made from advertising is what it is there for, give detailed reports of your advertisers banners with an outline of how 
 much you are owed.
 
@@ -71,6 +69,9 @@ Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the
 
 == Changelog ==
 
+= 1.3 =
+* Update to how admin scripts are included
+
 = 1.2 =
 * Addition of revenue allocation and calculation
 * Addition of PDF themes
@@ -86,6 +87,9 @@ Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the
 * Initial
 
 == Upgrade Notice ==
+
+= 1.3 =
+* Update to how admin scripts are included to work better with other plugins
 
 = 1.2 =
 * Themes now available for PDF reporting

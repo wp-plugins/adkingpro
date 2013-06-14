@@ -321,14 +321,20 @@ function akp_admin_register_head() {
     ?>
     <link rel='stylesheet' type='text/css' href='http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' />
     <link rel='stylesheet' type='text/css' href='<?= plugins_url('css/adkingpro-styles.css', dirname(__FILE__)) ?>' />
-    <script type='text/javascript' media='screen' src='http://code.jquery.com/ui/1.9.2/jquery-ui.js'></script>
-    <script type='text/javascript'>
-    var ajaxnonce = '<?= wp_create_nonce( 'akpN0nc3' ); ?>';
-    </script>
-    <script type='text/javascript' media='screen' src='<?= plugins_url('js/adkingpro-admin-functions.js', dirname(__FILE__)) ?>'></script>
     <?php
 }
 add_action('admin_head', 'akp_admin_register_head');
+
+function akp_enqueue($hook) {
+        
+	wp_enqueue_script( 'jquery-ui', plugins_url( '/js/jquery-ui.js', dirname(__FILE__) ), array('jquery'));
+        wp_enqueue_script( 'akp-admin', plugins_url( '/js/adkingpro-admin-functions.js', dirname(__FILE__) ), array('jquery', 'jquery-ui'));
+
+	// in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
+	wp_localize_script( 'akp-admin', 'akp_ajax_object',
+            array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'akp_ajaxnonce' => wp_create_nonce( 'akpN0nc3' ) ) );
+}
+add_action( 'admin_enqueue_scripts', 'akp_enqueue' );
 
 function akp_dashboard() {
     global $wpdb;

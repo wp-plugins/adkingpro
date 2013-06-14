@@ -44,7 +44,7 @@ jQuery(document).ready(function($) {
         var target_div = $(this).parent().next('.returned_data');
         if (valid) {
             target_div.html("<div class='akploading'></div>");
-            $.post(ajaxurl, {action: 'akpdaterange', ajaxnonce : ajaxnonce, from_date: from_date, to_date:to_date, banner_id:banner_id}, function(response) {
+            $.post(akp_ajax_object.ajax_url, {action: 'akpdaterange', ajaxnonce : akp_ajax_object.akp_ajaxnonce, from_date: from_date, to_date:to_date, banner_id:banner_id}, function(response) {
                 target_div.html(response);
             });
         }
@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
         var info = $(this).attr('rel').split('/');
         var from_date = $(this).parent().parent().parent().find(".from_adkingpro_date").val();
         var to_date = $(this).parent().parent().parent().find(".to_adkingpro_date").val();
-        $.post(ajaxurl, {action: 'akpoutputcsv', ajaxnonce : ajaxnonce, set: info[0], id:info[1], from_date:from_date, to_date:to_date}, function(response) {
+        $.post(akp_ajax_object.ajax_url, {action: 'akpoutputcsv', ajaxnonce : akp_ajax_object.akp_ajaxnonce, set: info[0], id:info[1], from_date:from_date, to_date:to_date}, function(response) {
             window.location = response;
         });
     });
@@ -64,7 +64,7 @@ jQuery(document).ready(function($) {
         var info = $(this).attr('rel').split('/');
         var from_date = $(this).parent().parent().parent().find(".from_adkingpro_date").val();
         var to_date = $(this).parent().parent().parent().find(".to_adkingpro_date").val();
-        $.post(ajaxurl, {action: 'akpoutputpdf', ajaxnonce : ajaxnonce, set: info[0], id:info[1], from_date:from_date, to_date:to_date}, function(response) {
+        $.post(akp_ajax_object.ajax_url, {action: 'akpoutputpdf', ajaxnonce : akp_ajax_object.akp_ajaxnonce, set: info[0], id:info[1], from_date:from_date, to_date:to_date}, function(response) {
             window.location = response;
         });
     });
