@@ -64,8 +64,4 @@ class AdKingPro_Widget extends WP_Widget {
 	}
 
 }
-
-add_action( 'widgets_init', function(){
-     register_widget( 'AdKingPro_Widget' );
-});
 ?>

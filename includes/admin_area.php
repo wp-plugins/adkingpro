@@ -29,6 +29,12 @@ function akp_create_post_type() {
 }
 add_action( 'init', 'akp_create_post_type' );
 
+function akp_widget_registration() {
+    register_widget( 'AdKingPro_Widget' );
+}
+
+add_action( 'widgets_init', 'akp_widget_registration');
+
 // Add scripts to page
 function akp_my_scripts_method() {
     wp_deregister_script( 'jquery' );

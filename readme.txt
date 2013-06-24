@@ -4,7 +4,7 @@ Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes
 Requires at least: 3.0.1
 Tested up to: 3.5.1
-Stable tag: 1.4
+Stable tag: 1.4.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,6 +73,9 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 
 == Changelog ==
 
+= 1.4.1 =
+* Fix to install error
+
 = 1.4 =
 * Widget option added
 
@@ -94,6 +97,9 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 * Initial
 
 == Upgrade Notice ==
+
+= 1.4.1 =
+* Fix to install error
 
 = 1.4 =
 * Widget option added
