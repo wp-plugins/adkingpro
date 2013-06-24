@@ -4,7 +4,7 @@ Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes
 Requires at least: 3.0.1
 Tested up to: 3.5.1
-Stable tag: 1.3
+Stable tag: 1.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,7 +46,7 @@ Any issues you are having, I'd also love to know, so again, please let me know u
 1. Download and unzip the zip file onto your computer
 2. Upload the 'adkingpro' folder into the `/wp-content/plugins/` directory (alternatively, install the plugin from the plugin directory within the admin)
 3. Activate the plugin through the 'Plugins' menu in WordPress
-4. Create your first advert within the 'Advert' section of the admin
+4. Create your first advert within the 'Advert' section of the admin (Make sure you assign it to a type)
 5. Within the WYSIWYG editor, place the short code '[adkingpro]' or within the code, &lt;?php do_shortcode('[adkingpro']); ?&gt;
 
 == Frequently Asked Questions ==
@@ -59,6 +59,10 @@ Nine times out of ten it will be due to your own scripts being added above the s
 
 Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the banner is given a number of classes to allow for styling, one being "banner{banner_id}", where you would replace the "{banner_id}" for the number in the required adverts class. Use this in a jquery click event and prevent the default action of the click to make it do the action you require
 
+= I have created an Advert and added the shortcode onto my page but nothing shows up. Why? =
+
+Be sure that you have assigned your advert to an "Advert Type". One called sidebar is automatically created for you when you install the plugin. It is this type that is pulled automatically in the default shortcode.
+
 == Screenshots ==
 
 1. Wordpress Dashboard with AdKingPro activated
@@ -68,6 +72,9 @@ Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the
 5. AdKingPro settings and FAQ/Help
 
 == Changelog ==
+
+= 1.4 =
+* Widget option added
 
 = 1.3 =
 * Update to how admin scripts are included
@@ -87,6 +94,9 @@ Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the
 * Initial
 
 == Upgrade Notice ==
+
+= 1.4 =
+* Widget option added
 
 = 1.3 =
 * Update to how admin scripts are included to work better with other plugins
