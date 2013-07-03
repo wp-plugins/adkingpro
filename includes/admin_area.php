@@ -104,7 +104,7 @@ function akp_save_custom_fields( ) {
 	global $post;	
         
         // verify nonce
-        if (!wp_verify_nonce($_POST['akp_meta_box_nonce'], basename(__FILE__))) {
+        if (!isset($_POST['akp_meta_box_nonce']) || !wp_verify_nonce($_POST['akp_meta_box_nonce'], basename(__FILE__))) {
             return;
         }
 	
@@ -127,9 +127,9 @@ function akp_return_fields( $id = NULL ) {
 	global $post;
         if (is_null($id)) $id = $post->ID;
 	$output = array();
-        $output['akp_remove_url'] = get_post_meta( $id, 'akp_remove_url' );
-        $output['akp_revenue_per_impression'] = get_post_meta( $id, 'akp_revenue_per_impression' );
-        $output['akp_revenue_per_click'] = get_post_meta( $id, 'akp_revenue_per_click' );
+        $output['akp_remove_url'] = (get_post_meta( $id, 'akp_remove_url' ) ? get_post_meta( $id, 'akp_remove_url' ) : array(''));
+        $output['akp_revenue_per_impression'] = (get_post_meta( $id, 'akp_revenue_per_impression' ) ? get_post_meta( $id, 'akp_revenue_per_impression' ) : array(''));
+        $output['akp_revenue_per_click'] = (get_post_meta( $id, 'akp_revenue_per_click' ) ? get_post_meta( $id, 'akp_revenue_per_click' ) : array(''));
         
         return $output;
 }
@@ -137,7 +137,7 @@ function akp_return_fields( $id = NULL ) {
 // Remove the Permalinks
 function akp_perm($return, $id, $new_title, $new_slug){
     global $post;
-    if($post->post_type == 'adverts_posts') return '';
+    if(isset($post->post_type) && $post->post_type == 'adverts_posts') return '';
     return $return;
 }
 add_filter('get_sample_permalink_html', 'akp_perm', '', 4);
@@ -146,15 +146,16 @@ add_filter('get_sample_permalink_html', 'akp_perm', '', 4);
 function akp_swap_featured_image_metabox($translation, $text, $domain) {
 	global $post;
 	$translations = get_translations_for_domain( $domain);
-	switch( $post->post_type ){
-            case 'adverts_posts':
-                if ( $text == 'Set featured image')
-                    return $translations->translate( 'Set Advert Image' );
-                if ( $text == 'Remove featured image')
-                    return $translations->translate( 'Remove Advert Image' );
-                break;
-	}
- 
+        if (isset($post->post_type)) {
+            switch( $post->post_type ){
+                case 'adverts_posts':
+                    if ( $text == 'Set featured image')
+                        return $translations->translate( 'Set Advert Image' );
+                    if ( $text == 'Remove featured image')
+                        return $translations->translate( 'Remove Advert Image' );
+                    break;
+            }
+        }
 	return $translation;
 }
 add_filter('gettext', 'akp_swap_featured_image_metabox', 10, 4);
@@ -221,7 +222,7 @@ function akp_columns($column_name, $ID) {
             break;
             
         case 'advert_image' :
-            $post_featured_image = akp_get_featured_image($post_ID);
+            $post_featured_image = akp_get_featured_image($ID);
             if ($post_featured_image) {
                 echo '<img src="' . $post_featured_image . '" style="width: 300px;" />';
             }
@@ -234,7 +235,7 @@ function akp_columns($column_name, $ID) {
         case 'impressions' :
             global $wpdb;
             $revenue = get_post_meta($ID, 'akp_revenue_per_impression');
-            if ($revenue[0] == '') $revenue[0] = '0.00';
+            if (!isset($revenue[0]) || $revenue[0] == '') $revenue[0] = '0.00';
             $sign = get_option('revenue_currency');
             $impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE post_id = '$ID'");
             echo $sign.$revenue[0]." x ".$impressions[0]->impressions;
@@ -243,7 +244,7 @@ function akp_columns($column_name, $ID) {
         case 'clicks' :
             global $wpdb;
             $revenue = get_post_meta($ID, 'akp_revenue_per_click');
-            if ($revenue[0] == '') $revenue[0] = '0.00';
+            if (!isset($revenue[0]) || $revenue[0] == '') $revenue[0] = '0.00';
             $sign = get_option('revenue_currency');
             $clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$ID'");
             echo $sign.$revenue[0]." x ".$clicks[0]->clicks;
@@ -321,24 +322,24 @@ function akp_log_impression($post_id) {
         ) );
     }
 }
-
+       
 // Dashboard Widget
-function akp_admin_register_head() {
-    ?>
-    <link rel='stylesheet' type='text/css' href='http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' />
-    <link rel='stylesheet' type='text/css' href='<?= plugins_url('css/adkingpro-styles.css', dirname(__FILE__)) ?>' />
-    <?php
-}
-add_action('admin_head', 'akp_admin_register_head');
 
 function akp_enqueue($hook) {
+    
+    wp_register_style( 'akp_jquery_ui', plugins_url('css/jquery-ui.css', dirname(__FILE__)), false, '1.9.2' );
+    wp_register_style( 'akp_css', plugins_url('css/adkingpro-styles.css', dirname(__FILE__)), false, '1.0.0' );
+    
+    wp_enqueue_style('akp_jquery_ui');
+    wp_enqueue_style( 'akp_css' );
         
-	wp_enqueue_script( 'jquery-ui', plugins_url( '/js/jquery-ui.js', dirname(__FILE__) ), array('jquery'));
-        wp_enqueue_script( 'akp-admin', plugins_url( '/js/adkingpro-admin-functions.js', dirname(__FILE__) ), array('jquery', 'jquery-ui'));
+    wp_enqueue_script( 'jquery-ui-datepicker');
+    wp_register_script('akp_admin_js', plugins_url( '/js/adkingpro-admin-functions.js', dirname(__FILE__) ), array('jquery', 'jquery-ui-datepicker'), '1.0.0');
+    wp_enqueue_script( 'akp_admin_js');
 
-	// in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
-	wp_localize_script( 'akp-admin', 'akp_ajax_object',
-            array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'akp_ajaxnonce' => wp_create_nonce( 'akpN0nc3' ) ) );
+    // in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
+    wp_localize_script( 'akp-admin', 'akp_ajax_object',
+        array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'akp_ajaxnonce' => wp_create_nonce( 'akpN0nc3' ) ) );
 }
 add_action( 'admin_enqueue_scripts', 'akp_enqueue' );
 
@@ -597,16 +598,16 @@ function akp_detailed_output() {
         $all_impression_cost = $dets['akp_revenue_per_impression'][0];
         $all_click_cost = $dets['akp_revenue_per_click'][0];
         
-        $all_per_impression = $currency_sign.number_format($all_impression_cost, 2);
+        $all_per_impression = $currency_sign.number_format((int) $all_impression_cost, 2);
         $all_impression_total = $all_impression_cost * $all_impressions[0]->impressions;
         $all_impression_total_output = $currency_sign.number_format($all_impression_total, 2);
         
-        $all_per_click = $currency_sign.number_format($all_click_cost, 2);
+        $all_per_click = $currency_sign.number_format((int) $all_click_cost, 2);
         $all_click_total = $all_click_cost * $all_clicks[0]->clicks;
-        $all_click_total_output = $currency_sign.number_format($all_click_total, 2);
+        $all_click_total_output = $currency_sign.number_format((int) $all_click_total, 2);
         
         $all_total_made = $all_impression_total + $all_click_total;
-        $all_total_made_output = $currency_sign.number_format($all_total_made, 2);
+        $all_total_made_output = $currency_sign.number_format((int) $all_total_made, 2);
 
         // Get This Month Click Count
         $month_start = mktime(0, 0, 0, date('n', current_time('timestamp')), 1, date('Y', current_time('timestamp')));
@@ -617,16 +618,16 @@ function akp_detailed_output() {
         $month_impression_cost = $dets['akp_revenue_per_impression'][0];
         $month_click_cost = $dets['akp_revenue_per_click'][0];
         
-        $month_per_impression = $currency_sign.number_format($month_impression_cost, 2);
+        $month_per_impression = $currency_sign.number_format((int) $month_impression_cost, 2);
         $month_impression_total = $month_impression_cost * $month_impressions[0]->impressions;
-        $month_impression_total_output = $currency_sign.number_format($month_impression_total, 2);
+        $month_impression_total_output = $currency_sign.number_format((int) $month_impression_total, 2);
         
-        $month_per_click = $currency_sign.number_format($month_click_cost, 2);
+        $month_per_click = $currency_sign.number_format((int) $month_click_cost, 2);
         $month_click_total = $month_click_cost * $month_clicks[0]->clicks;
-        $month_click_total_output = $currency_sign.number_format($month_click_total, 2);
+        $month_click_total_output = $currency_sign.number_format((int) $month_click_total, 2);
         
         $month_total_made = $month_impression_total + $month_click_total;
-        $month_total_made_output = $currency_sign.number_format($month_total_made, 2);
+        $month_total_made_output = $currency_sign.number_format((int) $month_total_made, 2);
 
         // Get This Week click count
         $start_week = get_option('week_starts');
@@ -647,16 +648,16 @@ function akp_detailed_output() {
         $week_impression_cost = $dets['akp_revenue_per_impression'][0];
         $week_click_cost = $dets['akp_revenue_per_click'][0];
         
-        $week_per_impression = $currency_sign.number_format($week_impression_cost, 2);
+        $week_per_impression = $currency_sign.number_format((int) $week_impression_cost, 2);
         $week_impression_total = $week_impression_cost * $week_impressions[0]->impressions;
-        $week_impression_total_output = $currency_sign.number_format($week_impression_total, 2);
+        $week_impression_total_output = $currency_sign.number_format((int) $week_impression_total, 2);
         
-        $week_per_click = $currency_sign.number_format($week_click_cost, 2);
+        $week_per_click = $currency_sign.number_format((int) $week_click_cost, 2);
         $week_click_total = $week_click_cost * $week_clicks[0]->clicks;
-        $week_click_total_output = $currency_sign.number_format($week_click_total, 2);
+        $week_click_total_output = $currency_sign.number_format((int) $week_click_total, 2);
         
         $week_total_made = $week_impression_total + $week_click_total;
-        $week_total_made_output = $currency_sign.number_format($week_total_made, 2);
+        $week_total_made_output = $currency_sign.number_format((int) $week_total_made, 2);
         
         // Get Today Click count
         $today_start = mktime(0, 0, 0, date('n', current_time('timestamp')), date('j', current_time('timestamp')), date('Y', current_time('timestamp')));
@@ -667,16 +668,16 @@ function akp_detailed_output() {
         $today_impression_cost = $dets['akp_revenue_per_impression'][0];
         $today_click_cost = $dets['akp_revenue_per_click'][0];
         
-        $today_per_impression = $currency_sign.number_format($today_impression_cost, 2);
+        $today_per_impression = $currency_sign.number_format((int) $today_impression_cost, 2);
         $today_impression_total = $today_impression_cost * $today_impressions[0]->impressions;
-        $today_impression_total_output = $currency_sign.number_format($today_impression_total, 2);
+        $today_impression_total_output = $currency_sign.number_format((int) $today_impression_total, 2);
         
-        $today_per_click = $currency_sign.number_format($today_click_cost, 2);
+        $today_per_click = $currency_sign.number_format((int) $today_click_cost, 2);
         $today_click_total = $today_click_cost * $today_clicks[0]->clicks;
-        $today_click_total_output = $currency_sign.number_format($today_click_total, 2);
+        $today_click_total_output = $currency_sign.number_format((int) $today_click_total, 2);
         
         $today_total_made = $today_impression_total + $today_click_total;
-        $today_total_made_output = $currency_sign.number_format($today_total_made, 2);
+        $today_total_made_output = $currency_sign.number_format((int) $today_total_made, 2);
         
         // Initilize Detail log
         $all_clicks_detailed = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$post_id' ORDER BY timestamp DESC");

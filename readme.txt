@@ -3,8 +3,8 @@ Contributors: ashdurham
 Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes
 Requires at least: 3.0.1
-Tested up to: 3.5.1
-Stable tag: 1.4.1
+Tested up to: 3.5.2
+Stable tag: 1.4.2
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,7 +29,7 @@ your advertising. Revenue made from advertising is what it is there for, give de
 much you are owed.
 
 Choose how your PDF reports look by choosing a PDF theme from the settings. The amount of themes are a bit light on at the moment, but please
-feel free to contact me if you would like to implement your own custom branded design. Visit [my website](http://durham.net.au/wordpress/plugins/adkingpro/) to
+feel free to contact me if you would like to implement your own custom branded design. Visit [my website](http://durham.net.au/wordpress/plugins/ad-king-pro/) to
 make a request for development (and design if required).
 
 --
@@ -39,6 +39,8 @@ If you have any suggestions or would like to see a feature in the plugin, please
 Any issues you are having, I'd also love to know, so again, please let me know using the support forum.
 
 --
+
+Check out my newly released plugin, [Invoice King Pro](http://wordpress.org/plugins/invoice-king-pro/)
 
 
 == Installation ==
@@ -73,6 +75,9 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 
 == Changelog ==
 
+= 1.4.2 =
+* Update compatible with 3.5.2
+
 = 1.4.1 =
 * Fix to install error
 
@@ -97,6 +102,9 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 * Initial
 
 == Upgrade Notice ==
+
+= 1.4.2 =
+* Update compatible with 3.5.2
 
 = 1.4.1 =
 * Fix to install error
