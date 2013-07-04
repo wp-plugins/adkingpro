@@ -4,13 +4,19 @@ Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes
 Requires at least: 3.0.1
 Tested up to: 3.5.2
-Stable tag: 1.4.2
+Stable tag: 1.5
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Ad King Pro allows you to easily manage, track and report on your on-site advertising. Upload, link, go.
 
 == Description ==
+
+--
+
+NOW WITH ADDED FLASH AND GOOGLE ADSENSE SUPPORT!!
+
+--
 
 Ad King Pro allows you to easily manage, track and report on your on-site advertising. Upload your banner, add the link its to go to then 
 your ready to go. Ad King Pro can be placed into any page or post by using the shortcode. It can also be placed directly into 
@@ -75,6 +81,9 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 
 == Changelog ==
 
+= 1.5 =
+* Added support for flash and Google AdSense banners
+
 = 1.4.2 =
 * Update compatible with 3.5.2
 
@@ -102,6 +111,9 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 * Initial
 
 == Upgrade Notice ==
+
+= 1.5 =
+* Added support for flash and Google AdSense banners
 
 = 1.4.2 =
 * Update compatible with 3.5.2

@@ -1,4 +1,34 @@
 jQuery(document).ready(function($) {
+    if ($("#akp_change_media_type").length > 0) {
+        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink').hide();
+        if ($("#akp_change_media_type").val() === 'image') {
+            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wp-plugins/adkingpro');
+            $('#postimagediv').fadeIn();
+            $('#postremoveurllink').fadeIn();
+        } else if ($("#akp_change_media_type").val() === 'flash') {
+            $('#title-prompt-text').text('Advert description (for internal use)');
+            $('#akpflashbox').fadeIn();
+        } else if ($("#akp_change_media_type").val() === 'adsense') {
+            $('#title-prompt-text').text('Advert description (for internal use)');
+            $('#akpadsensebox').fadeIn();
+        }
+    }
+    $('#akp_change_media_type').change(function() {
+        // Change views
+        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink').hide();
+        if ($(this).val() === 'image') {
+            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wp-plugins/adkingpro');
+            $('#postimagediv').fadeIn();
+            $('#postremoveurllink').fadeIn();
+        } else if ($(this).val() === 'flash') {
+            $('#title-prompt-text').text('Advert description (for internal use)');
+            $('#akpflashbox').fadeIn();
+        } else if ($(this).val() === 'adsense') {
+            $('#title-prompt-text').text('Advert description (for internal use)');
+            $('#akpadsensebox').fadeIn();
+        }
+    });
+    
     $(".banner_detailed_stat h2").click(function() {
         if ($(this).parent().height() > 46) {
             $(this).removeClass('open').parent().animate({'height': '46px'});

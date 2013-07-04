@@ -61,13 +61,52 @@ add_filter( 'enter_title_here', 'akp_title_text_input' );
 // Update Feature Image to become Advert Image
 function akp_change_meta_boxes()
 {
+    add_meta_box('akpmediatype', __('Media Type'), 'akp_media_type', 'adverts_posts', 'normal', 'high');
     remove_meta_box( 'postimagediv', 'adverts_posts', 'side' );
     add_meta_box('postimagediv', __('Advert Image'), 'post_thumbnail_meta_box', 'adverts_posts', 'normal', 'high');
+    add_meta_box('akpflashbox', __('Advert Flash File'), 'akp_flash_box', 'adverts_posts', 'normal', 'high');
+    add_meta_box('akpadsensebox', __('Advert AdSense Code'), 'akp_adsense_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('postremoveurllink', __('Remove Link from Advert?'), 'akp_remove_url_link', 'adverts_posts', 'advanced', 'high');
     add_meta_box('postclickstatsdiv', __('Advert Stats'), 'akp_post_click_stats', 'adverts_posts', 'advanced', 'low');
     add_meta_box('revenuevaluesdiv', __('Advert Revenue'), 'akp_revenue_values', 'adverts_posts', 'side', 'low');
 }
 add_action('do_meta_boxes', 'akp_change_meta_boxes');
+
+// Selection of media type
+function akp_media_type($object, $box) {
+    global $wpdb, $post;
+    $media_type = (get_post_meta( $post->ID, 'akp_media_type', true )) ? get_post_meta( $post->ID, 'akp_media_type', true ) : 'image';
+    $flash = ($media_type == 'flash') ? ' selected' : '';
+    $adsense = ($media_type == 'adsense') ? ' selected' : '';
+    
+    echo "<select name='akp_media_type' id='akp_change_media_type'>";
+    echo "<option value='image'>Image</option>";
+    echo "<option value='flash'".$flash.">Flash</option>";
+    echo "<option value='adsense'".$adsense.">AdSense</option>";
+    echo "</select>";
+}
+
+function akp_flash_box($object, $box) {
+    global $post;
+    $flash_url = (get_post_meta( $post->ID, 'akp_flash_url', true )) ? get_post_meta( $post->ID, 'akp_flash_url', true ) : '';
+    $flash_width = (get_post_meta( $post->ID, 'akp_flash_width', true )) ? get_post_meta( $post->ID, 'akp_flash_width', true ) : '';
+    $flash_height = (get_post_meta( $post->ID, 'akp_flash_height', true )) ? get_post_meta( $post->ID, 'akp_flash_height', true ) : '';
+    echo '<label for="akp_flash_url">';
+    echo '<input id="akp_flash_url" type="text" size="36" name="akp_flash_url" value="'.$flash_url.'" />';
+    echo '<input id="akp_flash_url_button" class="button" type="button" value="Upload Logo" />';
+    echo '<br />Enter a URL or upload a SWF file';
+    echo '</label><br />';
+    echo '<label for="akp_flash_width" style="width: 85px; display: block; float: left;">SWF Width</label><input type="text" name="akp_flash_width" value="'.$flash_width.'" style="width: 60px;" /><br />';
+    echo '<label for="akp_flash_height" style="width: 85px; display: block; float: left;">SWF Height</label><input type="text" name="akp_flash_height" value="'.$flash_height.'" style="width: 60px;" /><br />';
+}
+
+function akp_adsense_box($object, $box) {
+    global $post;
+    $adsense_code = (get_post_meta( $post->ID, 'akp_adsense_code', true )) ? get_post_meta( $post->ID, 'akp_adsense_code', true ) : '';
+    echo '<label for="akp_adsense_code">Enter the Ad Unit Code given from your Google AdSense account</label>';
+    echo '<br /><textarea name="akp_adsense_code" style="width: 100%; height: 200px;s">'.$adsense_code.'</textarea><br />';
+    echo '<br /><strong>Please note that only impressions are tracked for these ads as the clicks are registers via AdSense</strong>';
+}
 
 // Output stats for post
 function akp_post_click_stats($object, $box) {
@@ -117,6 +156,12 @@ function akp_save_custom_fields( ) {
             
             update_post_meta( $post->ID, 'akp_revenue_per_impression', $_POST['akp_revenue_per_impression'] );
             update_post_meta( $post->ID, 'akp_revenue_per_click', $_POST['akp_revenue_per_click'] );
+            update_post_meta( $post->ID, 'akp_media_type', $_POST['akp_media_type'] );
+            update_post_meta( $post->ID, 'akp_flash_url', $_POST['akp_flash_url'] );
+            update_post_meta( $post->ID, 'akp_flash_width', $_POST['akp_flash_width'] );
+            update_post_meta( $post->ID, 'akp_flash_height', $_POST['akp_flash_height'] );
+            update_post_meta( $post->ID, 'akp_adsense_code', $_POST['akp_adsense_code'] );
+            
 	}
 }
 
@@ -130,6 +175,11 @@ function akp_return_fields( $id = NULL ) {
         $output['akp_remove_url'] = (get_post_meta( $id, 'akp_remove_url' ) ? get_post_meta( $id, 'akp_remove_url' ) : array(''));
         $output['akp_revenue_per_impression'] = (get_post_meta( $id, 'akp_revenue_per_impression' ) ? get_post_meta( $id, 'akp_revenue_per_impression' ) : array(''));
         $output['akp_revenue_per_click'] = (get_post_meta( $id, 'akp_revenue_per_click' ) ? get_post_meta( $id, 'akp_revenue_per_click' ) : array(''));
+        $output['akp_media_type'] = (get_post_meta( $id, 'akp_media_type' ) ? get_post_meta( $id, 'akp_media_type' ) : array(''));
+        $output['akp_flash_url'] = (get_post_meta( $id, 'akp_flash_url' ) ? get_post_meta( $id, 'akp_flash_url' ) : array(''));
+        $output['akp_flash_width'] = (get_post_meta( $id, 'akp_flash_width' ) ? get_post_meta( $id, 'akp_flash_width' ) : array(''));
+        $output['akp_flash_height'] = (get_post_meta( $id, 'akp_flash_height' ) ? get_post_meta( $id, 'akp_flash_height' ) : array(''));
+        $output['akp_adsense_code'] = (get_post_meta( $id, 'akp_adsense_code' ) ? get_post_meta( $id, 'akp_adsense_code' ) : array(''));
         
         return $output;
 }
