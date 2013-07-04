@@ -93,9 +93,9 @@ function akp_flash_box($object, $box) {
     $flash_height = (get_post_meta( $post->ID, 'akp_flash_height', true )) ? get_post_meta( $post->ID, 'akp_flash_height', true ) : '';
     echo '<label for="akp_flash_url">';
     echo '<input id="akp_flash_url" type="text" size="36" name="akp_flash_url" value="'.$flash_url.'" />';
-    echo '<input id="akp_flash_url_button" class="button" type="button" value="Upload Logo" />';
+    echo '<input id="akp_flash_url_button" class="button" type="button" value="Upload SWF File" />';
     echo '<br />Enter a URL or upload a SWF file';
-    echo '</label><br />';
+    echo '</label><br /><br />';
     echo '<label for="akp_flash_width" style="width: 85px; display: block; float: left;">SWF Width</label><input type="text" name="akp_flash_width" value="'.$flash_width.'" style="width: 60px;" /><br />';
     echo '<label for="akp_flash_height" style="width: 85px; display: block; float: left;">SWF Height</label><input type="text" name="akp_flash_height" value="'.$flash_height.'" style="width: 60px;" /><br />';
 }

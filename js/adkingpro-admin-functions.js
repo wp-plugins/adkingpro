@@ -29,6 +29,37 @@ jQuery(document).ready(function($) {
         }
     });
     
+    var custom_uploader;
+    $('#akp_flash_url_button').click(function(e) {
+        e.preventDefault();
+        
+        //If the uploader object has already been created, reopen the dialog
+        if (custom_uploader) {
+            custom_uploader.open();
+            return;
+        }
+ 
+        //Extend the wp.media object
+        custom_uploader = wp.media.frames.file_frame = wp.media({
+            title: 'Choose Flash File',
+            button: {
+                text: 'Choose Flash File'
+            },
+            multiple: false
+        });
+ 
+        //When a file is selected, grab the URL and set it as the text field's value
+        custom_uploader.on('select', function() {
+            attachment = custom_uploader.state().get('selection').first().toJSON();
+            var url = '';
+            url = attachment['url'];
+            $('#akp_flash_url').val(url);
+        });
+ 
+        //Open the uploader dialog
+        custom_uploader.open();
+    });
+    
     $(".banner_detailed_stat h2").click(function() {
         if ($(this).parent().height() > 46) {
             $(this).removeClass('open').parent().animate({'height': '46px'});
