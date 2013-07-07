@@ -4,7 +4,7 @@ Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes
 Requires at least: 3.0.1
 Tested up to: 3.5.2
-Stable tag: 1.5.1
+Stable tag: 1.6
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,9 @@ Ad King Pro allows you to easily manage, track and report on your on-site advert
 
 --
 
-NOW WITH ADDED FLASH AND GOOGLE ADSENSE SUPPORT!!
+1.6 - SET EXPIRY DATE/TIMES ON YOUR ADS!
+
+1.5.1 - NOW WITH ADDED FLASH AND GOOGLE ADSENSE SUPPORT!!
 
 --
 
@@ -81,6 +83,9 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 
 == Changelog ==
 
+= 1.6 =
+* Addition of expiry date/time functionality
+
 = 1.5.1 =
 * Adding missing functionality for flash upload button
 
@@ -114,6 +119,9 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 * Initial
 
 == Upgrade Notice ==
+
+= 1.6 =
+* Now set expiry dates/times on your adverts
 
 = 1.5.1 =
 * Adding missing functionality for flash upload button

@@ -4,6 +4,33 @@
     Author     : Ash Durham
 */
 
+/**** Edit Screen Styling ****/
+
+.curtime #expiry {
+background-repeat: no-repeat;
+background-position: left center;
+padding: 2px 0 1px 20px;
+background-image: url(../../../../wp-admin/images/date-button.gif);
+}
+
+#expirydiv input {
+border-width: 1px;
+border-style: solid;
+}
+
+#exp_d, #exp_h, #exp_i {
+width: 2em;
+}
+
+#exp_y {
+width: 3.4em;
+}
+
+#exp_y, #exp_d, #exp_h, #exp_i {
+padding: 1px;
+font-size: 12px;
+}
+
 /**** Dashboard Styling ****/
 
 #akp_dashboard_widget ul {

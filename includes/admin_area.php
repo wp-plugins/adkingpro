@@ -72,6 +72,66 @@ function akp_change_meta_boxes()
 }
 add_action('do_meta_boxes', 'akp_change_meta_boxes');
 
+add_action( 'post_submitbox_misc_actions', 'expiry_in_publish' );
+function expiry_in_publish($post)
+{
+    global $post;
+    $expiry = (get_post_meta($post->ID, 'akp_expiry_date', true)) ? get_post_meta($post->ID, 'akp_expiry_date', true) : 'never';
+    if ($expiry !== 'never') {
+        $expiry_m = date('m', $expiry);
+        $expiry_d = date('d', $expiry);
+        $expiry_y = date('Y', $expiry);
+        $expiry_h = date('H', $expiry);
+        $expiry_i = date('i', $expiry);
+        $expiry_output = date('M j, Y @ G:i', $expiry);
+        $expiry_value = date('Y-m-d G:i:s', $expiry);
+        
+    } else {
+        $expiry_output = 'Never';
+        $expiry_value = $expiry;
+        $expiry_m = date('m', current_time('timestamp'));
+        $expiry_d = date('d', current_time('timestamp'));
+        $expiry_y = date('Y', current_time('timestamp'));
+        $expiry_h = date('H', current_time('timestamp'));
+        $expiry_i = date('i', current_time('timestamp'));
+    }
+    echo '<div class="misc-pub-section misc-pub-section-last curtime">
+         <span id="expiry">
+        Expire on: <b>'.$expiry_output.'</b>
+        </span>
+	<a href="#edit_expiry" class="edit-expiry hide-if-no-js">Edit</a>
+	<div id="expirydiv" class="hide-if-js"><div class="expiry-wrap"><select id="exp_m">
+			<option value="01"'.(($expiry_m == '01') ? ' selected="selected"' : '').'>01-Jan</option>
+			<option value="02"'.(($expiry_m == '02') ? ' selected="selected"' : '').'>02-Feb</option>
+			<option value="03"'.(($expiry_m == '03') ? ' selected="selected"' : '').'>03-Mar</option>
+			<option value="04"'.(($expiry_m == '04') ? ' selected="selected"' : '').'>04-Apr</option>
+			<option value="05"'.(($expiry_m == '05') ? ' selected="selected"' : '').'>05-May</option>
+			<option value="06"'.(($expiry_m == '06') ? ' selected="selected"' : '').'>06-Jun</option>
+			<option value="07"'.(($expiry_m == '07') ? ' selected="selected"' : '').'>07-Jul</option>
+			<option value="08"'.(($expiry_m == '08') ? ' selected="selected"' : '').'>08-Aug</option>
+			<option value="09"'.(($expiry_m == '09') ? ' selected="selected"' : '').'>09-Sep</option>
+			<option value="10"'.(($expiry_m == '10') ? ' selected="selected"' : '').'>10-Oct</option>
+			<option value="11"'.(($expiry_m == '11') ? ' selected="selected"' : '').'>11-Nov</option>
+			<option value="12"'.(($expiry_m == '12') ? ' selected="selected"' : '').'>12-Dec</option>
+</select><input type="text" id="exp_d" value="'.$expiry_d.'" size="2" maxlength="2" autocomplete="off">, <input type="text" id="exp_y" value="'.$expiry_y.'" size="4" maxlength="4" autocomplete="off"> @ <input type="text" id="exp_h" value="'.$expiry_h.'" size="2" maxlength="2" autocomplete="off"> : <input type="text" id="exp_i" value="'.$expiry_i.'" size="2" maxlength="2" autocomplete="off"></div><input type="hidden" id="exp_s" value="55">
+
+<input type="hidden" id="hidden_exp_m" value="'.$expiry_m.'">
+<input type="hidden" id="hidden_exp_d" value="'.$expiry_d.'">
+<input type="hidden" id="hidden_exp_y" value="'.$expiry_y.'">
+<input type="hidden" id="hidden_exp_h" value="'.$expiry_h.'">
+<input type="hidden" id="hidden_exp_i" value="'.$expiry_i.'">
+
+<input type="hidden" name="akp_expiry_date" id="akp_expiry_date" value="'.$expiry_value.'" />
+
+<p>
+<a href="#edit_expiry" class="save-expiry hide-if-no-js button">OK</a>
+<a href="#edit_expiry" class="cancel-expiry hide-if-no-js">Cancel</a>
+<a href="#edit_expiry" class="set-never-expiry hide-if-no-js button right">Set to Never</a>
+</p>
+                </div>
+    </div>';
+}
+
 // Selection of media type
 function akp_media_type($object, $box) {
     global $wpdb, $post;
@@ -154,6 +214,11 @@ function akp_save_custom_fields( ) {
             else
                 update_post_meta( $post->ID, 'akp_remove_url', 0 );
             
+            if ($_POST['akp_expiry_date'] == 'never') update_post_meta( $post->ID, 'akp_expiry_date', $_POST['akp_expiry_date'] );
+            else {
+                update_post_meta( $post->ID, 'akp_expiry_date', strtotime($_POST['akp_expiry_date']) );
+            }
+            
             update_post_meta( $post->ID, 'akp_revenue_per_impression', $_POST['akp_revenue_per_impression'] );
             update_post_meta( $post->ID, 'akp_revenue_per_click', $_POST['akp_revenue_per_click'] );
             update_post_meta( $post->ID, 'akp_media_type', $_POST['akp_media_type'] );
@@ -173,6 +238,7 @@ function akp_return_fields( $id = NULL ) {
         if (is_null($id)) $id = $post->ID;
 	$output = array();
         $output['akp_remove_url'] = (get_post_meta( $id, 'akp_remove_url' ) ? get_post_meta( $id, 'akp_remove_url' ) : array(''));
+        $output['akp_expiry_date'] = (get_post_meta( $id, 'akp_expiry_date' ) ? get_post_meta( $id, 'akp_expiry_date' ) : 'never');
         $output['akp_revenue_per_impression'] = (get_post_meta( $id, 'akp_revenue_per_impression' ) ? get_post_meta( $id, 'akp_revenue_per_impression' ) : array(''));
         $output['akp_revenue_per_click'] = (get_post_meta( $id, 'akp_revenue_per_click' ) ? get_post_meta( $id, 'akp_revenue_per_click' ) : array(''));
         $output['akp_media_type'] = (get_post_meta( $id, 'akp_media_type' ) ? get_post_meta( $id, 'akp_media_type' ) : array(''));

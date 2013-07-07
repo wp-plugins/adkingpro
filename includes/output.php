@@ -14,12 +14,33 @@ function adkingpro_func( $atts ) {
                 'post_type'=>'adverts_posts',
                 'orderby'=>'rand',
                 'showposts'=>1,
-                'advert_types'=>$type
+                'advert_types'=>$type,
+                'meta_query' => array(
+                    'relation' => 'OR',
+                    array(
+                        'key' => 'akp_expiry_date',
+                        'value' => 'never',
+                        'compare' => '='
+                    ),
+                    array(
+                        'key' => 'akp_expiry_date',
+                        'value' => '',
+                        'compare' => 'NOT EXISTS'
+                    ),
+                    array(
+                        'key' => 'akp_expiry_date',
+                        'value' => current_time('timestamp'),
+                        'type' => 'numeric',
+                        'compare' => '>='
+                    )
+                )
                 ));
             while (have_posts()) : the_post();
                 $post_id = get_the_ID();
                 $image = akp_get_featured_image($post_id);
                 $cfields = akp_return_fields();
+                if ($cfields['akp_expiry_date'][0] == '') $cfields['akp_expiry_date'][0] = 'never';
+                if ($cfields['akp_expiry_date'][0] !== 'never')
                 if ($cfields['akp_media_type'][0] == '') $cfields['akp_media_type'][0] = 'image';
                 switch ($cfields['akp_media_type'][0]) {
                     case 'image':
@@ -55,7 +76,26 @@ function adkingpro_func( $atts ) {
         } elseif (is_numeric($banner)) {
             query_posts(array(
                 'post_type'=>'adverts_posts',
-                'p'=>$banner
+                'p'=>$banner,
+                'meta_query' => array(
+                    'relation' => 'OR',
+                    array(
+                        'key' => 'akp_expiry_date',
+                        'value' => 'never',
+                        'compare' => '='
+                    ),
+                    array(
+                        'key' => 'akp_expiry_date',
+                        'value' => '',
+                        'compare' => 'NOT EXISTS'
+                    ),
+                    array(
+                        'key' => 'akp_expiry_date',
+                        'value' => current_time('timestamp'),
+                        'type' => 'numeric',
+                        'compare' => '>='
+                    )
+                )
                 ));
             while (have_posts()) : the_post();
                 $post_id = get_the_ID();
@@ -94,7 +134,8 @@ function adkingpro_func( $atts ) {
             endwhile;
             wp_reset_query();
         }
-        akp_log_impression($post_id);
+        if (isset($post_id))
+            akp_log_impression($post_id);
 	return $output;
 }
 add_shortcode( 'adkingpro', 'adkingpro_func' );

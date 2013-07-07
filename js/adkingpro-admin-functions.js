@@ -60,6 +60,89 @@ jQuery(document).ready(function($) {
         custom_uploader.open();
     });
     
+    $('#expirydiv').siblings('a.edit-expiry').click(function() {
+            if ($('#expirydiv').is(":hidden")) {
+                    $('#expirydiv').slideDown('fast');
+                    $('#exp_m').focus();
+                    $(this).hide();
+            }
+            return false;
+    });
+
+    $('.cancel-expiry', '#expirydiv').click(function() {
+            $('#expirydiv').slideUp('fast');
+//            $('#exp_m').val($('#hidden_exp_m').val());
+//            $('#exp_d').val($('#hidden_exp_d').val());
+//            $('#exp_y').val($('#hidden_exp_y').val());
+//            $('#exp_h').val($('#hidden_exp_h').val());
+//            $('#exp_i').val($('#hidden_exp_i').val());
+            $('#expirydiv').siblings('a.edit-expiry').show();
+//            updateExpiryText();
+            return false;
+    });
+
+    $('.save-expiry', '#expirydiv').click(function () { // crazyhorse - multiple ok cancels
+            if ( updateExpiryText() ) {
+                    $('#expirydiv').slideUp('fast');
+                    $('#expirydiv').siblings('a.edit-expiry').show();
+            }
+            return false;
+    });
+    
+    $(".set-never-expiry").click(function() {
+        $('#expiry').html(
+            'Expire on: <b>Never</b>'
+        );
+
+        $("#akp_expiry_date").val(
+            'never'
+        );
+            
+        $('#expirydiv').slideUp('fast');
+        $('#expirydiv').siblings('a.edit-expiry').show();
+    });
+    
+    function updateExpiryText() {
+        
+            var stamp = $('#expiry').html();
+
+            if ( ! $('#expirydiv').length )
+                    return true;
+
+            var exp_y = $('#exp_y').val(),
+                    exp_m = $('#exp_m').val(), exp_d = $('#exp_d').val(), exp_h = $('#exp_h').val(), exp_i = $('#exp_i').val(), exp_s = $('#exp_s').val();
+
+            attemptedDate = new Date( exp_y, exp_m - 1, exp_d, exp_h, exp_i );
+            originalDate = new Date( $('#hidden_exp_y').val(), $('#hidden_exp_m').val() -1, $('#hidden_exp_d').val(), $('#hidden_exp_h').val(), $('#hidden_exp_i').val() );
+
+            if ( attemptedDate.getFullYear() != exp_y || (1 + attemptedDate.getMonth()) != exp_m || attemptedDate.getDate() != exp_d || attemptedDate.getMinutes() != exp_i ) {
+                    $('.expiry-wrap', '#expirydiv').addClass('form-invalid');
+                    return false;
+            } else {
+                    $('.expiry-wrap', '#expirydiv').removeClass('form-invalid');
+            }
+
+            
+            if ( originalDate.toUTCString() == attemptedDate.toUTCString() ) { //hack
+                    $('#expiry').html(stamp);
+            } else {
+                    $('#expiry').html(
+                        'Expire on: <b>' +
+                        $('option[value="' + $('#exp_m').val() + '"]', '#exp_m').text() + ' ' +
+                        exp_d + ', ' +
+                        exp_y + ' @ ' +
+                        exp_h + ':' +
+                        exp_i + '</b> '
+                    );
+                        
+                    $("#akp_expiry_date").val(
+                        exp_y+'-'+exp_m+'-'+exp_d+' '+exp_h+':'+exp_i+':'+exp_s
+                    );
+            }
+
+            return true;
+    }
+    
     $(".banner_detailed_stat h2").click(function() {
         if ($(this).parent().height() > 46) {
             $(this).removeClass('open').parent().animate({'height': '46px'});
