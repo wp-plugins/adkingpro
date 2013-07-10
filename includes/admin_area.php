@@ -454,7 +454,7 @@ function akp_enqueue($hook) {
     wp_enqueue_script( 'akp_admin_js');
 
     // in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
-    wp_localize_script( 'akp-admin', 'akp_ajax_object',
+    wp_localize_script( 'akp_admin_js', 'akp_ajax_object',
         array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'akp_ajaxnonce' => wp_create_nonce( 'akpN0nc3' ) ) );
 }
 add_action( 'admin_enqueue_scripts', 'akp_enqueue' );
