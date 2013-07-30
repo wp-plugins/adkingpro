@@ -36,20 +36,24 @@ function adkingpro_func( $atts ) {
                 )
                 ));
             while (have_posts()) : the_post();
+                $term = get_term_by("slug", $type, 'advert_types');
+                $term_meta = get_option( "akp_advert_type_".$term->term_id);
                 $post_id = get_the_ID();
-                $image = akp_get_featured_image($post_id);
                 $cfields = akp_return_fields();
                 if ($cfields['akp_expiry_date'][0] == '') $cfields['akp_expiry_date'][0] = 'never';
                 if ($cfields['akp_expiry_date'][0] !== 'never')
                 if ($cfields['akp_media_type'][0] == '') $cfields['akp_media_type'][0] = 'image';
                 switch ($cfields['akp_media_type'][0]) {
                     case 'image':
+                        $image = $cfields['akp_image_url'][0];
+                        if ($image == '')
+                            $image = akp_get_featured_image($post_id, "akp_".$term->term_id);
                         $display_link = true;
                         if (!isset($cfields['akp_remove_url']) || (isset($cfields['akp_remove_url']) && $cfields['akp_remove_url'][0] == 1)) $display_link = false;
-                        $output .= "<div class='adkingprobanner ".$type." banner".$post_id."'>";
+                        $output .= "<div class='adkingprobanner ".$type." banner".$post_id."' style='width: ".$term_meta['advert_width']."px; height: ".$term_meta['advert_height']."px;'>";
                         if ($display_link)
                             $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."'>";
-                        $output .= "<img src='".$image."' />";
+                        $output .= "<img src='".$image."' style='max-width: ".$term_meta['advert_width']."px; max-height: ".$term_meta['advert_height']."px;' />";
                         if ($display_link)
                             $output .= "</a>";
                         $output .= "</div>";
@@ -69,6 +73,12 @@ function adkingpro_func( $atts ) {
                         $output .= "<div class='adkingprobanneradsense ".$type." banner".$post_id."'>";
                         $output .= $cfields['akp_adsense_code'][0];
                         $output .= "</div>";
+                        break;
+                    
+                    case 'text':
+                        $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."' class='adkingprobannertext ".$type." banner".$post_id."'>";
+                        $output .= $cfields['akp_text'][0];
+                        $output .= "</a>";
                         break;
                 }
             endwhile;
@@ -99,11 +109,14 @@ function adkingpro_func( $atts ) {
                 ));
             while (have_posts()) : the_post();
                 $post_id = get_the_ID();
-                $image = akp_get_featured_image($post_id);
                 $cfields = akp_return_fields();
                 if ($cfields['akp_media_type'][0] == '') $cfields['akp_media_type'][0] = 'image';
+                echo $cfields['akp_media_type'][0];
                 switch ($cfields['akp_media_type'][0]) {
                     case 'image':
+                        $image = $cfields['akp_image_url'][0];
+                        if ($image == '')
+                            $image = akp_get_featured_image($post_id);
                         $display_link = true;
                         if (!isset($cfields['akp_remove_url']) || (isset($cfields['akp_remove_url']) && $cfields['akp_remove_url'][0] == 1)) $display_link = false;
                         $output .= "<div class='adkingprobanner ".$type." banner".$post_id."'>";
@@ -129,6 +142,12 @@ function adkingpro_func( $atts ) {
                         $output .= "<div class='adkingprobanneradsense ".$type." banner".$post_id."' rel='".$post_id."'>";
                         $output .= $cfields['akp_adsense_code'][0];
                         $output .= "</div>";
+                        break;
+                    
+                    case 'text':
+                        $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."' class='adkingprobannertext ".$type." banner".$post_id."'>";
+                        $output .= $cfields['akp_text'][0];
+                        $output .= "</a>";
                         break;
                 }
             endwhile;

@@ -1,10 +1,10 @@
 === Ad King Pro ===
 Contributors: ashdurham
 Donate link: http://durham.net.au/donate/
-Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes
+Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes, flash, adsense, text, resize
 Requires at least: 3.0.1
 Tested up to: 3.5.2
-Stable tag: 1.6.1
+Stable tag: 1.7
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,14 +14,12 @@ Ad King Pro allows you to easily manage, track and report on your on-site advert
 
 --
 
-1.6 - SET EXPIRY DATE/TIMES ON YOUR ADS!
-
-1.5.1 - NOW WITH ADDED FLASH AND GOOGLE ADSENSE SUPPORT!!
+Stay up-to-date with the latest by following [@kingproplugins on Twitter](http://twitter.com/kingproplugins) or [KingProPlugins on Facebook](http://facebook.com/kingproplugins)
 
 --
 
-Ad King Pro allows you to easily manage, track and report on your on-site advertising. Upload your banner, add the link its to go to then 
-your ready to go. Ad King Pro can be placed into any page or post by using the shortcode. It can also be placed directly into 
+Ad King Pro allows you to easily manage, track and report on your on-site advertising. Upload your banner/flash banner/adsense code/text, add the link its to go to then 
+your ready to go. Set it to start and end at a certain time if needed. Ad King Pro can be placed into any page or post by using the shortcode. It can also be placed directly into 
 theme files if need be. Create types and assign multiple banners to randomly show one on every page refresh, define a category to display in
 a specific spot or even define a particular ad to display.
 
@@ -57,7 +55,7 @@ Check out my newly released plugin, [Invoice King Pro](http://wordpress.org/plug
 2. Upload the 'adkingpro' folder into the `/wp-content/plugins/` directory (alternatively, install the plugin from the plugin directory within the admin)
 3. Activate the plugin through the 'Plugins' menu in WordPress
 4. Create your first advert within the 'Advert' section of the admin (Make sure you assign it to a type)
-5. Within the WYSIWYG editor, place the short code '[adkingpro]' or within the code, &lt;?php do_shortcode('[adkingpro']); ?&gt;
+5. Within the WYSIWYG editor, place the short code '[adkingpro]' or within the code, &lt;?php if (function_exists('adkingpro_func')) echo do_shortcode('[adkingpro']); ?&gt;
 
 == Frequently Asked Questions ==
 
@@ -71,7 +69,11 @@ Yes. Enter a '#' in as the URL for the banner when setting it up. At output, the
 
 = I have created an Advert and added the shortcode onto my page but nothing shows up. Why? =
 
-Be sure that you have assigned your advert to an "Advert Type". One called sidebar is automatically created for you when you install the plugin. It is this type that is pulled automatically in the default shortcode.
+Be sure that you have assigned your advert to an "Advert Type". One called sidebar is automatically created for you when you install the plugin. It is this type that is pulled automatically in the default shortcode. Also in some cases you don't need to wrap the type in quotes (eg [adkingpro type=sidebar]).
+
+= I get an error saying the PDF can't be saved due to write permissions on the server. What do I do? =
+
+The plugin needs your permission to save the PDFs you generate to the output folder in the plugins folder. To do this, you are required to update the outputs permissions to be writable. Please see [the wordpress help page](http://codex.wordpress.org/Changing_File_Permissions) to carry this out
 
 == Screenshots ==
 
@@ -82,6 +84,11 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 5. AdKingPro settings and FAQ/Help
 
 == Changelog ==
+
+= 1.7 =
+* Added option to set a size to an advert type, generating that image size from the images you upload.
+* Added support for lack of 'post-thumbnail' support
+* Added 'text' media type
 
 = 1.6.1 =
 * Issue with CSV and PDF generation fixed
@@ -122,6 +129,11 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 * Initial
 
 == Upgrade Notice ==
+
+= 1.7 =
+* Added option to set a size to an advert type, generating that image size from the images you upload.
+* Added support for lack of 'post-thumbnail' support
+* Added 'text' media type
 
 = 1.6.1 =
 * Issue with CSV and PDF generation fixed

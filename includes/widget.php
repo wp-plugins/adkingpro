@@ -15,7 +15,9 @@ class AdKingPro_Widget extends WP_Widget {
             $banner = apply_filters( 'widget_banner', $instance['banner'] );
             $code = 'type="'.$type.'"';
             if ($banner !== '') $code = 'banner="'.$banner.'"';
-            echo do_shortcode('[adkingpro '.$code.']');
+            if (function_exists('adkingpro_func')){ 
+                echo do_shortcode('[adkingpro '.$code.']');
+            }
 	}
 
  	public function form( $instance ) {

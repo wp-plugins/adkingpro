@@ -1,9 +1,10 @@
 jQuery(document).ready(function($) {
     if ($("#akp_change_media_type").length > 0) {
-        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink').hide();
+        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox').hide();
         if ($("#akp_change_media_type").val() === 'image') {
-            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wp-plugins/adkingpro');
+            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro');
             $('#postimagediv').fadeIn();
+            $('#akpimagebox').fadeIn();
             $('#postremoveurllink').fadeIn();
         } else if ($("#akp_change_media_type").val() === 'flash') {
             $('#title-prompt-text').text('Advert description (for internal use)');
@@ -11,14 +12,18 @@ jQuery(document).ready(function($) {
         } else if ($("#akp_change_media_type").val() === 'adsense') {
             $('#title-prompt-text').text('Advert description (for internal use)');
             $('#akpadsensebox').fadeIn();
+        } else if ($("#akp_change_media_type").val() === 'text') {
+            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro');
+            $('#akptextbox').fadeIn();
         }
     }
     $('#akp_change_media_type').change(function() {
         // Change views
-        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink').hide();
+        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox').hide();
         if ($(this).val() === 'image') {
-            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wp-plugins/adkingpro');
+            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro');
             $('#postimagediv').fadeIn();
+            $('#akpimagebox').fadeIn();
             $('#postremoveurllink').fadeIn();
         } else if ($(this).val() === 'flash') {
             $('#title-prompt-text').text('Advert description (for internal use)');
@@ -26,21 +31,24 @@ jQuery(document).ready(function($) {
         } else if ($(this).val() === 'adsense') {
             $('#title-prompt-text').text('Advert description (for internal use)');
             $('#akpadsensebox').fadeIn();
+        } else if ($(this).val() === 'text') {
+            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro');
+            $('#akptextbox').fadeIn();
         }
     });
     
-    var custom_uploader;
+    var flash_custom_uploader;
     $('#akp_flash_url_button').click(function(e) {
         e.preventDefault();
         
         //If the uploader object has already been created, reopen the dialog
-        if (custom_uploader) {
-            custom_uploader.open();
+        if (flash_custom_uploader) {
+            flash_custom_uploader.open();
             return;
         }
  
         //Extend the wp.media object
-        custom_uploader = wp.media.frames.file_frame = wp.media({
+        flash_custom_uploader = wp.media.frames.file_frame = wp.media({
             title: 'Choose Flash File',
             button: {
                 text: 'Choose Flash File'
@@ -49,15 +57,46 @@ jQuery(document).ready(function($) {
         });
  
         //When a file is selected, grab the URL and set it as the text field's value
-        custom_uploader.on('select', function() {
-            attachment = custom_uploader.state().get('selection').first().toJSON();
+        flash_custom_uploader.on('select', function() {
+            attachment = flash_custom_uploader.state().get('selection').first().toJSON();
             var url = '';
             url = attachment['url'];
             $('#akp_flash_url').val(url);
         });
  
         //Open the uploader dialog
-        custom_uploader.open();
+        flash_custom_uploader.open();
+    });
+    
+    var image_custom_uploader;
+    $('#akp_image_url_button').click(function(e) {
+        e.preventDefault();
+        
+        //If the uploader object has already been created, reopen the dialog
+        if (image_custom_uploader) {
+            image_custom_uploader.open();
+            return;
+        }
+ 
+        //Extend the wp.media object
+        image_custom_uploader = wp.media.frames.file_frame = wp.media({
+            title: 'Choose Image',
+            button: {
+                text: 'Choose Image'
+            },
+            multiple: false
+        });
+ 
+        //When a file is selected, grab the URL and set it as the text field's value
+        image_custom_uploader.on('select', function() {
+            attachment = image_custom_uploader.state().get('selection').first().toJSON();
+            var url = '';
+            url = attachment['url'];
+            $('#akp_image_url').val(url);
+        });
+ 
+        //Open the uploader dialog
+        image_custom_uploader.open();
     });
     
     $('#expirydiv').siblings('a.edit-expiry').click(function() {

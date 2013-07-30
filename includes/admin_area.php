@@ -1,11 +1,22 @@
 <?php
 
+function register_akp_options() {
+  register_setting( 'akp-options', 'expiry_time' );
+  register_setting( 'akp-options', 'impression_expiry_time' );
+  register_setting( 'akp-options', 'week_start' );
+  register_setting( 'akp-options', 'revenue_currency' );
+  register_setting( 'akp-options', 'pdf_theme' );
+  register_setting( 'akp-options', 'akp_image_sizes' );
+}
+add_action( 'admin_init', 'register_akp_options' );
+
 // Default Options
 add_option( 'expiry_time', '+6 hours' );
 add_option( 'impression_expiry_time', '+0 hours' );
 add_option( 'week_starts', 'monday' );
 add_option( 'revenue_currency', '$' );
 add_option( 'pdf_theme', 'default' );
+add_option( 'akp_image_sizes', '' );
 
 // Register Adverts
 function akp_create_post_type() {
@@ -37,8 +48,6 @@ add_action( 'widgets_init', 'akp_widget_registration');
 
 // Add scripts to page
 function akp_my_scripts_method() {
-    wp_deregister_script( 'jquery' );
-    wp_register_script( 'jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js');
     wp_enqueue_script( 'jquery' );
     wp_enqueue_script(
         'adkingpro-js',
@@ -49,11 +58,137 @@ function akp_my_scripts_method() {
 }
 add_action('wp_enqueue_scripts', 'akp_my_scripts_method');
 
+//add extra fields to category edit form callback function
+function akp_extra_advert_types_fields( $tag ) {    //check for existing featured ID
+    $t_id = $tag->term_id;
+    $cat_meta = get_option( "akp_advert_type_$t_id");
+?>
+<tr class="form-field">
+<td colspan="2">
+Leave the below blank to use the full size of the image you upload.          
+</td>
+</tr>
+<tr class="form-field">
+<th scope="row" valign="top"><label for="advert_width"><?php _e('Set width of advert'); ?></label></th>
+<td>
+<input type="text" name="Cat_meta[advert_width]" id="Cat_meta[advert_width]" size="5" style="width:20%;" value="<?php echo $cat_meta['advert_width'] ? $cat_meta['advert_width'] : ''; ?>" /><br />
+            <span class="description"><?php _e('If variable, please leave blank'); ?></span>
+        </td>
+</tr>
+<tr class="form-field">
+<th scope="row" valign="top"><label for="advert_height"><?php _e('Set height of advert'); ?></label></th>
+<td>
+<input type="text" name="Cat_meta[advert_height]" id="Cat_meta[advert_height]" size="5" style="width:20%;" value="<?php echo $cat_meta['advert_height'] ? $cat_meta['advert_height'] : ''; ?>" /><br />
+            <span class="description"><?php _e('If variable, please leave blank'); ?></span>
+        </td>
+</tr>
+<tr class="form-field">
+<th scope="row" valign="top"><label for="advert_crop"><?php _e('Hard crop image?'); ?></label></th>
+<td>
+    <input type="hidden" name="Cat_meta[advert_crop]" value="0" />
+<input type="checkbox" name="Cat_meta[advert_crop]" id="Cat_meta[advert_crop]" value="1"<?php if ($cat_meta['advert_crop'] == '1') echo ' checked'; ?> /><br />
+        </td>
+</tr>
+<?php
+}
+//add extra fields to advert type edit form hook
+add_action( 'advert_types_edit_form_fields', 'akp_extra_advert_types_fields', 10, 2);
+
+// save extra taxonomy fields callback function
+function akp_save_extra_advert_types_fields( $term_id ) {
+    if ( isset( $_POST['Cat_meta'] ) ) {
+        $t_id = $term_id;
+        $term_meta = get_option( "akp_advert_type_$t_id");
+        $cat_keys = array_keys($_POST['Cat_meta']);
+            foreach ($cat_keys as $key){
+            if (isset($_POST['Cat_meta'][$key])){
+                $term_meta[$key] = $_POST['Cat_meta'][$key];
+            }
+        }
+        //save the option array
+        update_option( "akp_advert_type_$t_id", $term_meta );
+        
+        // Use values to save image size for generation. $term_meta['advert_width'].'x'.$term_meta['advert_height']
+        $sizes = get_option('akp_image_sizes');
+        //$sizes = array();
+        if ($term_meta['advert_width'] !== '' || $term_meta['advert_height'] !== '') {
+            $sizes['akp_'.$t_id]['width'] = ($term_meta['advert_width']) ? $term_meta['advert_width'] : 9999;
+            $sizes['akp_'.$t_id]['height'] = ($term_meta['advert_height']) ? $term_meta['advert_height'] : 9999;
+            $sizes['akp_'.$t_id]['crop'] = ($term_meta['advert_crop']) ? $term_meta['advert_crop'] : 0;
+        } else unset($sizes['akp_'.$t_id]);
+        
+        update_option( "akp_image_sizes", $sizes );
+        
+        // Generate existing images
+         
+        $adverts =& get_posts( array(
+                'post_type' => 'adverts_posts',
+                'numberposts' => -1,
+                'output' => 'object',
+        ) );
+        
+        foreach ( $adverts as $advert ) {
+            
+            $attachments =& get_children(array('post_type'=>'attachment', 'post_mimi_type'=>'image', 'post_parent'=>$advert->ID));
+            
+            foreach ($attachments as $attachment) {
+            
+                $fullsizepath = get_attached_file( $attachment->ID );
+
+                if ( FALSE !== $fullsizepath && @file_exists($fullsizepath) ) {
+                    set_time_limit( 30 );
+
+                    $metadata = array();
+                    if ( preg_match('!^image/!', get_post_mime_type( $attachment )) && file_is_displayable_image($fullsizepath) ) {
+                            $imagesize = getimagesize( $fullsizepath );
+                            $metadata['width'] = $imagesize[0];
+                            $metadata['height'] = $imagesize[1];
+                            list($uwidth, $uheight) = wp_constrain_dimensions($metadata['width'], $metadata['height'], 128, 96);
+                            $metadata['hwstring_small'] = "height='$uheight' width='$uwidth'";
+
+                            // Make the file path relative to the upload dir
+                            $metadata['file'] = _wp_relative_upload_path($fullsizepath);
+
+                            $intermediate_size = image_make_intermediate_size( $fullsizepath, $term_meta['advert_width'], $term_meta['advert_height'], $term_meta['advert_crop'] );
+
+                            if ($intermediate_size)
+                                $metadata['sizes']['akp_'.$t_id] = $intermediate_size;
+
+                            // fetch additional metadata from exif/iptc
+                            $image_meta = wp_read_image_metadata( $fullsizepath );
+                            if ( $image_meta )
+                                    $metadata['image_meta'] = $image_meta;
+
+                    }
+                    wp_update_attachment_metadata( $attachment->ID, apply_filters( 'wp_generate_attachment_metadata', $metadata, $attachment->ID ) );
+                }
+            }
+        }
+        return;
+    }
+}
+add_action( 'edited_advert_types', 'akp_save_extra_advert_types_fields', 10, 2);
+
+function akp_image_sizes()
+{
+
+    if ( function_exists( 'add_image_size' ) ) { 
+        $sizes = get_option('akp_image_sizes');
+        if (!empty($sizes)) :
+            foreach ($sizes as $image_name => $dimensions) {
+                if ($dimensions['crop'] == '1') $crop = true; else $crop = false;
+                add_image_size( $image_name, $dimensions['width'], $dimensions['width'], $crop);
+            }
+        endif;
+    }
+}
+add_action( 'init', 'akp_image_sizes' );
+
 // Update title field to become URL field
 function akp_title_text_input( $title ){
     global $post;
     if($post->post_type == 'adverts_posts') 
-        return $title = 'Advert URL ie http://durham.net.au/wp-plugins/adkingpro';
+        return $title = 'Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro';
     return $title;
 }
 add_filter( 'enter_title_here', 'akp_title_text_input' );
@@ -62,10 +197,15 @@ add_filter( 'enter_title_here', 'akp_title_text_input' );
 function akp_change_meta_boxes()
 {
     add_meta_box('akpmediatype', __('Media Type'), 'akp_media_type', 'adverts_posts', 'normal', 'high');
+    
     remove_meta_box( 'postimagediv', 'adverts_posts', 'side' );
-    add_meta_box('postimagediv', __('Advert Image'), 'post_thumbnail_meta_box', 'adverts_posts', 'normal', 'high');
+    if (current_theme_supports('post-thumbnails'))
+        add_meta_box('postimagediv', __('Advert Image'), 'post_thumbnail_meta_box', 'adverts_posts', 'normal', 'high');
+    else 
+        add_meta_box('akpimagebox', __('Advert Image'), 'akp_image_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('akpflashbox', __('Advert Flash File'), 'akp_flash_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('akpadsensebox', __('Advert AdSense Code'), 'akp_adsense_box', 'adverts_posts', 'normal', 'high');
+    add_meta_box('akptextbox', __('Advert Text'), 'akp_text_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('postremoveurllink', __('Remove Link from Advert?'), 'akp_remove_url_link', 'adverts_posts', 'advanced', 'high');
     add_meta_box('postclickstatsdiv', __('Advert Stats'), 'akp_post_click_stats', 'adverts_posts', 'advanced', 'low');
     add_meta_box('revenuevaluesdiv', __('Advert Revenue'), 'akp_revenue_values', 'adverts_posts', 'side', 'low');
@@ -138,12 +278,24 @@ function akp_media_type($object, $box) {
     $media_type = (get_post_meta( $post->ID, 'akp_media_type', true )) ? get_post_meta( $post->ID, 'akp_media_type', true ) : 'image';
     $flash = ($media_type == 'flash') ? ' selected' : '';
     $adsense = ($media_type == 'adsense') ? ' selected' : '';
+    $text = ($media_type == 'text') ? ' selected' : '';
     
     echo "<select name='akp_media_type' id='akp_change_media_type'>";
     echo "<option value='image'>Image</option>";
     echo "<option value='flash'".$flash.">Flash</option>";
     echo "<option value='adsense'".$adsense.">AdSense</option>";
+    echo "<option value='text'".$text.">Text</option>";
     echo "</select>";
+}
+
+function akp_image_box($object, $box) {
+    global $post;
+    $image_url = (get_post_meta( $post->ID, 'akp_image_url', true )) ? get_post_meta( $post->ID, 'akp_image_url', true ) : '';
+    echo '<label for="akp_image_url">';
+    echo '<input id="akp_image_url" type="text" size="36" name="akp_image_url" value="'.$image_url.'" />';
+    echo '<input id="akp_image_url_button" class="button" type="button" value="Upload Image" />';
+    echo '<br />Enter a URL or upload an image (You are seeing this box as you have disabled "post-thumbnails" support.)';
+    echo '</label><br /><br />';
 }
 
 function akp_flash_box($object, $box) {
@@ -164,15 +316,22 @@ function akp_adsense_box($object, $box) {
     global $post;
     $adsense_code = (get_post_meta( $post->ID, 'akp_adsense_code', true )) ? get_post_meta( $post->ID, 'akp_adsense_code', true ) : '';
     echo '<label for="akp_adsense_code">Enter the Ad Unit Code given from your Google AdSense account</label>';
-    echo '<br /><textarea name="akp_adsense_code" style="width: 100%; height: 200px;s">'.$adsense_code.'</textarea><br />';
+    echo '<br /><textarea name="akp_adsense_code" style="width: 100%; height: 200px;">'.$adsense_code.'</textarea><br />';
     echo '<br /><strong>Please note that only impressions are tracked for these ads as the clicks are registers via AdSense</strong>';
+}
+
+function akp_text_box($object, $box) {
+    global $post;
+    $text = (get_post_meta( $post->ID, 'akp_text', true )) ? get_post_meta( $post->ID, 'akp_text', true ) : '';
+    echo '<label for="akp_text">Enter the text you would like on the link that will be tracked</label>';
+    echo '<br /><input type="text" name="akp_text" style="width: 100%;" value="'.$text.'" /><br />';
 }
 
 // Output stats for post
 function akp_post_click_stats($object, $box) {
     global $wpdb;
     $clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$object->ID'");
-    echo "This banner has had ".$clicks[0]->clicks." since being published. <a href='#'>View Detailed Report</a>";
+    echo "This banner has had ".$clicks[0]->clicks." since being published. <a href='".admin_url('/index.php?page=akp-detailed-stats')."'>View Detailed Report</a>";
 }
 
 // Add checkbox to remove URL Link off advert
@@ -222,10 +381,12 @@ function akp_save_custom_fields( ) {
             update_post_meta( $post->ID, 'akp_revenue_per_impression', $_POST['akp_revenue_per_impression'] );
             update_post_meta( $post->ID, 'akp_revenue_per_click', $_POST['akp_revenue_per_click'] );
             update_post_meta( $post->ID, 'akp_media_type', $_POST['akp_media_type'] );
+            update_post_meta( $post->ID, 'akp_image_url', $_POST['akp_image_url'] );
             update_post_meta( $post->ID, 'akp_flash_url', $_POST['akp_flash_url'] );
             update_post_meta( $post->ID, 'akp_flash_width', $_POST['akp_flash_width'] );
             update_post_meta( $post->ID, 'akp_flash_height', $_POST['akp_flash_height'] );
             update_post_meta( $post->ID, 'akp_adsense_code', $_POST['akp_adsense_code'] );
+            update_post_meta( $post->ID, 'akp_text', $_POST['akp_text'] );
             
 	}
 }
@@ -242,10 +403,12 @@ function akp_return_fields( $id = NULL ) {
         $output['akp_revenue_per_impression'] = (get_post_meta( $id, 'akp_revenue_per_impression' ) ? get_post_meta( $id, 'akp_revenue_per_impression' ) : array(''));
         $output['akp_revenue_per_click'] = (get_post_meta( $id, 'akp_revenue_per_click' ) ? get_post_meta( $id, 'akp_revenue_per_click' ) : array(''));
         $output['akp_media_type'] = (get_post_meta( $id, 'akp_media_type' ) ? get_post_meta( $id, 'akp_media_type' ) : array(''));
+        $output['akp_image_url'] = (get_post_meta( $id, 'akp_image_url' ) ? get_post_meta( $id, 'akp_image_url' ) : array(''));
         $output['akp_flash_url'] = (get_post_meta( $id, 'akp_flash_url' ) ? get_post_meta( $id, 'akp_flash_url' ) : array(''));
         $output['akp_flash_width'] = (get_post_meta( $id, 'akp_flash_width' ) ? get_post_meta( $id, 'akp_flash_width' ) : array(''));
         $output['akp_flash_height'] = (get_post_meta( $id, 'akp_flash_height' ) ? get_post_meta( $id, 'akp_flash_height' ) : array(''));
         $output['akp_adsense_code'] = (get_post_meta( $id, 'akp_adsense_code' ) ? get_post_meta( $id, 'akp_adsense_code' ) : array(''));
+        $output['akp_text'] = (get_post_meta( $id, 'akp_text' ) ? get_post_meta( $id, 'akp_text' ) : array(''));
         
         return $output;
 }
@@ -370,10 +533,10 @@ function akp_columns($column_name, $ID) {
 add_action('manage_adverts_posts_posts_custom_column', 'akp_columns', 10, 2); 
 
 // GET FEATURED IMAGE
-function akp_get_featured_image($post_ID) {
+function akp_get_featured_image($post_ID, $thumb = 'custom_thumbnail') {
     $post_thumbnail_id = get_post_thumbnail_id($post_ID);
     if ($post_thumbnail_id) {
-        $post_thumbnail_img = wp_get_attachment_image_src($post_thumbnail_id, 'custom_thumbnail');
+        $post_thumbnail_img = wp_get_attachment_image_src($post_thumbnail_id, $thumb);
         return $post_thumbnail_img[0];
     }
 }
@@ -542,15 +705,6 @@ function adkingpro_settings() {
 }
 add_action('admin_menu', 'adkingpro_settings');
 
-function register_akp_options() {
-  register_setting( 'akp-options', 'expiry_time' );
-  register_setting( 'akp-options', 'impression_expiry_time' );
-  register_setting( 'akp-options', 'week_start' );
-  register_setting( 'akp-options', 'revenue_currency' );
-  register_setting( 'akp-options', 'pdf_theme' );
-}
-add_action( 'admin_init', 'register_akp_options' );
-
 function akp_settings_output() {
 	?>
 <div class="wrap">
@@ -660,7 +814,10 @@ function akp_settings_output() {
         <p>Alternatively, you can display a single advert by entering its "Banner ID" which can be found in the table under the Adverts section:</p>
         <pre>[adkingpro banner="{banner_id}"]</pre>
         <p>To add this into a template, just use the "do_shortcode" function:</p>
-        <pre>&lt;?= do_shortcode("[adkingpro]"); ?&gt;</pre>
+        <pre>&lt;?php 
+    if (function_exists('adkingpro_func'))
+        do_shortcode("[adkingpro]");
+?&gt;</pre>
         <h3>Install PDF Themes</h3>
         <p>Download themes from <a href="http://durham.net.au/wordpress/plugins/ad-king-pro/" target="_blank">my plugin page</a>. Locate the themes folder in the adkingpro plugin folder, generally located:</p>
         <pre>/wp-content/plugins/adkingpro/themes/</pre>
@@ -683,6 +840,9 @@ function akp_settings_output() {
         &nbsp;&nbsp;&nbsp;&nbsp;e.preventDefault();
         &nbsp;&nbsp;&nbsp;&nbsp;// Your action here
         });</pre>
+        <h4>I get an error saying the PDF can't be saved due to write permissions on the server. What do I do?</h4>
+        <p>The plugin needs your permission to save the PDFs you generate to the output folder in the plugins folder. To do this, you are required to
+        update the outputs permissions to be writable. Please see <a href="http://codex.wordpress.org/Changing_File_Permissions" target="_blank">the wordpress help page</a> to carry this out.</p>
         <br />
         <h4>Found an issue? Please email your concern to <a href="mailto:contact@durham.net.au">contact@durham.net.au</a></h4>
     </div>
