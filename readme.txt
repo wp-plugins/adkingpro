@@ -4,7 +4,7 @@ Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes, flash, adsense, text, resize
 Requires at least: 3.0.1
 Tested up to: 3.5.2
-Stable tag: 1.7
+Stable tag: 1.7.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,9 @@ The plugin needs your permission to save the PDFs you generate to the output fol
 
 == Changelog ==
 
+= 1.7.1 =
+* Removal of left over echo in output
+
 = 1.7 =
 * Added option to set a size to an advert type, generating that image size from the images you upload.
 * Added support for lack of 'post-thumbnail' support
@@ -129,6 +132,9 @@ The plugin needs your permission to save the PDFs you generate to the output fol
 * Initial
 
 == Upgrade Notice ==
+
+= 1.7.1 =
+* Removal of left over echo in output
 
 = 1.7 =
 * Added option to set a size to an advert type, generating that image size from the images you upload.

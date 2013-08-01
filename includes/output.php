@@ -111,7 +111,6 @@ function adkingpro_func( $atts ) {
                 $post_id = get_the_ID();
                 $cfields = akp_return_fields();
                 if ($cfields['akp_media_type'][0] == '') $cfields['akp_media_type'][0] = 'image';
-                echo $cfields['akp_media_type'][0];
                 switch ($cfields['akp_media_type'][0]) {
                     case 'image':
                         $image = $cfields['akp_image_url'][0];
