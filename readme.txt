@@ -4,7 +4,7 @@ Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes, flash, adsense, text, resize
 Requires at least: 3.0.1
 Tested up to: 3.5.2
-Stable tag: 1.7.1
+Stable tag: 1.8
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,12 @@ The plugin needs your permission to save the PDFs you generate to the output fol
 
 == Changelog ==
 
+= 1.8 =
+* Fix to the reporting cost figures not rendering on the detailed summery page
+* Addition of functionality to render multiple adverts at 1 time
+* Addition of functionality to turn the multiple adverts output into a rotating banner
+* Addition of tracking data removal on edit screen of advert
+
 = 1.7.1 =
 * Removal of left over echo in output
 
@@ -132,6 +138,12 @@ The plugin needs your permission to save the PDFs you generate to the output fol
 * Initial
 
 == Upgrade Notice ==
+
+= 1.8 =
+* Fix to the reporting cost figures not rendering on the detailed summery page
+* Addition of functionality to render multiple adverts at 1 time
+* Addition of functionality to turn the multiple adverts output into a rotating banner
+* Addition of tracking data removal on edit screen of advert
 
 = 1.7.1 =
 * Removal of left over echo in output

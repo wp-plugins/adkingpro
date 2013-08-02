@@ -49,6 +49,10 @@ add_action( 'widgets_init', 'akp_widget_registration');
 // Add scripts to page
 function akp_my_scripts_method() {
     wp_enqueue_script( 'jquery' );
+    wp_enqueue_script( 
+        'jshowoff', 
+        plugins_url('js/jquery.jshowoff.js', dirname(__FILE__)),
+        array('jquery') );
     wp_enqueue_script(
         'adkingpro-js',
         plugins_url('js/adkingpro-functions.js', dirname(__FILE__)),
@@ -329,10 +333,51 @@ function akp_text_box($object, $box) {
 
 // Output stats for post
 function akp_post_click_stats($object, $box) {
-    global $wpdb;
+    global $wpdb, $post;
     $clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$object->ID'");
     echo "This banner has had ".$clicks[0]->clicks." since being published. <a href='".admin_url('/index.php?page=akp-detailed-stats')."'>View Detailed Report</a>";
+    echo '<br /><br /><a href="'.admin_url('admin.php?action=akpresetdata&post='.$post->ID).'" onclick="if(!confirm(\'Are you sure you want to reset the tracking data back to 0? There is no reversing this action.\')){return false;}">Reset Tracking Data</a>';
 }
+
+function akpresetdata_admin_action()
+{
+    global $wpdb;
+    $post_id = $_GET['post'];
+    
+    $wpdb->query( $wpdb->prepare( 
+            "DELETE FROM ".$wpdb->prefix."akp_impressions_expire
+             WHERE post_id = %d
+            ",
+            $post_id
+            )
+    );
+    $wpdb->query( $wpdb->prepare( 
+            "DELETE FROM ".$wpdb->prefix."akp_impressions_log
+            WHERE post_id = %d
+            ", 
+            $post_id
+            ) 
+    );
+    
+    $wpdb->query( $wpdb->prepare( 
+            "DELETE FROM ".$wpdb->prefix."akp_click_expire
+             WHERE post_id = %d
+            ",
+            $post_id
+            )
+    );
+    $wpdb->query( $wpdb->prepare( 
+            "DELETE FROM ".$wpdb->prefix."akp_click_log
+            WHERE post_id = %d
+            ", 
+            $post_id
+            )
+    );
+    
+    header("Location: ".$_SERVER['HTTP_REFERER']);
+    
+}
+add_action( 'admin_action_akpresetdata', 'akpresetdata_admin_action' );
 
 // Add checkbox to remove URL Link off advert
 function akp_remove_url_link($object, $box) {
@@ -805,6 +850,10 @@ function akp_settings_output() {
 </div>
 <div class="akp_faq_help">
     <div class="akp_faq">
+        <h2>Connect</h2>
+        <h3><a href="https://www.facebook.com/KingProPlugins" target="_blank">Follow on Facebook</a></h3>
+        <h3><a href="https://twitter.com/KingProPlugins" target="_blank">Follow on Twitter</a></h3>
+        <h4>Found an issue? Post your issue on the <a href="http://wordpress.org/support/plugin/adkingpro" target="_blank">support forums</a>. If you would prefer, please email your concern to <a href="mailto:plugins@kingpro.me">plugins@kingpro.me</a></h4>
         <h2>How To</h2>
         <h3>Use Shortcodes</h3>
         <p>Shortcodes can be used in any page or post on your site. By default:</p>
@@ -813,6 +862,21 @@ function akp_settings_output() {
         <pre>[adkingpro type="your-advert-type-slug"]</pre>
         <p>Alternatively, you can display a single advert by entering its "Banner ID" which can be found in the table under the Adverts section:</p>
         <pre>[adkingpro banner="{banner_id}"]</pre>
+        <p>Have a select few adverts that you'd like to show? No problem, just specify the ids separated by commas:</p>
+        <pre>[adkingpro banner="{banner_id1}, {banner_id2}"]</pre>
+        <p>Want to output a few adverts at once? Use the 'render' option in the shortcode:</p>
+        <pre>[adkingpro banner="{banner_id1}, {banner_id2}" render='2']</pre>
+        <pre>[adkingpro type="your-advert-type-slug" render='2']</pre>
+        <p>Only have a small space and what a few adverts to display? Turn on the auto rotating slideshow!:</p>
+        <pre>[adkingpro type="your-advert-type-slug" rotate='true']</pre>
+        <p>There are also some settings you can play with to get it just right:</p>
+        <ul>
+            <li>Effect: "fade | slideLeft | none" Default - fade</li>
+            <li>Pause Speed: "Time in ms" Default - 5000 (5s)</li>
+            <li>Change Speed: "Time in ms" Default - 600 (0.6s)</li>
+        </ul>
+        <p>Use one or all of these settings:</p>
+        <pre>[adkingpro rotate='true' effect="fade" speed="5000" changespeed="600"]</pre>
         <p>To add this into a template, just use the "do_shortcode" function:</p>
         <pre>&lt;?php 
     if (function_exists('adkingpro_func'))
@@ -844,7 +908,7 @@ function akp_settings_output() {
         <p>The plugin needs your permission to save the PDFs you generate to the output folder in the plugins folder. To do this, you are required to
         update the outputs permissions to be writable. Please see <a href="http://codex.wordpress.org/Changing_File_Permissions" target="_blank">the wordpress help page</a> to carry this out.</p>
         <br />
-        <h4>Found an issue? Please email your concern to <a href="mailto:contact@durham.net.au">contact@durham.net.au</a></h4>
+        <h4>Found an issue? Post your issue on the <a href="http://wordpress.org/support/plugin/adkingpro" target="_blank">support forums</a>. If you would prefer, please email your concern to <a href="mailto:plugins@kingpro.me">plugins@kingpro.me</a></h4>
     </div>
 </div>
 </div>
@@ -867,23 +931,24 @@ function akp_detailed_output() {
         $post_id = get_the_ID();
         $image = akp_get_featured_image($post_id);
         $dets = akp_return_fields($post_id);
+        
         // Get All Time Click Count
         $all_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$post_id'");
         $all_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE post_id = '$post_id'");
         
-        $all_impression_cost = $dets['akp_revenue_per_impression'][0];
-        $all_click_cost = $dets['akp_revenue_per_click'][0];
+        $all_impression_cost = (is_numeric($dets['akp_revenue_per_impression'][0])) ? $dets['akp_revenue_per_impression'][0] : '0.00';
+        $all_click_cost = (is_numeric($dets['akp_revenue_per_click'][0])) ? $dets['akp_revenue_per_click'][0] : '0.00';
         
-        $all_per_impression = $currency_sign.number_format((int) $all_impression_cost, 2);
+        $all_per_impression = $currency_sign.number_format($all_impression_cost, 2);
         $all_impression_total = $all_impression_cost * $all_impressions[0]->impressions;
         $all_impression_total_output = $currency_sign.number_format($all_impression_total, 2);
         
-        $all_per_click = $currency_sign.number_format((int) $all_click_cost, 2);
+        $all_per_click = $currency_sign.number_format($all_click_cost, 2);
         $all_click_total = $all_click_cost * $all_clicks[0]->clicks;
-        $all_click_total_output = $currency_sign.number_format((int) $all_click_total, 2);
+        $all_click_total_output = $currency_sign.number_format($all_click_total, 2);
         
         $all_total_made = $all_impression_total + $all_click_total;
-        $all_total_made_output = $currency_sign.number_format((int) $all_total_made, 2);
+        $all_total_made_output = $currency_sign.number_format($all_total_made, 2);
 
         // Get This Month Click Count
         $month_start = mktime(0, 0, 0, date('n', current_time('timestamp')), 1, date('Y', current_time('timestamp')));
@@ -891,19 +956,19 @@ function akp_detailed_output() {
         $month_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$month_start' AND '$month_end' AND post_id = '$post_id'");
         $month_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$month_start' AND '$month_end' AND post_id = '$post_id'");
         
-        $month_impression_cost = $dets['akp_revenue_per_impression'][0];
-        $month_click_cost = $dets['akp_revenue_per_click'][0];
+        $month_impression_cost = (is_numeric($dets['akp_revenue_per_impression'][0])) ? $dets['akp_revenue_per_impression'][0] : '0.00';
+        $month_click_cost = (is_numeric($dets['akp_revenue_per_click'][0])) ? $dets['akp_revenue_per_click'][0] : '0.00';
         
-        $month_per_impression = $currency_sign.number_format((int) $month_impression_cost, 2);
+        $month_per_impression = $currency_sign.number_format($month_impression_cost, 2);
         $month_impression_total = $month_impression_cost * $month_impressions[0]->impressions;
-        $month_impression_total_output = $currency_sign.number_format((int) $month_impression_total, 2);
+        $month_impression_total_output = $currency_sign.number_format($month_impression_total, 2);
         
-        $month_per_click = $currency_sign.number_format((int) $month_click_cost, 2);
+        $month_per_click = $currency_sign.number_format($month_click_cost, 2);
         $month_click_total = $month_click_cost * $month_clicks[0]->clicks;
-        $month_click_total_output = $currency_sign.number_format((int) $month_click_total, 2);
+        $month_click_total_output = $currency_sign.number_format($month_click_total, 2);
         
         $month_total_made = $month_impression_total + $month_click_total;
-        $month_total_made_output = $currency_sign.number_format((int) $month_total_made, 2);
+        $month_total_made_output = $currency_sign.number_format($month_total_made, 2);
 
         // Get This Week click count
         $start_week = get_option('week_starts');
@@ -921,19 +986,19 @@ function akp_detailed_output() {
         $week_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$week_start' AND '$week_end' AND post_id = '$post_id'");
         $week_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$week_start' AND '$week_end' AND post_id = '$post_id'");
 
-        $week_impression_cost = $dets['akp_revenue_per_impression'][0];
-        $week_click_cost = $dets['akp_revenue_per_click'][0];
+        $week_impression_cost = (is_numeric($dets['akp_revenue_per_impression'][0])) ? $dets['akp_revenue_per_impression'][0] : '0.00';
+        $week_click_cost = (is_numeric($dets['akp_revenue_per_click'][0])) ? $dets['akp_revenue_per_click'][0] : '0.00';
         
-        $week_per_impression = $currency_sign.number_format((int) $week_impression_cost, 2);
+        $week_per_impression = $currency_sign.number_format($week_impression_cost, 2);
         $week_impression_total = $week_impression_cost * $week_impressions[0]->impressions;
-        $week_impression_total_output = $currency_sign.number_format((int) $week_impression_total, 2);
+        $week_impression_total_output = $currency_sign.number_format($week_impression_total, 2);
         
-        $week_per_click = $currency_sign.number_format((int) $week_click_cost, 2);
+        $week_per_click = $currency_sign.number_format($week_click_cost, 2);
         $week_click_total = $week_click_cost * $week_clicks[0]->clicks;
-        $week_click_total_output = $currency_sign.number_format((int) $week_click_total, 2);
+        $week_click_total_output = $currency_sign.number_format($week_click_total, 2);
         
         $week_total_made = $week_impression_total + $week_click_total;
-        $week_total_made_output = $currency_sign.number_format((int) $week_total_made, 2);
+        $week_total_made_output = $currency_sign.number_format($week_total_made, 2);
         
         // Get Today Click count
         $today_start = mktime(0, 0, 0, date('n', current_time('timestamp')), date('j', current_time('timestamp')), date('Y', current_time('timestamp')));
@@ -941,19 +1006,19 @@ function akp_detailed_output() {
         $today_clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE timestamp BETWEEN '$today_start' AND '$today_end' AND post_id = '$post_id'");
         $today_impressions = $wpdb->get_results("SELECT COUNT(*) as impressions FROM ".$wpdb->prefix."akp_impressions_log WHERE timestamp BETWEEN '$today_start' AND '$today_end' AND post_id = '$post_id'");
         
-        $today_impression_cost = $dets['akp_revenue_per_impression'][0];
-        $today_click_cost = $dets['akp_revenue_per_click'][0];
+        $today_impression_cost = (is_numeric($dets['akp_revenue_per_impression'][0])) ? $dets['akp_revenue_per_impression'][0] : '0.00';
+        $today_click_cost = (is_numeric($dets['akp_revenue_per_click'][0])) ? $dets['akp_revenue_per_click'][0] : '0.00';
         
-        $today_per_impression = $currency_sign.number_format((int) $today_impression_cost, 2);
+        $today_per_impression = $currency_sign.number_format($today_impression_cost, 2);
         $today_impression_total = $today_impression_cost * $today_impressions[0]->impressions;
-        $today_impression_total_output = $currency_sign.number_format((int) $today_impression_total, 2);
+        $today_impression_total_output = $currency_sign.number_format($today_impression_total, 2);
         
-        $today_per_click = $currency_sign.number_format((int) $today_click_cost, 2);
+        $today_per_click = $currency_sign.number_format($today_click_cost, 2);
         $today_click_total = $today_click_cost * $today_clicks[0]->clicks;
-        $today_click_total_output = $currency_sign.number_format((int) $today_click_total, 2);
+        $today_click_total_output = $currency_sign.number_format($today_click_total, 2);
         
         $today_total_made = $today_impression_total + $today_click_total;
-        $today_total_made_output = $currency_sign.number_format((int) $today_total_made, 2);
+        $today_total_made_output = $currency_sign.number_format($today_total_made, 2);
         
         // Initilize Detail log
         $all_clicks_detailed = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$post_id' ORDER BY timestamp DESC");
