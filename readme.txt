@@ -1,9 +1,9 @@
 === Ad King Pro ===
 Contributors: ashdurham
 Donate link: http://durham.net.au/donate/
-Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes, flash, adsense, text, resize
+Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes, flash, adsense, text, resize, rotate, slideshow, multiple
 Requires at least: 3.0.1
-Tested up to: 3.5.2
+Tested up to: 3.6
 Stable tag: 1.8
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -21,7 +21,8 @@ Stay up-to-date with the latest by following [@kingproplugins on Twitter](http:/
 Ad King Pro allows you to easily manage, track and report on your on-site advertising. Upload your banner/flash banner/adsense code/text, add the link its to go to then 
 your ready to go. Set it to start and end at a certain time if needed. Ad King Pro can be placed into any page or post by using the shortcode. It can also be placed directly into 
 theme files if need be. Create types and assign multiple banners to randomly show one on every page refresh, define a category to display in
-a specific spot or even define a particular ad to display.
+a specific spot, even define a particular ad to display. Want to show multiple on a single page, no problem, change the 'render' attribute to
+the amount you are after. Want those to then rotate on the spot? Got you covered. Turn the 'rotate' attribute to 'true' and your ads will fade between each other.
 
 All clicks on your Ad King Pro banners are logged by IP address for a set time, modifiable within the settings page, 
 to give a true reading of the click rate you are receiving.
@@ -74,6 +75,32 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 = I get an error saying the PDF can't be saved due to write permissions on the server. What do I do? =
 
 The plugin needs your permission to save the PDFs you generate to the output folder in the plugins folder. To do this, you are required to update the outputs permissions to be writable. Please see [the wordpress help page](http://codex.wordpress.org/Changing_File_Permissions) to carry this out
+
+== How To Use ==
+
+= Use Shortcodes =
+Shortcodes can be used in any page or post on your site. By default:
+`[adkingpro]`
+is defaulting to the advert type 'Sidebar' and randomly chosing from that. You can define your own advert type and display the adverts attached to that type by:
+`[adkingpro type="your-advert-type-slug"]`
+Alternatively, you can display a single advert by entering its "Banner ID" which can be found in the table under the Adverts section:
+`[adkingpro banner="{banner_id}"]`
+Have a select few adverts that you'd like to show? No problem, just specify the ids separated by commas:
+`[adkingpro banner="{banner_id1}, {banner_id2}"]`
+Want to output a few adverts at once? Use the 'render' option in the shortcode:
+`[adkingpro banner="{banner_id1}, {banner_id2}" render='2']`
+`[adkingpro type="your-advert-type-slug" render='2']`
+Only have a small space and what a few adverts to display? Turn on the auto rotating slideshow!:
+`[adkingpro type="your-advert-type-slug" rotate='true']`
+There are also some settings you can play with to get it just right:
+- Effect: "fade | slideLeft | none" Default - fade
+- Pause Speed: "Time in ms" Default - 5000 (5s)
+- Change Speed: "Time in ms" Default - 600 (0.6s)
+
+Use one or all of these settings:
+`[adkingpro rotate='true' effect="fade" speed="5000" changespeed="600"]`
+To add this into a template, just use the "do_shortcode" function:
+`&lt;?php if (function_exists('adkingpro_func')) do_shortcode("[adkingpro]"); ?&gt;`
 
 == Screenshots ==
 
