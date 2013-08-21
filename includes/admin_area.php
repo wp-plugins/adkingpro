@@ -40,6 +40,21 @@ function akp_create_post_type() {
 }
 add_action( 'init', 'akp_create_post_type' );
 
+// Styling for the custom post type icon
+function wpt_akp_icons() {
+    ?>
+    <style type="text/css" media="screen">
+        #menu-posts-adverts_posts .wp-menu-image {
+            background: url(<?= plugins_url('/images/akp-icon_16x16_sat.png', dirname(__FILE__)) ?>) no-repeat center center !important;
+        }
+	#menu-posts-adverts_posts:hover .wp-menu-image, #menu-posts-adverts_posts.wp-has-current-submenu .wp-menu-image {
+            background: url(<?= plugins_url('/images/akp-icon_16x16.png', dirname(__FILE__)) ?>) no-repeat center center !important;
+        }
+	#icon-edit.icon32-posts-adverts_posts {background: url(<?= plugins_url('/images/akp-icon_32x32_sat.png', dirname(__FILE__)) ?>) no-repeat;}
+    </style>
+<?php }
+add_action( 'admin_head', 'wpt_akp_icons' );
+
 function akp_widget_registration() {
     register_widget( 'AdKingPro_Widget' );
 }

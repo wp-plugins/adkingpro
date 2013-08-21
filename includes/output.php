@@ -56,7 +56,7 @@ function adkingpro_func( $atts ) {
                 )
                 ));
             
-            if ($render > 1) {
+            if ($render > 1 || $render === -1) {
                 $slideshow = "";
                 if ($rotate) $slideshow = "akp_slideshow".rand(10000, 99999);
                 $output .= "<div class='adkingprocontainer' id='".$slideshow."'>";
@@ -112,7 +112,7 @@ function adkingpro_func( $atts ) {
                 if (isset($post_id))
                     akp_log_impression($post_id);
             endwhile;
-            if ($render > 1) {
+            if ($render > 1 || $render === -1) {
                 $output .= "</div>";
                 if ($rotate) {
                     $output .= "<script type='text/javascript'>jQuery('#".$slideshow."').jshowoff({ speed:".$speed.", changeSpeed:".$changespeed.", effect: '".$effect."', links: false, controls: false });</script>";
