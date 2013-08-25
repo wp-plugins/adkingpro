@@ -1,14 +1,14 @@
 <?php
 /*
     Plugin Name: Ad King Pro
-    Plugin URI: http://durham.net.au/wordpress/plugins/ad-king-pro/
+    Plugin URI: http://kingpro.me/plugins/ad-king-pro/
     Description: Ad King Pro allows you to manage, display, document and report all of your custom advertising on your wordpress site.
-    Version: 1.8.1
+    Version: 1.8.2
     Author: Ash Durham
     Author URI: http://durham.net.au/
     License: GPL2
 
-    Copyright 2013  Ash Durham  (email : contact@durham.net.au)
+    Copyright 2013  Ash Durham  (email : plugins@kingpro.me)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -27,7 +27,7 @@
     // INSTALL
 
     global $akp_db_version;
-    $akp_db_version = "1.8.1";
+    $akp_db_version = "1.8.2";
 
     function akp_install() {
        global $wpdb;
@@ -73,12 +73,6 @@
         VALUES ('Sidebar', 'sidebar', '0')";
        dbDelta($sql);
        
-       $table_name = $wpdb->prefix . "terms";
-       $sql = "INSERT INTO $table_name 
-        (`name`, `slug`, `term_group`)
-        VALUES ('Sidebar', 'sidebar', '0')";
-       dbDelta($sql);
-       
        $term_id = mysql_insert_id();
        $table_name = $wpdb->prefix . "term_taxonomy";
        $sql = "INSERT INTO $table_name 
@@ -86,7 +80,7 @@
         VALUES ('".$term_id."', 'advert_types', '', '0', '0')";
        dbDelta($sql);
 
-       add_option("apk_db_version", $apk_db_version);
+       add_option("apk_db_version", $akp_db_version);
     }
     
     // Register hooks at activation

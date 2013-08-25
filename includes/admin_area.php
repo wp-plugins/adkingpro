@@ -207,7 +207,7 @@ add_action( 'init', 'akp_image_sizes' );
 function akp_title_text_input( $title ){
     global $post;
     if($post->post_type == 'adverts_posts') 
-        return $title = 'Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro';
+        return $title = 'Advert URL ie http://kingpro.me/plugins/ad-king-pro';
     return $title;
 }
 add_filter( 'enter_title_here', 'akp_title_text_input' );
@@ -441,7 +441,8 @@ function akp_save_custom_fields( ) {
             update_post_meta( $post->ID, 'akp_revenue_per_impression', $_POST['akp_revenue_per_impression'] );
             update_post_meta( $post->ID, 'akp_revenue_per_click', $_POST['akp_revenue_per_click'] );
             update_post_meta( $post->ID, 'akp_media_type', $_POST['akp_media_type'] );
-            update_post_meta( $post->ID, 'akp_image_url', $_POST['akp_image_url'] );
+            if (isset($_POST['akp_image_url']))
+                update_post_meta( $post->ID, 'akp_image_url', $_POST['akp_image_url'] );
             update_post_meta( $post->ID, 'akp_flash_url', $_POST['akp_flash_url'] );
             update_post_meta( $post->ID, 'akp_flash_width', $_POST['akp_flash_width'] );
             update_post_meta( $post->ID, 'akp_flash_height', $_POST['akp_flash_height'] );
@@ -857,7 +858,7 @@ function akp_settings_output() {
                 ?>
             </select>
         </td>
-        <td>* More themes can be downloaded from <a href="http://durham.net.au/wordpress/plugins/ad-king-pro/" target="_blank">my website</a></td>
+        <td>* More themes can be downloaded from the <a href="http://kingpro.me/plugins/ad-king-pro/themes/" target="_blank">KIng Pro Plugins website</a></td>
         </tr>
     </table>
 <?php submit_button(); ?>
@@ -868,6 +869,7 @@ function akp_settings_output() {
         <h2>Connect</h2>
         <h3><a href="https://www.facebook.com/KingProPlugins" target="_blank">Follow on Facebook</a></h3>
         <h3><a href="https://twitter.com/KingProPlugins" target="_blank">Follow on Twitter</a></h3>
+        <h3><a href="https://plus.google.com/b/101488033905569308183/101488033905569308183/about" target="_blank">Follow on Google+</a></h3>
         <h4>Found an issue? Post your issue on the <a href="http://wordpress.org/support/plugin/adkingpro" target="_blank">support forums</a>. If you would prefer, please email your concern to <a href="mailto:plugins@kingpro.me">plugins@kingpro.me</a></h4>
         <h2>How To</h2>
         <h3>Use Shortcodes</h3>
@@ -898,7 +900,7 @@ function akp_settings_output() {
         do_shortcode("[adkingpro]");
 ?&gt;</pre>
         <h3>Install PDF Themes</h3>
-        <p>Download themes from <a href="http://durham.net.au/wordpress/plugins/ad-king-pro/" target="_blank">my plugin page</a>. Locate the themes folder in the adkingpro plugin folder, generally located:</p>
+        <p>Download themes from the <a href="http://kingpro.me/plugins/ad-king-pro/themes/" target="_blank">King Pro Plugins page</a>. Locate the themes folder in the adkingpro plugin folder, generally located:</p>
         <pre>/wp-content/plugins/adkingpro/themes/</pre>
         <p>Unzip the downloaded zip file and upload the entire folder into the themes folder mentioned above.</p>
         <p>Once uploaded, return to this page and your theme will be present in the PDF Theme dropdown to the left. Choose the theme and save the options. Next time you generate a report, the theme you have chosen will be used.</p>

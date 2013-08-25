@@ -14,29 +14,29 @@ Ad King Pro allows you to easily manage, track and report on your on-site advert
 
 --
 
-Stay up-to-date with the latest by following [@kingproplugins on Twitter](http://twitter.com/kingproplugins) or [KingProPlugins on Facebook](http://facebook.com/kingproplugins)
+Stay up-to-date with the latest by following [@kingproplugins on Twitter](http://twitter.com/kingproplugins), [KingProPlugins on Facebook](http://facebook.com/kingproplugins) or [King Pro Plugins on Google+](https://plus.google.com/b/101488033905569308183/101488033905569308183/about)
 
 --
 
-Ad King Pro allows you to easily manage, track and report on your on-site advertising. Upload your banner/flash banner/adsense code/text, add the link its to go to then 
+[Ad King Pro](http://kingpro.me/plugins/ad-king-pro/) allows you to easily manage, track and report on your on-site advertising. Upload your banner/flash banner/adsense code/text, add the link its to go to then 
 your ready to go. Set it to start and end at a certain time if needed. Ad King Pro can be placed into any page or post by using the shortcode. It can also be placed directly into 
 theme files if need be. Create types and assign multiple banners to randomly show one on every page refresh, define a category to display in
 a specific spot, even define a particular ad to display. Want to show multiple on a single page, no problem, change the 'render' attribute to
 the amount you are after. Want those to then rotate on the spot? Got you covered. Turn the 'rotate' attribute to 'true' and your ads will fade between each other.
 
-All clicks on your Ad King Pro banners are logged by IP address for a set time, modifiable within the settings page, 
+All clicks on your [Ad King Pro](http://kingpro.me/plugins/ad-king-pro/) banners are logged by IP address for a set time, modifiable within the settings page, 
 to give a true reading of the click rate you are receiving.
 
-Reports of clicks per banner are given on the dashboard, and in detail on the Ad King Pro dashboard page. Stats are given daily, weekly, monthly and all time. The day the week
+Reports of clicks per banner are given on the dashboard, and in detail on the [Ad King Pro](http://kingpro.me/plugins/ad-king-pro/) dashboard page. Stats are given daily, weekly, monthly and all time. The day the week
 starts for you is also modifiable within the settings section. Giving your advertisers a detailed view of the clicks they received on your site 
-is important, so with Ad King Pro, you can export a banners stats in either CSV or PDF format.
+is important, so with [Ad King Pro](http://kingpro.me/plugins/ad-king-pro/), you can export a banners stats in either CSV or PDF format.
 
 Assign adverts an impression and click price. The details section and PDF will then calculate and display how much you have earnt from 
 your advertising. Revenue made from advertising is what it is there for, give detailed reports of your advertisers banners with an outline of how 
 much you are owed.
 
 Choose how your PDF reports look by choosing a PDF theme from the settings. The amount of themes are a bit light on at the moment, but please
-feel free to contact me if you would like to implement your own custom branded design. Visit [my website](http://durham.net.au/wordpress/plugins/ad-king-pro/) to
+feel free to contact me if you would like to implement your own custom branded design. Visit the [King Pro Plugins website](http://kingpro.me/plugins/ad-king-pro/themes/) to
 make a request for development (and design if required).
 
 --
@@ -58,6 +58,12 @@ Check out my newly released plugin, [Invoice King Pro](http://wordpress.org/plug
 4. Create your first advert within the 'Advert' section of the admin (Make sure you assign it to a type)
 5. Within the WYSIWYG editor, place the short code '[adkingpro]' or within the code, &lt;?php if (function_exists('adkingpro_func')) echo do_shortcode('[adkingpro']); ?&gt;
 
+--
+
+Having Trouble? Get support either on the support forums here or at [@kingproplugins on Twitter](http://twitter.com/kingproplugins), [KingProPlugins on Facebook](http://facebook.com/kingproplugins) or [King Pro Plugins on Google+](https://plus.google.com/b/101488033905569308183/101488033905569308183/about)
+
+--
+
 == Frequently Asked Questions ==
 
 = After activating this plugin, my site has broken! Why? =
@@ -75,6 +81,12 @@ Be sure that you have assigned your advert to an "Advert Type". One called sideb
 = I get an error saying the PDF can't be saved due to write permissions on the server. What do I do? =
 
 The plugin needs your permission to save the PDFs you generate to the output folder in the plugins folder. To do this, you are required to update the outputs permissions to be writable. Please see [the wordpress help page](http://codex.wordpress.org/Changing_File_Permissions) to carry this out
+
+--
+
+Have a question thats not listed? Get support either on the support forums here or at [@kingproplugins on Twitter](http://twitter.com/kingproplugins), [KingProPlugins on Facebook](http://facebook.com/kingproplugins) or [King Pro Plugins on Google+](https://plus.google.com/b/101488033905569308183/101488033905569308183/about)
+
+--
 
 == How To Use ==
 
@@ -102,6 +114,12 @@ Use one or all of these settings:
 To add this into a template, just use the "do_shortcode" function:
 `&lt;?php if (function_exists('adkingpro_func')) do_shortcode("[adkingpro]"); ?&gt;`
 
+--
+
+Having Trouble? Get support either on the support forums here or at [@kingproplugins on Twitter](http://twitter.com/kingproplugins), [KingProPlugins on Facebook](http://facebook.com/kingproplugins) or [King Pro Plugins on Google+](https://plus.google.com/b/101488033905569308183/101488033905569308183/about)
+
+--
+
 == Screenshots ==
 
 1. Wordpress Dashboard with AdKingPro activated
@@ -111,6 +129,10 @@ To add this into a template, just use the "do_shortcode" function:
 5. AdKingPro settings and FAQ/Help
 
 == Changelog ==
+
+= 1.8.2 =
+* Small fix to install/update code
+* Update to links to point to new website
 
 = 1.8.1 =
 * Fix to shortcode output when not specifiying a render value
@@ -169,6 +191,10 @@ To add this into a template, just use the "do_shortcode" function:
 * Initial
 
 == Upgrade Notice ==
+
+= 1.8.2 =
+* Small fix to install/update code
+* Update to links to point to new website
 
 = 1.8.1 =
 * Fix to shortcode output when not specifiying a render value
