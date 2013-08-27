@@ -3,7 +3,7 @@
     Plugin Name: Ad King Pro
     Plugin URI: http://kingpro.me/plugins/ad-king-pro/
     Description: Ad King Pro allows you to manage, display, document and report all of your custom advertising on your wordpress site.
-    Version: 1.8.2
+    Version: 1.9.0
     Author: Ash Durham
     Author URI: http://durham.net.au/
     License: GPL2
@@ -27,7 +27,7 @@
     // INSTALL
 
     global $akp_db_version;
-    $akp_db_version = "1.8.2";
+    $akp_db_version = "1.9.0";
 
     function akp_install() {
        global $wpdb;
@@ -35,37 +35,7 @@
 
        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
        
-       $table_name = $wpdb->prefix . "akp_impressions_log";
-       $sql = "CREATE TABLE IF NOT EXISTS $table_name (
-            `post_id` int(11) NOT NULL,
-            `ip_address` varchar(20) NOT NULL,
-            `timestamp` int(11) NOT NULL
-          );";
-       dbDelta($sql);
-       
-       $table_name = $wpdb->prefix . "akp_impressions_expire";
-       $sql = "CREATE TABLE IF NOT EXISTS $table_name (
-            `post_id` int(11) NOT NULL,
-            `ip_address` varchar(20) NOT NULL,
-            `expire` int(11) NOT NULL
-          );";
-       dbDelta($sql);
-       
-       $table_name = $wpdb->prefix . "akp_click_log";
-       $sql = "CREATE TABLE IF NOT EXISTS $table_name (
-            `post_id` int(11) NOT NULL,
-            `ip_address` varchar(20) NOT NULL,
-            `timestamp` int(11) NOT NULL
-          );";
-       dbDelta($sql);
-       
-       $table_name = $wpdb->prefix . "akp_click_expire";
-       $sql = "CREATE TABLE IF NOT EXISTS $table_name (
-            `post_id` int(11) NOT NULL,
-            `ip_address` varchar(20) NOT NULL,
-            `expire` int(11) NOT NULL
-          );";
-       dbDelta($sql);
+       akp_check_db_tables();
        
        $table_name = $wpdb->prefix . "terms";
        $sql = "INSERT INTO $table_name 
@@ -93,6 +63,15 @@
         
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         
+        akp_check_db_tables();
+
+        // Then update the version value
+        update_option("apk_db_version", $akp_db_version);
+    }
+    
+    function akp_check_db_tables() {
+        global $wpdb;
+        
         $table_name = $wpdb->prefix . "akp_impressions_log";
         $sql = "CREATE TABLE IF NOT EXISTS $table_name (
              `post_id` int(11) NOT NULL,
@@ -109,8 +88,21 @@
            );";
         dbDelta($sql);
 
-        // Then update the version value
-        update_option("apk_db_version", $akp_db_version);
+        $table_name = $wpdb->prefix . "akp_click_log";
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+             `post_id` int(11) NOT NULL,
+             `ip_address` varchar(20) NOT NULL,
+             `timestamp` int(11) NOT NULL
+           );";
+        dbDelta($sql);
+
+        $table_name = $wpdb->prefix . "akp_click_expire";
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+             `post_id` int(11) NOT NULL,
+             `ip_address` varchar(20) NOT NULL,
+             `expire` int(11) NOT NULL
+           );";
+        dbDelta($sql);
     }
     
     function akp_settings_link($action_links,$plugin_file){

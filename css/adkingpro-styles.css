@@ -4,6 +4,13 @@
     Author     : Ash Durham
 */
 
+/**** Adverts table ****/
+
+.wp-list-table td.advert_image img {
+    width: 100% !important;
+    max-width: 200px;
+}
+
 /**** Edit Screen Styling ****/
 
 .curtime #expiry {

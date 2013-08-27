@@ -4,7 +4,7 @@ Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes, flash, adsense, text, resize, rotate, slideshow, multiple
 Requires at least: 3.0.1
 Tested up to: 3.6
-Stable tag: 1.8.2
+Stable tag: 1.9.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,7 +47,7 @@ Any issues you are having, I'd also love to know, so again, please let me know u
 
 --
 
-Check out my newly released plugin, [Invoice King Pro](http://wordpress.org/plugins/invoice-king-pro/)
+[Check out the King Pro Plugins range](http://kingpro.me/)
 
 
 == Installation ==
@@ -130,6 +130,10 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 
 == Changelog ==
 
+= 1.9.0 =
+* Fixed up some CSS in the admin
+* Added field to add an alt tag to the image advert output
+
 = 1.8.2 =
 * Small fix to install/update code
 * Update to links to point to new website
@@ -191,6 +195,10 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 * Initial
 
 == Upgrade Notice ==
+
+= 1.9.0 =
+* Fixed up some CSS in the admin
+* Added field to add an alt tag to the image advert output
 
 = 1.8.2 =
 * Small fix to install/update code

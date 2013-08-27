@@ -72,6 +72,7 @@ function adkingpro_func( $atts ) {
                 switch ($cfields['akp_media_type'][0]) {
                     case 'image':
                         $image = $cfields['akp_image_url'][0];
+                        $alt = $cfields['akp_image_alt'][0];
                         if ($image == '')
                             $image = akp_get_featured_image($post_id, "akp_".$term->term_id);
                         $display_link = true;
@@ -79,7 +80,7 @@ function adkingpro_func( $atts ) {
                         $output .= "<div class='adkingprobanner ".$type." akpbanner banner".$post_id."' style='width: ".$term_meta['advert_width']."px; height: ".$term_meta['advert_height']."px;'>";
                         if ($display_link)
                             $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."'>";
-                        $output .= "<img src='".$image."' style='max-width: ".$term_meta['advert_width']."px; max-height: ".$term_meta['advert_height']."px;' />";
+                        $output .= "<img src='".$image."' style='max-width: ".$term_meta['advert_width']."px; max-height: ".$term_meta['advert_height']."px;' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
                         $output .= "</div>";
@@ -163,6 +164,7 @@ function adkingpro_func( $atts ) {
                 switch ($cfields['akp_media_type'][0]) {
                     case 'image':
                         $image = $cfields['akp_image_url'][0];
+                        $alt = $cfields['akp_image_alt'][0];
                         if ($image == '')
                             $image = akp_get_featured_image($post_id);
                         $display_link = true;
@@ -170,7 +172,7 @@ function adkingpro_func( $atts ) {
                         $output .= "<div class='adkingprobanner ".$type." akpbanner banner".$post_id."'>";
                         if ($display_link)
                             $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."'>";
-                        $output .= "<img src='".$image."' />";
+                        $output .= "<img src='".$image."' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
                         $output .= "</div>";
@@ -242,6 +244,7 @@ function adkingpro_func( $atts ) {
                 switch ($cfields['akp_media_type'][0]) {
                     case 'image':
                         $image = $cfields['akp_image_url'][0];
+                        $alt = $cfields['akp_image_alt'][0];
                         if ($image == '')
                             $image = akp_get_featured_image($post_id);
                         $display_link = true;
@@ -249,7 +252,7 @@ function adkingpro_func( $atts ) {
                         $output .= "<div class='adkingprobanner ".$type." banner".$post_id."'>";
                         if ($display_link)
                             $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."'>";
-                        $output .= "<img src='".$image."' />";
+                        $output .= "<img src='".$image."' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
                         $output .= "</div>";

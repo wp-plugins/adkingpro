@@ -218,9 +218,10 @@ function akp_change_meta_boxes()
     add_meta_box('akpmediatype', __('Media Type'), 'akp_media_type', 'adverts_posts', 'normal', 'high');
     
     remove_meta_box( 'postimagediv', 'adverts_posts', 'side' );
-    if (current_theme_supports('post-thumbnails'))
+    if (current_theme_supports('post-thumbnails')) {
         add_meta_box('postimagediv', __('Advert Image'), 'post_thumbnail_meta_box', 'adverts_posts', 'normal', 'high');
-    else 
+        add_meta_box('akpimageattrbox', __('Advert Image Attributes'), 'akp_image_attrs_box', 'adverts_posts', 'normal', 'high');
+    } else 
         add_meta_box('akpimagebox', __('Advert Image'), 'akp_image_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('akpflashbox', __('Advert Flash File'), 'akp_flash_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('akpadsensebox', __('Advert AdSense Code'), 'akp_adsense_box', 'adverts_posts', 'normal', 'high');
@@ -310,11 +311,23 @@ function akp_media_type($object, $box) {
 function akp_image_box($object, $box) {
     global $post;
     $image_url = (get_post_meta( $post->ID, 'akp_image_url', true )) ? get_post_meta( $post->ID, 'akp_image_url', true ) : '';
+    $image_alt = (get_post_meta( $post->ID, 'akp_image_alt', true )) ? get_post_meta( $post->ID, 'akp_image_alt', true ) : '';
     echo '<label for="akp_image_url">';
     echo '<input id="akp_image_url" type="text" size="36" name="akp_image_url" value="'.$image_url.'" />';
     echo '<input id="akp_image_url_button" class="button" type="button" value="Upload Image" />';
     echo '<br />Enter a URL or upload an image (You are seeing this box as you have disabled "post-thumbnails" support.)';
     echo '</label><br /><br />';
+    echo '<label for="akp_image_alt">Banner description (this will be added to the alt tag on the image)</label>';
+    echo '<br /><input id="akp_image_alt" type="text" size="36" name="akp_image_alt" value="'.$image_alt.'" />';
+    echo '<br /><br />';
+}
+
+function akp_image_attrs_box($object, $box) {
+    global $post;
+    $image_alt = (get_post_meta( $post->ID, 'akp_image_alt', true )) ? get_post_meta( $post->ID, 'akp_image_alt', true ) : '';
+    echo '<label for="akp_image_alt">Banner description (this will be added to the alt tag on the image)</label>';
+    echo '<br /><input id="akp_image_alt" type="text" style="width: 100%;" name="akp_image_alt" value="'.$image_alt.'" />';
+    echo '<br /><br />';
 }
 
 function akp_flash_box($object, $box) {
@@ -443,6 +456,7 @@ function akp_save_custom_fields( ) {
             update_post_meta( $post->ID, 'akp_media_type', $_POST['akp_media_type'] );
             if (isset($_POST['akp_image_url']))
                 update_post_meta( $post->ID, 'akp_image_url', $_POST['akp_image_url'] );
+            update_post_meta( $post->ID, 'akp_image_alt', $_POST['akp_image_alt'] );
             update_post_meta( $post->ID, 'akp_flash_url', $_POST['akp_flash_url'] );
             update_post_meta( $post->ID, 'akp_flash_width', $_POST['akp_flash_width'] );
             update_post_meta( $post->ID, 'akp_flash_height', $_POST['akp_flash_height'] );
@@ -465,6 +479,7 @@ function akp_return_fields( $id = NULL ) {
         $output['akp_revenue_per_click'] = (get_post_meta( $id, 'akp_revenue_per_click' ) ? get_post_meta( $id, 'akp_revenue_per_click' ) : array(''));
         $output['akp_media_type'] = (get_post_meta( $id, 'akp_media_type' ) ? get_post_meta( $id, 'akp_media_type' ) : array(''));
         $output['akp_image_url'] = (get_post_meta( $id, 'akp_image_url' ) ? get_post_meta( $id, 'akp_image_url' ) : array(''));
+        $output['akp_image_alt'] = (get_post_meta( $id, 'akp_image_alt' ) ? get_post_meta( $id, 'akp_image_alt' ) : array(''));
         $output['akp_flash_url'] = (get_post_meta( $id, 'akp_flash_url' ) ? get_post_meta( $id, 'akp_flash_url' ) : array(''));
         $output['akp_flash_width'] = (get_post_meta( $id, 'akp_flash_width' ) ? get_post_meta( $id, 'akp_flash_width' ) : array(''));
         $output['akp_flash_height'] = (get_post_meta( $id, 'akp_flash_height' ) ? get_post_meta( $id, 'akp_flash_height' ) : array(''));
