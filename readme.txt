@@ -112,7 +112,7 @@ There are also some settings you can play with to get it just right:
 Use one or all of these settings:
 `[adkingpro rotate='true' effect="fade" speed="5000" changespeed="600"]`
 To add this into a template, just use the "do_shortcode" function:
-`&lt;?php if (function_exists('adkingpro_func')) do_shortcode("[adkingpro]"); ?&gt;`
+`&lt;?php if (function_exists('adkingpro_func')) echo do_shortcode("[adkingpro]"); ?&gt;`
 
 --
 
