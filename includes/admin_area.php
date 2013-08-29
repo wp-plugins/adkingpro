@@ -912,7 +912,7 @@ function akp_settings_output() {
         <p>To add this into a template, just use the "do_shortcode" function:</p>
         <pre>&lt;?php 
     if (function_exists('adkingpro_func'))
-        do_shortcode("[adkingpro]");
+        echo do_shortcode("[adkingpro]");
 ?&gt;</pre>
         <h3>Install PDF Themes</h3>
         <p>Download themes from the <a href="http://kingpro.me/plugins/ad-king-pro/themes/" target="_blank">King Pro Plugins page</a>. Locate the themes folder in the adkingpro plugin folder, generally located:</p>
