@@ -229,6 +229,7 @@ function akp_change_meta_boxes()
     add_meta_box('postremoveurllink', __('Remove Link from Advert?'), 'akp_remove_url_link', 'adverts_posts', 'advanced', 'high');
     add_meta_box('postclickstatsdiv', __('Advert Stats'), 'akp_post_click_stats', 'adverts_posts', 'advanced', 'low');
     add_meta_box('revenuevaluesdiv', __('Advert Revenue'), 'akp_revenue_values', 'adverts_posts', 'side', 'low');
+    add_meta_box('linkoptionsdiv', __('Link Options'), 'akp_link_options', 'adverts_posts', 'side', 'low');
 }
 add_action('do_meta_boxes', 'akp_change_meta_boxes');
 
@@ -236,60 +237,62 @@ add_action( 'post_submitbox_misc_actions', 'expiry_in_publish' );
 function expiry_in_publish($post)
 {
     global $post;
-    $expiry = (get_post_meta($post->ID, 'akp_expiry_date', true)) ? get_post_meta($post->ID, 'akp_expiry_date', true) : 'never';
-    if ($expiry !== 'never') {
-        $expiry_m = date('m', $expiry);
-        $expiry_d = date('d', $expiry);
-        $expiry_y = date('Y', $expiry);
-        $expiry_h = date('H', $expiry);
-        $expiry_i = date('i', $expiry);
-        $expiry_output = date('M j, Y @ G:i', $expiry);
-        $expiry_value = date('Y-m-d G:i:s', $expiry);
-        
-    } else {
-        $expiry_output = 'Never';
-        $expiry_value = $expiry;
-        $expiry_m = date('m', current_time('timestamp'));
-        $expiry_d = date('d', current_time('timestamp'));
-        $expiry_y = date('Y', current_time('timestamp'));
-        $expiry_h = date('H', current_time('timestamp'));
-        $expiry_i = date('i', current_time('timestamp'));
+    if (get_post_type($post) == 'adverts_posts') {
+        $expiry = (get_post_meta($post->ID, 'akp_expiry_date', true)) ? get_post_meta($post->ID, 'akp_expiry_date', true) : 'never';
+        if ($expiry !== 'never') {
+            $expiry_m = date('m', $expiry);
+            $expiry_d = date('d', $expiry);
+            $expiry_y = date('Y', $expiry);
+            $expiry_h = date('H', $expiry);
+            $expiry_i = date('i', $expiry);
+            $expiry_output = date('M j, Y @ G:i', $expiry);
+            $expiry_value = date('Y-m-d G:i:s', $expiry);
+
+        } else {
+            $expiry_output = 'Never';
+            $expiry_value = $expiry;
+            $expiry_m = date('m', current_time('timestamp'));
+            $expiry_d = date('d', current_time('timestamp'));
+            $expiry_y = date('Y', current_time('timestamp'));
+            $expiry_h = date('H', current_time('timestamp'));
+            $expiry_i = date('i', current_time('timestamp'));
+        }
+        echo '<div class="misc-pub-section misc-pub-section-last curtime">
+             <span id="expiry">
+            Expire on: <b>'.$expiry_output.'</b>
+            </span>
+            <a href="#edit_expiry" class="edit-expiry hide-if-no-js">Edit</a>
+            <div id="expirydiv" class="hide-if-js"><div class="expiry-wrap"><select id="exp_m">
+                            <option value="01"'.(($expiry_m == '01') ? ' selected="selected"' : '').'>01-Jan</option>
+                            <option value="02"'.(($expiry_m == '02') ? ' selected="selected"' : '').'>02-Feb</option>
+                            <option value="03"'.(($expiry_m == '03') ? ' selected="selected"' : '').'>03-Mar</option>
+                            <option value="04"'.(($expiry_m == '04') ? ' selected="selected"' : '').'>04-Apr</option>
+                            <option value="05"'.(($expiry_m == '05') ? ' selected="selected"' : '').'>05-May</option>
+                            <option value="06"'.(($expiry_m == '06') ? ' selected="selected"' : '').'>06-Jun</option>
+                            <option value="07"'.(($expiry_m == '07') ? ' selected="selected"' : '').'>07-Jul</option>
+                            <option value="08"'.(($expiry_m == '08') ? ' selected="selected"' : '').'>08-Aug</option>
+                            <option value="09"'.(($expiry_m == '09') ? ' selected="selected"' : '').'>09-Sep</option>
+                            <option value="10"'.(($expiry_m == '10') ? ' selected="selected"' : '').'>10-Oct</option>
+                            <option value="11"'.(($expiry_m == '11') ? ' selected="selected"' : '').'>11-Nov</option>
+                            <option value="12"'.(($expiry_m == '12') ? ' selected="selected"' : '').'>12-Dec</option>
+    </select><input type="text" id="exp_d" value="'.$expiry_d.'" size="2" maxlength="2" autocomplete="off">, <input type="text" id="exp_y" value="'.$expiry_y.'" size="4" maxlength="4" autocomplete="off"> @ <input type="text" id="exp_h" value="'.$expiry_h.'" size="2" maxlength="2" autocomplete="off"> : <input type="text" id="exp_i" value="'.$expiry_i.'" size="2" maxlength="2" autocomplete="off"></div><input type="hidden" id="exp_s" value="55">
+
+    <input type="hidden" id="hidden_exp_m" value="'.$expiry_m.'">
+    <input type="hidden" id="hidden_exp_d" value="'.$expiry_d.'">
+    <input type="hidden" id="hidden_exp_y" value="'.$expiry_y.'">
+    <input type="hidden" id="hidden_exp_h" value="'.$expiry_h.'">
+    <input type="hidden" id="hidden_exp_i" value="'.$expiry_i.'">
+
+    <input type="hidden" name="akp_expiry_date" id="akp_expiry_date" value="'.$expiry_value.'" />
+
+    <p>
+    <a href="#edit_expiry" class="save-expiry hide-if-no-js button">OK</a>
+    <a href="#edit_expiry" class="cancel-expiry hide-if-no-js">Cancel</a>
+    <a href="#edit_expiry" class="set-never-expiry hide-if-no-js button right">Set to Never</a>
+    </p>
+                    </div>
+        </div>';
     }
-    echo '<div class="misc-pub-section misc-pub-section-last curtime">
-         <span id="expiry">
-        Expire on: <b>'.$expiry_output.'</b>
-        </span>
-	<a href="#edit_expiry" class="edit-expiry hide-if-no-js">Edit</a>
-	<div id="expirydiv" class="hide-if-js"><div class="expiry-wrap"><select id="exp_m">
-			<option value="01"'.(($expiry_m == '01') ? ' selected="selected"' : '').'>01-Jan</option>
-			<option value="02"'.(($expiry_m == '02') ? ' selected="selected"' : '').'>02-Feb</option>
-			<option value="03"'.(($expiry_m == '03') ? ' selected="selected"' : '').'>03-Mar</option>
-			<option value="04"'.(($expiry_m == '04') ? ' selected="selected"' : '').'>04-Apr</option>
-			<option value="05"'.(($expiry_m == '05') ? ' selected="selected"' : '').'>05-May</option>
-			<option value="06"'.(($expiry_m == '06') ? ' selected="selected"' : '').'>06-Jun</option>
-			<option value="07"'.(($expiry_m == '07') ? ' selected="selected"' : '').'>07-Jul</option>
-			<option value="08"'.(($expiry_m == '08') ? ' selected="selected"' : '').'>08-Aug</option>
-			<option value="09"'.(($expiry_m == '09') ? ' selected="selected"' : '').'>09-Sep</option>
-			<option value="10"'.(($expiry_m == '10') ? ' selected="selected"' : '').'>10-Oct</option>
-			<option value="11"'.(($expiry_m == '11') ? ' selected="selected"' : '').'>11-Nov</option>
-			<option value="12"'.(($expiry_m == '12') ? ' selected="selected"' : '').'>12-Dec</option>
-</select><input type="text" id="exp_d" value="'.$expiry_d.'" size="2" maxlength="2" autocomplete="off">, <input type="text" id="exp_y" value="'.$expiry_y.'" size="4" maxlength="4" autocomplete="off"> @ <input type="text" id="exp_h" value="'.$expiry_h.'" size="2" maxlength="2" autocomplete="off"> : <input type="text" id="exp_i" value="'.$expiry_i.'" size="2" maxlength="2" autocomplete="off"></div><input type="hidden" id="exp_s" value="55">
-
-<input type="hidden" id="hidden_exp_m" value="'.$expiry_m.'">
-<input type="hidden" id="hidden_exp_d" value="'.$expiry_d.'">
-<input type="hidden" id="hidden_exp_y" value="'.$expiry_y.'">
-<input type="hidden" id="hidden_exp_h" value="'.$expiry_h.'">
-<input type="hidden" id="hidden_exp_i" value="'.$expiry_i.'">
-
-<input type="hidden" name="akp_expiry_date" id="akp_expiry_date" value="'.$expiry_value.'" />
-
-<p>
-<a href="#edit_expiry" class="save-expiry hide-if-no-js button">OK</a>
-<a href="#edit_expiry" class="cancel-expiry hide-if-no-js">Cancel</a>
-<a href="#edit_expiry" class="set-never-expiry hide-if-no-js button right">Set to Never</a>
-</p>
-                </div>
-    </div>';
 }
 
 // Selection of media type
@@ -312,6 +315,7 @@ function akp_image_box($object, $box) {
     global $post;
     $image_url = (get_post_meta( $post->ID, 'akp_image_url', true )) ? get_post_meta( $post->ID, 'akp_image_url', true ) : '';
     $image_alt = (get_post_meta( $post->ID, 'akp_image_alt', true )) ? get_post_meta( $post->ID, 'akp_image_alt', true ) : '';
+    
     echo '<label for="akp_image_url">';
     echo '<input id="akp_image_url" type="text" size="36" name="akp_image_url" value="'.$image_url.'" />';
     echo '<input id="akp_image_url_button" class="button" type="button" value="Upload Image" />';
@@ -325,6 +329,7 @@ function akp_image_box($object, $box) {
 function akp_image_attrs_box($object, $box) {
     global $post;
     $image_alt = (get_post_meta( $post->ID, 'akp_image_alt', true )) ? get_post_meta( $post->ID, 'akp_image_alt', true ) : '';
+
     echo '<label for="akp_image_alt">Banner description (this will be added to the alt tag on the image)</label>';
     echo '<br /><input id="akp_image_alt" type="text" style="width: 100%;" name="akp_image_alt" value="'.$image_alt.'" />';
     echo '<br /><br />';
@@ -355,6 +360,7 @@ function akp_adsense_box($object, $box) {
 function akp_text_box($object, $box) {
     global $post;
     $text = (get_post_meta( $post->ID, 'akp_text', true )) ? get_post_meta( $post->ID, 'akp_text', true ) : '';
+    
     echo '<label for="akp_text">Enter the text you would like on the link that will be tracked</label>';
     echo '<br /><input type="text" name="akp_text" style="width: 100%;" value="'.$text.'" /><br />';
 }
@@ -408,13 +414,13 @@ function akpresetdata_admin_action()
 add_action( 'admin_action_akpresetdata', 'akpresetdata_admin_action' );
 
 // Add checkbox to remove URL Link off advert
-function akp_remove_url_link($object, $box) {
-    global $post;
-    $remove_url = get_post_meta( $post->ID, 'akp_remove_url', true );
-    // Use nonce for verification
-    echo '<input type="hidden" name="akp_meta_box_nonce" value="', wp_create_nonce(basename(__FILE__)), '" />';
-    echo '<input type="checkbox" value="1" name="akp_remove_url" id="akp_remove_url"', $remove_url ? ' checked="checked"' : '', ' />';
-}
+//function akp_remove_url_link($object, $box) {
+//    global $post;
+//    $remove_url = get_post_meta( $post->ID, 'akp_remove_url', true );
+//    // Use nonce for verification
+//    echo '<input type="hidden" name="akp_meta_box_nonce" value="', wp_create_nonce(basename(__FILE__)), '" />';
+//    echo '<input type="checkbox" value="1" name="akp_remove_url" id="akp_remove_url"', $remove_url ? ' checked="checked"' : '', ' />';
+//}
 
 // Add checkbox to remove URL Link off advert
 function akp_revenue_values($object, $box) {
@@ -430,6 +436,35 @@ function akp_revenue_values($object, $box) {
     echo '</div>';
 }
 
+// Add checkbox to remove URL Link off advert
+function akp_link_options($object, $box) {
+    global $post;
+    $remove_url = get_post_meta( $post->ID, 'akp_remove_url', true );
+    $target = (get_post_meta( $post->ID, 'akp_target', true )) ? get_post_meta( $post->ID, 'akp_target', true ) : '';
+    $self = ($target == 'self') ? ' selected' : '';
+    $parent = ($target == 'parent') ? ' selected' : '';
+    $top = ($target == 'top') ? ' selected' : '';
+    $none = ($target == 'none') ? ' selected' : '';
+    $nofollow = (get_post_meta( $post->ID, 'akp_nofollow', true )) ? get_post_meta( $post->ID, 'akp_nofollow', true ) : '';
+    
+    // Use nonce for verification
+    echo '<input type="hidden" name="akp_meta_box_nonce" value="', wp_create_nonce(basename(__FILE__)), '" />';
+    
+    echo '<div class="misc-pub-section"><label for="akp_remove_url">Remove URL from link:</label>';
+    echo '<input type="checkbox" value="1" name="akp_remove_url" id="akp_remove_url"', $remove_url ? ' checked="checked"' : '', ' style="width: 70px;float: right;margin-top: -3px;" />';
+    echo '</div>';
+    
+    echo "<div class='misc-pub-section'><label for='akp_target'>Window Target</label><select name='akp_target' style='width: 70px;float: right;margin-top: -3px;' >";
+    echo "<option value='blank'>_blank</option>";
+    echo "<option value='self'".$self.">_self</option>";
+    echo "<option value='parent'".$parent.">_parent</option>";
+    echo "<option value='top'".$top.">_top</option>";
+    echo "<option value='none'".$none.">none</option>";
+    echo "</select></div>";
+    
+    echo '<div class="misc-pub-section"><label for="akp_nofollow">Add "nofollow" to link?</label><input type="hidden" name="akp_nofollow" value="0" /><input type="checkbox" value="1" name="akp_nofollow" id="akp_nofollow"', $nofollow ? ' checked="checked"' : '', ' style="width: 70px;float: right;margin-top: -3px;" /></div>';
+}
+
 // Process the custom metabox fields
 function akp_save_custom_fields( ) {
 	global $post;	
@@ -440,7 +475,6 @@ function akp_save_custom_fields( ) {
         }
 	
 	if( $_POST ) {
-            
             if (isset($_POST['akp_remove_url']))
                 update_post_meta( $post->ID, 'akp_remove_url', $_POST['akp_remove_url'] );
             else
@@ -462,6 +496,11 @@ function akp_save_custom_fields( ) {
             update_post_meta( $post->ID, 'akp_flash_height', $_POST['akp_flash_height'] );
             update_post_meta( $post->ID, 'akp_adsense_code', $_POST['akp_adsense_code'] );
             update_post_meta( $post->ID, 'akp_text', $_POST['akp_text'] );
+            
+            if (isset($_POST['akp_target']))
+                update_post_meta( $post->ID, 'akp_target', $_POST['akp_target'] );
+            if (isset($_POST['akp_nofollow']))
+                update_post_meta( $post->ID, 'akp_nofollow', $_POST['akp_nofollow'] );
             
 	}
 }
@@ -485,6 +524,8 @@ function akp_return_fields( $id = NULL ) {
         $output['akp_flash_height'] = (get_post_meta( $id, 'akp_flash_height' ) ? get_post_meta( $id, 'akp_flash_height' ) : array(''));
         $output['akp_adsense_code'] = (get_post_meta( $id, 'akp_adsense_code' ) ? get_post_meta( $id, 'akp_adsense_code' ) : array(''));
         $output['akp_text'] = (get_post_meta( $id, 'akp_text' ) ? get_post_meta( $id, 'akp_text' ) : array(''));
+        $output['akp_target'] = (get_post_meta( $id, 'akp_target' ) ? get_post_meta( $id, 'akp_target' ) : array('blank'));
+        $output['akp_nofollow'] = (get_post_meta( $id, 'akp_nofollow' ) ? get_post_meta( $id, 'akp_nofollow' ) : array('0'));
         
         return $output;
 }
@@ -891,14 +932,14 @@ function akp_settings_output() {
         <p>Shortcodes can be used in any page or post on your site. By default:</p>
         <pre>[adkingpro]</pre>
         <p>is defaulting to the advert type 'Sidebar' and randomly chosing from that. You can define your own advert type and display the adverts attached to that type by:</p>
-        <pre>[adkingpro type="your-advert-type-slug"]</pre>
+        <pre>[adkingpro type='your-advert-type-slug']</pre>
         <p>Alternatively, you can display a single advert by entering its "Banner ID" which can be found in the table under the Adverts section:</p>
-        <pre>[adkingpro banner="{banner_id}"]</pre>
+        <pre>[adkingpro banner='{banner_id}']</pre>
         <p>Have a select few adverts that you'd like to show? No problem, just specify the ids separated by commas:</p>
-        <pre>[adkingpro banner="{banner_id1}, {banner_id2}"]</pre>
+        <pre>[adkingpro banner='{banner_id1}, {banner_id2}']</pre>
         <p>Want to output a few adverts at once? Use the 'render' option in the shortcode:</p>
-        <pre>[adkingpro banner="{banner_id1}, {banner_id2}" render='2']</pre>
-        <pre>[adkingpro type="your-advert-type-slug" render='2']</pre>
+        <pre>[adkingpro banner='{banner_id1}, {banner_id2}' render='2']</pre>
+        <pre>[adkingpro type='your-advert-type-slug' render='2']</pre>
         <p>Only have a small space and what a few adverts to display? Turn on the auto rotating slideshow!:</p>
         <pre>[adkingpro type="your-advert-type-slug" rotate='true']</pre>
         <p>There are also some settings you can play with to get it just right:</p>
@@ -908,11 +949,11 @@ function akp_settings_output() {
             <li>Change Speed: "Time in ms" Default - 600 (0.6s)</li>
         </ul>
         <p>Use one or all of these settings:</p>
-        <pre>[adkingpro rotate='true' effect="fade" speed="5000" changespeed="600"]</pre>
+        <pre>[adkingpro rotate='true' effect='fade' speed='5000' changespeed='600']</pre>
         <p>To add this into a template, just use the "do_shortcode" function:</p>
         <pre>&lt;?php 
     if (function_exists('adkingpro_func'))
-        echo do_shortcode("[adkingpro]");
+        echo do_shortcode("[adkingpro type='sidebar']");
 ?&gt;</pre>
         <h3>Install PDF Themes</h3>
         <p>Download themes from the <a href="http://kingpro.me/plugins/ad-king-pro/themes/" target="_blank">King Pro Plugins page</a>. Locate the themes folder in the adkingpro plugin folder, generally located:</p>

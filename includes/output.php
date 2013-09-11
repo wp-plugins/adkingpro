@@ -73,13 +73,17 @@ function adkingpro_func( $atts ) {
                     case 'image':
                         $image = $cfields['akp_image_url'][0];
                         $alt = $cfields['akp_image_alt'][0];
+                        $nofollow = '';
+                        if ($cfields['akp_nofollow'][0] == '1') $nofollow = ' rel="nofollow"';
+                        $target = '';
+                        if ($cfields['akp_target'][0] !== 'none') $target = ' target="_'.$cfields['akp_target'][0].'"';
                         if ($image == '')
                             $image = akp_get_featured_image($post_id, "akp_".$term->term_id);
                         $display_link = true;
                         if (!isset($cfields['akp_remove_url']) || (isset($cfields['akp_remove_url']) && $cfields['akp_remove_url'][0] == 1)) $display_link = false;
                         $output .= "<div class='adkingprobanner ".$type." akpbanner banner".$post_id."' style='width: ".$term_meta['advert_width']."px; height: ".$term_meta['advert_height']."px;'>";
                         if ($display_link)
-                            $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."'>";
+                            $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'>";
                         $output .= "<img src='".$image."' style='max-width: ".$term_meta['advert_width']."px; max-height: ".$term_meta['advert_height']."px;' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
@@ -103,8 +107,12 @@ function adkingpro_func( $atts ) {
                         break;
                     
                     case 'text':
+                        $nofollow = '';
+                        if ($cfields['akp_nofollow'][0] == '1') $nofollow = ' rel="nofollow"';
+                        $target = '';
+                        if ($cfields['akp_target'][0] !== 'none') $target = ' target="_'.$cfields['akp_target'][0].'"';
                         if ($rotate) $output .= "<div class='adkingprobannertextcontainer ".$type." akpbanner banner".$post_id."'>";
-                        $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."' class='adkingprobannertext ".$type." banner".$post_id."'>";
+                        $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."' class='adkingprobannertext ".$type." banner".$post_id."'>";
                         $output .= $cfields['akp_text'][0];
                         $output .= "</a>";
                         if ($rotate) $output .= "</div>";
@@ -168,10 +176,14 @@ function adkingpro_func( $atts ) {
                         if ($image == '')
                             $image = akp_get_featured_image($post_id);
                         $display_link = true;
+                        $nofollow = '';
+                        if ($cfields['akp_nofollow'][0] == '1') $nofollow = ' rel="nofollow"';
+                        $target = '';
+                        if ($cfields['akp_target'][0] !== 'none') $target = ' target="_'.$cfields['akp_target'][0].'"';
                         if (!isset($cfields['akp_remove_url']) || (isset($cfields['akp_remove_url']) && $cfields['akp_remove_url'][0] == 1)) $display_link = false;
                         $output .= "<div class='adkingprobanner ".$type." akpbanner banner".$post_id."'>";
                         if ($display_link)
-                            $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."'>";
+                            $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'>";
                         $output .= "<img src='".$image."' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
@@ -195,8 +207,12 @@ function adkingpro_func( $atts ) {
                         break;
                     
                     case 'text':
+                        $nofollow = '';
+                        if ($cfields['akp_nofollow'][0] == '1') $nofollow = ' rel="nofollow"';
+                        $target = '';
+                        if ($cfields['akp_target'][0] !== 'none') $target = ' target="_'.$cfields['akp_target'][0].'"';
                         if ($rotate) $output .= "<div class='adkingprobannertextcontainer ".$type." akpbanner banner".$post_id."'>";
-                        $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."' class='adkingprobannertext ".$type." banner".$post_id."'>";
+                        $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."' class='adkingprobannertext ".$type." banner".$post_id."'>";
                         $output .= $cfields['akp_text'][0];
                         $output .= "</a>";
                         if ($rotate) $output .= "</div>";
@@ -248,10 +264,14 @@ function adkingpro_func( $atts ) {
                         if ($image == '')
                             $image = akp_get_featured_image($post_id);
                         $display_link = true;
+                        $nofollow = '';
+                        if ($cfields['akp_nofollow'][0] == '1') $nofollow = ' rel="nofollow"';
+                        $target = '';
+                        if ($cfields['akp_target'][0] !== 'none') $target = ' target="_'.$cfields['akp_target'][0].'"';
                         if (!isset($cfields['akp_remove_url']) || (isset($cfields['akp_remove_url']) && $cfields['akp_remove_url'][0] == 1)) $display_link = false;
                         $output .= "<div class='adkingprobanner ".$type." banner".$post_id."'>";
                         if ($display_link)
-                            $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."'>";
+                            $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'>";
                         $output .= "<img src='".$image."' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
@@ -275,7 +295,11 @@ function adkingpro_func( $atts ) {
                         break;
                     
                     case 'text':
-                        $output .= "<a href='".get_the_title()."' target='_blank' rel='".$post_id."' class='adkingprobannertext ".$type." banner".$post_id."'>";
+                        $nofollow = '';
+                        if ($cfields['akp_nofollow'][0] == '1') $nofollow = ' rel="nofollow"';
+                        $target = '';
+                        if ($cfields['akp_target'][0] !== 'none') $target = ' target="_'.$cfields['akp_target'][0].'"';
+                        $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."' class='adkingprobannertext ".$type." banner".$post_id."'>";
                         $output .= $cfields['akp_text'][0];
                         $output .= "</a>";
                         break;

@@ -1,10 +1,11 @@
 jQuery(document).ready(function($) {
     if ($("#akp_change_media_type").length > 0) {
-        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox').hide();
+        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox, #akpimageattrbox').hide();
         if ($("#akp_change_media_type").val() === 'image') {
             $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro');
             $('#postimagediv').fadeIn();
             $('#akpimagebox').fadeIn();
+            $('#akpimageattrbox').fadeIn();
             $('#postremoveurllink').fadeIn();
         } else if ($("#akp_change_media_type").val() === 'flash') {
             $('#title-prompt-text').text('Advert description (for internal use)');
@@ -19,7 +20,7 @@ jQuery(document).ready(function($) {
     }
     $('#akp_change_media_type').change(function() {
         // Change views
-        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox').hide();
+        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox, #akpimageattrbox').hide();
         if ($(this).val() === 'image') {
             $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro');
             $('#postimagediv').fadeIn();
