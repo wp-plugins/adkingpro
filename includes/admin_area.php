@@ -44,6 +44,14 @@ add_action( 'init', 'akp_create_post_type' );
 function wpt_akp_icons() {
     ?>
     <style type="text/css" media="screen">
+        #toplevel_page_kpp_menu .wp-menu-image {
+            background: url(<?= plugins_url('/images/kpp-icon_16x16_sat.png', dirname(__FILE__)) ?>) no-repeat center center !important;
+        }
+	#toplevel_page_kpp_menu:hover .wp-menu-image, #toplevel_page_kpp_menu.wp-has-current-submenu .wp-menu-image {
+            background: url(<?= plugins_url('/images/kpp-icon_16x16.png', dirname(__FILE__)) ?>) no-repeat center center !important;
+        }
+	#icon-options-general.icon32-posts-kpp_menu, #icon-kpp_menu.icon32 {background: url(<?= plugins_url('/images/kpp-icon_32x32.png', dirname(__FILE__)) ?>) no-repeat;}
+        
         #menu-posts-adverts_posts .wp-menu-image {
             background: url(<?= plugins_url('/images/akp-icon_16x16_sat.png', dirname(__FILE__)) ?>) no-repeat center center !important;
         }
@@ -728,10 +736,12 @@ function akp_enqueue($hook) {
     
     wp_enqueue_style('akp_jquery_ui');
     wp_enqueue_style( 'akp_css' );
+    wp_enqueue_style( 'thickbox' );
         
     wp_enqueue_script( 'jquery-ui-datepicker');
     wp_register_script('akp_admin_js', plugins_url( '/js/adkingpro-admin-functions.js', dirname(__FILE__) ), array('jquery', 'jquery-ui-datepicker'), '1.0.0');
     wp_enqueue_script( 'akp_admin_js');
+    wp_enqueue_script( 'thickbox' );
 
     // in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
     wp_localize_script( 'akp_admin_js', 'akp_ajax_object',
@@ -815,12 +825,75 @@ function akp_add_dashboard_widgets() {
 } 
 add_action('wp_dashboard_setup', 'akp_add_dashboard_widgets' );
 
-// Add settings area
-function adkingpro_settings() {
-	add_options_page('Ad King Pro', 'Ad King Pro', 'manage_options', 'adkingpro', 'akp_settings_output');
-        add_dashboard_page('Ad King Pro Detailed Stats', 'Ad King Pro Stats', 'read', 'akp-detailed-stats', 'akp_detailed_output');
+// Add King Pro Plugins Section
+if(!function_exists('find_kpp_menu_item')) {
+  function find_kpp_menu_item($handle, $sub = false) {
+    if(!is_admin() || (defined('DOING_AJAX') && DOING_AJAX)) {
+      return false;
+    }
+    global $menu, $submenu;
+    $check_menu = $sub ? $submenu : $menu;
+    if(empty($check_menu)) {
+      return false;
+    }
+    foreach($check_menu as $k => $item) {
+      if($sub) {
+        foreach($item as $sm) {
+          if($handle == $sm[2]) {
+            return true;
+          }
+        }
+      } 
+      else {
+        if($handle == $item[2]) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 }
-add_action('admin_menu', 'adkingpro_settings');
+
+function akp_add_parent_page() {
+  if(!find_kpp_menu_item('kpp_menu')) {
+    add_menu_page('King Pro Plugins','King Pro Plugins', 'manage_options', 'kpp_menu', 'kpp_menu_page');
+  }
+//  if(!function_exists('remove_submenu_page')) {
+//    unset($GLOBALS['submenu']['kpp_menu'][0]);
+//  }
+//  else {
+//    remove_submenu_page('kpp_menu','kpp_menu');
+//  }
+  
+  add_submenu_page('kpp_menu', 'Ad King Pro', 'Ad King Pro', 'manage_options', 'adkingpro', 'akp_settings_output');
+  add_dashboard_page('Ad King Pro Detailed Stats', 'Ad King Pro Stats', 'read', 'akp-detailed-stats', 'akp_detailed_output');
+}
+add_action('admin_menu', 'akp_add_parent_page');
+
+if(!function_exists('kpp_menu_page')) {
+    function kpp_menu_page() {
+        ?>
+        <div class="wrap">
+            <div id="icon-options-general" class="icon32 icon32-posts-kpp_menu"><br></div><h2>King Pro Plugin Suite</h2>
+
+            <div class="left">
+                <h2>Available Plugins</h2>
+                <a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=adkingpro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Ad King Pro">Install Ad King Pro</a><br />
+                <a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=invoice-king-pro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Invoice King Pro">Install Invoice King Pro</a><br />
+                <a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=related-king-pro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Related King Pro">Install Related King Pro</a>
+            </div>
+            <div class="right">
+                <h2>Connect</h2>
+                <h3><a href="https://www.facebook.com/KingProPlugins" target="_blank">Follow on Facebook</a></h3>
+                <h3><a href="https://twitter.com/KingProPlugins" target="_blank">Follow on Twitter</a></h3>
+                <h3><a href="https://plus.google.com/b/101488033905569308183/101488033905569308183/about" target="_blank">Follow on Google+</a></h3>
+                <h4>Found an issue? Post your issue on the <a href="http://wordpress.org/support/plugin/adkingpro" target="_blank">support forums</a>. If you would prefer, please email your concern to <a href="mailto:plugins@kingpro.me">plugins@kingpro.me</a></h4>   
+            </div>
+            <br class="clear">
+        </div>
+        <?php
+    }
+}
 
 function akp_settings_output() {
 	?>
