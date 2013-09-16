@@ -1,0 +1,304 @@
+/* 
+    Document   : adkingpro-styles
+    Created on : 11/11/2012, 12:23:02 AM
+    Author     : Ash Durham
+*/
+
+/**** Adverts table ****/
+
+.wp-list-table td.advert_image img {
+    width: 100% !important;
+    max-width: 200px;
+}
+
+/**** Edit Screen Styling ****/
+
+.curtime #expiry {
+background-repeat: no-repeat;
+background-position: left center;
+padding: 2px 0 1px 20px;
+background-image: url(../../../../wp-admin/images/date-button.gif);
+}
+
+#expirydiv input {
+border-width: 1px;
+border-style: solid;
+}
+
+#exp_d, #exp_h, #exp_i {
+width: 2em;
+}
+
+#exp_y {
+width: 3.4em;
+}
+
+#exp_y, #exp_d, #exp_h, #exp_i {
+padding: 1px;
+font-size: 12px;
+}
+
+/**** Dashboard Styling ****/
+
+#akp_dashboard_widget ul {
+    margin: 0;
+}
+
+#akp_dashboard_widget ul > li.banner_stat {
+    display: block; 
+    padding-top: 5px;
+    border-bottom: 1px solid #999;
+}
+
+#akp_dashboard_widget ul li.banner_stat:last-child {
+    border-bottom: none;
+}
+
+#akp_dashboard_widget ul li > a {
+    display: table-cell;
+    height: 50px;
+    width: 200px;
+    vertical-align: middle;
+    text-align: center;
+    margin-left: 10px;
+}
+
+#akp_dashboard_widget ul li img {
+    max-height: 50px; 
+    max-width: 200px; 
+}
+
+#akp_dashboard_widget .banner {
+    width: 100%;
+    text-align: center;
+}
+
+#akp_dashboard_widget .stats {
+    height: 50px;
+}
+
+#akp_dashboard_widget .stats .stat {
+    display: inline-block;
+    width: 24%;
+    text-align: center;
+    border-right: 1px solid #999;
+    height: 50px;
+}
+
+#akp_dashboard_widget .stats .stat:last-child {
+    border-right: none;
+}
+
+#akp_dashboard_widget .stats .stat span {
+    font-size: 20px;
+    line-height: 30px;
+}
+
+/**** Dashboard Page Styling ****/
+
+.akp_detailed_stats .banner_detailed_stat {
+    border: 1px solid #eee;
+    border-radius: 3px;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.akp_detailed_stats .banner_detailed_stat .banner img {
+    vertical-align: middle;
+}
+
+.akp_detailed_stats .banner_detailed_stat .banner h3 {
+    float: right;
+}
+
+.akp_detailed_stats .banner_detailed_stat .stats,
+.akp_detailed_stats .banner_detailed_stat .detailed {
+    background: #eee;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-top: 10px;
+    padding: 10px;
+    height: 46px;
+    overflow: hidden;
+    clear: both;
+}
+
+.akp_detailed_stats .banner_detailed_stat .stats h2,
+.akp_detailed_stats .banner_detailed_stat .detailed h2 {
+    padding-left: 30px;
+    position: relative;
+    cursor: pointer;
+}
+
+.akp_detailed_stats .banner_detailed_stat .stats h2:before,
+.akp_detailed_stats .banner_detailed_stat .detailed h2:before {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    background: url(../images/plus_icon.png) no-repeat;
+    content: '';
+    margin-top: -8px;
+}
+
+.akp_detailed_stats .banner_detailed_stat .stats h2.open:before,
+.akp_detailed_stats .banner_detailed_stat .detailed h2.open:before {
+    background: url(../images/minus_icon.png) no-repeat;
+}
+
+.akp_detailed_stats .banner_detailed_stat .stats .stat {
+    width: 24%;
+    display: inline-block;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.akp_detailed_stats .banner_detailed_stat .stats .stat h4 {
+    font-size: 1.5em;
+}
+
+.akp_detailed_stats .banner_detailed_stat .stats .stat span {
+    font-size: 4em;
+    text-shadow: 1px 1px #CCC;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_menu {
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_menu a,
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details a.akp_custom_date {
+    font-size: 14px;
+    display: inline-block;
+    width: 175px;
+    height: 30px;
+    line-height: 30px;
+    color: #333;
+    border: 1px solid #333;
+    border-radius: 3px;
+    background: #ccc;
+    text-decoration: none;
+    text-align: center;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    box-shadow: 1px 1px #000;
+    float: left;
+    cursor: pointer;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_menu a:hover,
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_menu a.active,
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details a.akp_custom_date:hover {
+    box-shadow: none;
+    margin: 1px 4px 4px 1px;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details > div {
+    display: none;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details .akp_detailed_date_details .choose_custom_date {
+    border: 1px solid #ccc;
+    margin: 20px 0;
+    padding: 20px;
+    display: inline-block;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details .akp_detailed_date_details .choose_custom_date label {
+    height: 35px;
+    font-size: 16px;
+    float: left;
+    line-height: 35px;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details .akp_detailed_date_details .choose_custom_date input {
+    height: 35px;
+    margin-right: 20px;
+    float: left;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details a.akp_custom_date {
+    float: left;
+    margin-top: 3px;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details a.akp_custom_date:hover {
+    margin: 4px 4px 4px 1px;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table {
+    border-collapse: collapse;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table th {
+    width: 200px;
+    border-bottom: 1px solid #ccc;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    text-align: left;
+    padding: 0 5px;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table tfoot th {
+    border-bottom: none;
+    border-top: 1px solid #ccc;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table td {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 5px;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table tbody tr:nth-child(odd) {
+    background-color: #ccc;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table .center {text-align: center;}
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table .right {text-align: right;}
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details table .bold {font-weight:bold;}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details .akp_reporting {
+    margin: 20px 0 0;
+}
+
+.akp_detailed_stats .banner_detailed_stat .detailed .detailed_details .akp_reporting a {
+    display: inline-block;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.akploading {
+    background: url(../images/ajax-loader.gif) no-repeat;
+    width: 16px;
+    height: 11px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+/***** Settings Area Styling *****/
+
+.akp_settings {
+    width: 48%; float: left;
+}
+
+.akp_settings .form-table tr:nth-child(odd) {
+    background: #eee;
+}
+
+.akp_faq_help {
+    width: 48%; float: right;
+}
+
+.akp_faq, .akp_help {
+    background: #eee; border: 1px solid #ccc; border-radius: 3px; padding: 0 10px 10px; margin-bottom: 10px;
+}
+.akp_faq_help pre {
+    background: #ccc;
+    padding: 5px;
+    color: #fff;
+}
