@@ -4,7 +4,7 @@ Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes, flash, adsense, text, resize, rotate, slideshow, multiple
 Requires at least: 3.0.1
 Tested up to: 3.6.1
-Stable tag: 1.9.2
+Stable tag: 1.9.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,6 +130,11 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 
 == Changelog ==
 
+= 1.9.3 =
+* Update to datepicker class to avoid conflict
+* Update to admin enqueue function to only include on required pages
+* Addition of authorised role option in settings
+
 = 1.9.2 =
 * Updated details including new release of King Pro Plugin
 * Changed location of settings page in menu.
@@ -203,6 +208,11 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 * Initial
 
 == Upgrade Notice ==
+
+= 1.9.3 =
+* Update to datepicker class to avoid conflict
+* Update to admin enqueue function to only include on required pages
+* Addition of authorised role option in settings
 
 = 1.9.2 =
 * Updated details including new release of King Pro Plugin

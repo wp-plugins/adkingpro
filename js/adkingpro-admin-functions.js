@@ -205,7 +205,7 @@ jQuery(document).ready(function($) {
         }
     });
     
-    $('.datepicker').datepicker({ dateFormat: "dd/mm/yy" });
+    $('.akp_datepicker').datepicker({ dateFormat: "dd/mm/yy" });
     
     $(".from_adkingpro_date, .to_adkingpro_date").live('focus', function() {
         $(this).css('border-color', '#DFDFDF');

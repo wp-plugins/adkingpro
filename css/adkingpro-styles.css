@@ -105,6 +105,7 @@ font-size: 12px;
 
 .akp_detailed_stats .banner_detailed_stat .banner img {
     vertical-align: middle;
+    max-width: 100%;
 }
 
 .akp_detailed_stats .banner_detailed_stat .banner h3 {

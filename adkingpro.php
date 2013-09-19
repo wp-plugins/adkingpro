@@ -3,7 +3,7 @@
     Plugin Name: Ad King Pro
     Plugin URI: http://kingpro.me/plugins/ad-king-pro/
     Description: Ad King Pro allows you to manage, display, document and report all of your custom advertising on your wordpress site.
-    Version: 1.9.2
+    Version: 1.9.3
     Author: Ash Durham
     Author URI: http://durham.net.au/
     License: GPL2
@@ -27,7 +27,7 @@
     // INSTALL
 
     global $akp_db_version;
-    $akp_db_version = "1.9.2";
+    $akp_db_version = "1.9.3";
 
     function akp_install() {
        global $wpdb;
@@ -51,6 +51,32 @@
        dbDelta($sql);
 
        add_option("apk_db_version", $akp_db_version);
+       
+       // Register AKP capabilities to all users
+       $role = get_role( 'subscriber' );
+       $role->add_cap( 'akp_edit_one' ); 
+       
+       $role = get_role( 'contributor' );
+       $role->add_cap( 'akp_edit_one' ); 
+       $role->add_cap( 'akp_edit_two' );
+       
+       $role = get_role( 'author' );
+       $role->add_cap( 'akp_edit_one' ); 
+       $role->add_cap( 'akp_edit_two' );
+       $role->add_cap( 'akp_edit_three' );
+       
+       $role = get_role( 'editor' );
+       $role->add_cap( 'akp_edit_one' ); 
+       $role->add_cap( 'akp_edit_two' );
+       $role->add_cap( 'akp_edit_three' );
+       $role->add_cap( 'akp_edit_four' );
+       
+       $role = get_role( 'administrator' );
+       $role->add_cap( 'akp_edit_one' ); 
+       $role->add_cap( 'akp_edit_two' );
+       $role->add_cap( 'akp_edit_three' );
+       $role->add_cap( 'akp_edit_four' );
+       $role->add_cap( 'akp_edit_five' );
     }
     
     // Register hooks at activation

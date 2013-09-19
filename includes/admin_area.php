@@ -1,5 +1,15 @@
 <?php
 
+function check_page($hook) {
+    global $current_screen;
+    $akp_pages = array('dashboard_page_akp-detailed-stats', 'index.php', 'king-pro-plugins_page_adkingpro');
+    $pages_req = array('post.php', 'post-new.php', 'edit.php');
+    
+    if (in_array($hook, $akp_pages)) return true;
+    if (in_array($hook, $pages_req) && $current_screen->post_type == 'adverts_posts') return true;
+    return false;
+}
+
 function register_akp_options() {
   register_setting( 'akp-options', 'expiry_time' );
   register_setting( 'akp-options', 'impression_expiry_time' );
@@ -7,6 +17,7 @@ function register_akp_options() {
   register_setting( 'akp-options', 'revenue_currency' );
   register_setting( 'akp-options', 'pdf_theme' );
   register_setting( 'akp-options', 'akp_image_sizes' );
+  register_setting( 'akp-options', 'akp_auth_role' );
 }
 add_action( 'admin_init', 'register_akp_options' );
 
@@ -17,9 +28,37 @@ add_option( 'week_starts', 'monday' );
 add_option( 'revenue_currency', '$' );
 add_option( 'pdf_theme', 'default' );
 add_option( 'akp_image_sizes', '' );
+add_option( 'akp_auth_role', 'subscriber');
 
 // Register Adverts
 function akp_create_post_type() {
+    
+    $role = get_option('akp_auth_role');
+    $cap = 'akp_edit_one';
+    switch ($role) {
+        case 'administrator':
+            $cap = 'akp_edit_five';
+            break;
+        
+        case 'editor':
+            $cap = 'akp_edit_four';
+            break;
+        
+        case 'author':
+            $cap = 'akp_edit_three';
+            break;
+        
+        case 'contributor':
+            $cap = 'akp_edit_two';
+            break;
+        
+        case 'subscriber':
+            $cap = 'akp_edit_one';
+            break;
+    }
+    
+    $cap = 'akp_edit_five';
+    
     register_post_type( 'adverts_posts',
         array(
             'labels' => array(
@@ -31,10 +70,41 @@ function akp_create_post_type() {
                 'add_new_item'=>'Add New Advert',
                 'new_item_name'=>'New Advert',
             ),
+            'capabilities' => array(
+                'publish_posts' => $cap,
+                'edit_posts' => $cap,
+                'edit_others_posts' => $cap,
+                'delete_posts' => $cap,
+                'delete_others_posts' => $cap,
+                'read_private_posts' => $cap,
+                'edit_post' => $cap,
+                'delete_post' => $cap,
+                'read_post' => $cap,
+            ),
             'public' => true,
             'exclude_from_search' => true,
             'menu_position' => 5,
             'supports' => array( 'title', 'thumbnail' )
+        )
+    );
+    
+    register_taxonomy(
+        'advert_types',
+        'adverts_posts',
+        array(
+            'hierarchical' => true,
+            'labels' => array(
+                'name'=>'Advert Types',
+                'singular_name'=>'Advert Type',
+                'all_items'=>'All Advert Types',
+                'edit_item'=>'Edit Advert Type',
+                'update_item'=>'Update Advert Type',
+                'add_new_item'=>'Add New Advert Type',
+                'new_item_name'=>'New Advert Type',
+                'search_items'=>'Search Advert Types',
+            ),
+            'query_var' => true,
+            'rewrite' => array('slug' => 'adverts_slug')
         )
     );
 }
@@ -564,30 +634,6 @@ function akp_swap_featured_image_metabox($translation, $text, $domain) {
 }
 add_filter('gettext', 'akp_swap_featured_image_metabox', 10, 4);
 
-// Register Advert types taxonomy
- function akp_taxonomies() {
-       register_taxonomy(
-        'advert_types',
-        'adverts_posts',
-        array(
-            'hierarchical' => true,
-            'labels' => array(
-                'name'=>'Advert Types',
-                'singular_name'=>'Advert Type',
-                'all_items'=>'All Advert Types',
-                'edit_item'=>'Edit Advert Type',
-                'update_item'=>'Update Advert Type',
-                'add_new_item'=>'Add New Advert Type',
-                'new_item_name'=>'New Advert Type',
-                'search_items'=>'Search Advert Types',
-            ),
-            'query_var' => true,
-            'rewrite' => array('slug' => 'adverts_slug')
-        )
-    );
-}
-add_action( 'init', 'akp_taxonomies' );
-
 // Columns in custom post types
 function akp_edit_adverts_columns( $columns ) {
 
@@ -730,22 +776,23 @@ function akp_log_impression($post_id) {
 // Dashboard Widget
 
 function akp_enqueue($hook) {
-    
-    wp_register_style( 'akp_jquery_ui', plugins_url('css/jquery-ui.css', dirname(__FILE__)), false, '1.9.2' );
-    wp_register_style( 'akp_css', plugins_url('css/adkingpro-styles.css', dirname(__FILE__)), false, '1.0.0' );
-    
-    wp_enqueue_style('akp_jquery_ui');
-    wp_enqueue_style( 'akp_css' );
-    wp_enqueue_style( 'thickbox' );
-        
-    wp_enqueue_script( 'jquery-ui-datepicker');
-    wp_register_script('akp_admin_js', plugins_url( '/js/adkingpro-admin-functions.js', dirname(__FILE__) ), array('jquery', 'jquery-ui-datepicker'), '1.0.0');
-    wp_enqueue_script( 'akp_admin_js');
-    wp_enqueue_script( 'thickbox' );
+    if (check_page($hook)) :
+        wp_register_style( 'akp_jquery_ui', plugins_url('css/jquery-ui.css', dirname(__FILE__)), false, '1.9.2' );
+        wp_register_style( 'akp_css', plugins_url('css/adkingpro-styles.css', dirname(__FILE__)), false, '1.0.0' );
 
-    // in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
-    wp_localize_script( 'akp_admin_js', 'akp_ajax_object',
-        array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'akp_ajaxnonce' => wp_create_nonce( 'akpN0nc3' ) ) );
+        wp_enqueue_style('akp_jquery_ui');
+        wp_enqueue_style( 'akp_css' );
+        wp_enqueue_style( 'thickbox' );
+
+        wp_enqueue_script( 'jquery-ui-datepicker');
+        wp_register_script('akp_admin_js', plugins_url( '/js/adkingpro-admin-functions.js', dirname(__FILE__) ), array('jquery', 'jquery-ui-datepicker'), '1.0.0');
+        wp_enqueue_script( 'akp_admin_js');
+        wp_enqueue_script( 'thickbox' );
+
+        // in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
+        wp_localize_script( 'akp_admin_js', 'akp_ajax_object',
+            array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'akp_ajaxnonce' => wp_create_nonce( 'akpN0nc3' ) ) );
+    endif;
 }
 add_action( 'admin_enqueue_scripts', 'akp_enqueue' );
 
@@ -880,7 +927,8 @@ if(!function_exists('kpp_menu_page')) {
                 <h2>Available Plugins</h2>
                 <a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=adkingpro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Ad King Pro">Install Ad King Pro</a><br />
                 <a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=invoice-king-pro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Invoice King Pro">Install Invoice King Pro</a><br />
-                <a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=related-king-pro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Related King Pro">Install Related King Pro</a>
+                <a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=related-king-pro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Related King Pro">Install Related King Pro</a><br />
+                
             </div>
             <div class="right">
                 <h2>Connect</h2>
@@ -905,6 +953,22 @@ function akp_settings_output() {
 <?php settings_fields('akp-options'); ?>
 <?php do_settings_sections('akp-options'); ?>
     <table class="form-table">
+        
+        <tr valign="top">
+        <th scope="row">Minimum Authorised Role</th>
+        <td>
+            <?php $role = get_option('akp_auth_role'); ?>
+            <select name="akp_auth_role">
+                <option value="subscriber"<?= ($role == "subscriber") ? ' selected' : '' ?>>Subscriber</option>
+                <option value="administrator"<?= ($role == "administrator") ? ' selected' : '' ?>>Administrator</option>
+                <option value="editor"<?= ($role == "editor") ? ' selected' : '' ?>>Editor</option>
+                <option value="author"<?= ($role == "author") ? ' selected' : '' ?>>Author</option>
+                <option value="contributor"<?= ($role == "contributor") ? ' selected' : '' ?>>Contributor</option>
+            </select>
+        </td>
+        <td></td>
+        </tr>
+        
         <tr valign="top">
         <th scope="row">Click Expiry Time Length (per IP)</th>
         <td>
@@ -1421,8 +1485,8 @@ function akp_detailed_output() {
                     <div class="akp_detailed_date_details">
                         <div class="choose_custom_date">
                             <h4>Choose your date range:</h4>
-                            <label>From: </label><input type="text" class="datepicker from_adkingpro_date" />
-                            <label>To: </label><input type="text" class="datepicker to_adkingpro_date" />
+                            <label>From: </label><input type="text" class="akp_datepicker from_adkingpro_date" />
+                            <label>To: </label><input type="text" class="akp_datepicker to_adkingpro_date" />
                             <a class="akp_custom_date" rel="<?= $post_id ?>">Search</a>
                         </div>
                         <div class="returned_data">
