@@ -1,13 +1,26 @@
 <?php
 
-function check_page($hook) {
+function akp_check_page($hook) {
     global $current_screen;
-    $akp_pages = array('dashboard_page_akp-detailed-stats', 'index.php', 'king-pro-plugins_page_adkingpro');
+    $akp_pages = array('dashboard_page_akp-detailed-stats', 'index.php', 'king-pro-plugins_page_adkingpro', "toplevel_page_kpp_menu");
     $pages_req = array('post.php', 'post-new.php', 'edit.php');
     
     if (in_array($hook, $akp_pages)) return true;
     if (in_array($hook, $pages_req) && $current_screen->post_type == 'adverts_posts') return true;
     return false;
+}
+
+// Check for capabilities and throw error if doesn't exist.
+require_once(ABSPATH . 'wp-includes/pluggable.php');
+if (!current_user_can('akp_edit_one')) {
+    function akp_admin_notice() {
+        ?>
+        <div class="error">
+            <p><?php _e( "Ad King Pro capabilities haven't been added to the list which will prevent you from using Ad King Pro. <strong>Please deactivate and reactivate the plugin to add these</strong>.", 'akp_text' ); ?></p>
+        </div>
+        <?php
+    }
+    add_action( 'admin_notices', 'akp_admin_notice' );
 }
 
 function register_akp_options() {
@@ -56,8 +69,6 @@ function akp_create_post_type() {
             $cap = 'akp_edit_one';
             break;
     }
-    
-    $cap = 'akp_edit_five';
     
     register_post_type( 'adverts_posts',
         array(
@@ -776,11 +787,13 @@ function akp_log_impression($post_id) {
 // Dashboard Widget
 
 function akp_enqueue($hook) {
-    if (check_page($hook)) :
+    if (akp_check_page($hook)) :
         wp_register_style( 'akp_jquery_ui', plugins_url('css/jquery-ui.css', dirname(__FILE__)), false, '1.9.2' );
         wp_register_style( 'akp_css', plugins_url('css/adkingpro-styles.css', dirname(__FILE__)), false, '1.0.0' );
+        wp_register_style( 'fontawesome', '//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css', false, '3.2.1');
 
         wp_enqueue_style('akp_jquery_ui');
+        wp_enqueue_style( 'fontawesome' );
         wp_enqueue_style( 'akp_css' );
         wp_enqueue_style( 'thickbox' );
 
@@ -925,16 +938,38 @@ if(!function_exists('kpp_menu_page')) {
 
             <div class="left">
                 <h2>Available Plugins</h2>
-                <a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=adkingpro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Ad King Pro">Install Ad King Pro</a><br />
-                <a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=invoice-king-pro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Invoice King Pro">Install Invoice King Pro</a><br />
-                <a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=related-king-pro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Related King Pro">Install Related King Pro</a><br />
-                
+                <div class="kpp_plugin">
+                    <img src="<?= plugins_url('images/kpp_akp.jpg', dirname(__FILE__)) ?>" alt="Ad King Pro" />
+                    <span class="title">Ad King Pro</span>
+                    <span class="description">Upload. Link. Go.</span>
+                    <span class="links"><a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=adkingpro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Ad King Pro">Install</a></span>
+                </div>
+                <div class="kpp_plugin">
+                    <img src="<?= plugins_url('images/kpp_invkp.jpg', dirname(__FILE__)) ?>" alt="Invoice King Pro" />
+                    <span class="title">Invoice King Pro</span>
+                    <span class="description">Invoicing made easy!</span>
+                    <span class="links"><a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=invoice-king-pro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Invoice King Pro">Install</a></span>
+                </div>
+                <div class="kpp_plugin">
+                    <img src="<?= plugins_url('images/kpp_rsskp.jpg', dirname(__FILE__)) ?>" alt="RSS King Pro" />
+                    <span class="title">RSS King Pro</span>
+                    <span class="description">RSS feeds your way</span>
+                    <span class="links"><a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=related-king-pro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about Related King Pro">Install</a></span>
+                </div>
+                <div class="kpp_plugin">
+                    <img src="<?= plugins_url('images/kpp_relkp.jpg', dirname(__FILE__)) ?>" alt="Related King Pro" />
+                    <span class="title">Related King Pro</span>
+                    <span class="description">Keep traffic on your site</span>
+                    <span class="links"><a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=rss-king-pro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="More information about RSS King Pro">Install</a></span>
+                </div>
             </div>
             <div class="right">
                 <h2>Connect</h2>
-                <h3><a href="https://www.facebook.com/KingProPlugins" target="_blank">Follow on Facebook</a></h3>
-                <h3><a href="https://twitter.com/KingProPlugins" target="_blank">Follow on Twitter</a></h3>
-                <h3><a href="https://plus.google.com/b/101488033905569308183/101488033905569308183/about" target="_blank">Follow on Google+</a></h3>
+                <div id="kpp_social">
+                    <div class="kpp_social facebook"><a href="https://www.facebook.com/KingProPlugins" target="_blank"><i class="icon-facebook"></i> <span class="kpp_width"><span class="kpp_opacity">Facebook</span></span></a></div>
+                    <div class="kpp_social twitter"><a href="https://twitter.com/KingProPlugins" target="_blank"><i class="icon-twitter"></i> <span class="kpp_width"><span class="kpp_opacity">Twitter</span></span></a></div>
+                    <div class="kpp_social google"><a href="https://plus.google.com/b/101488033905569308183/101488033905569308183/about" target="_blank"><i class="icon-google-plus"></i> <span class="kpp_width"><span class="kpp_opacity">Google+</span></span></a></div>
+                </div>
                 <h4>Found an issue? Post your issue on the <a href="http://wordpress.org/support/plugin/adkingpro" target="_blank">support forums</a>. If you would prefer, please email your concern to <a href="mailto:plugins@kingpro.me">plugins@kingpro.me</a></h4>   
             </div>
             <br class="clear">

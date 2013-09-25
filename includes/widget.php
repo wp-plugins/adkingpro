@@ -20,11 +20,11 @@ class AdKingPro_Widget extends WP_Widget {
             $changespeed = apply_filters( 'widget_changespeed', $instance['changespeed'] );
             $code = 'type="'.$type.'"';
             if ($banner !== '') $code = 'banner="'.$banner.'"';
-            if ($render !== '' && is_int($render)) $code .= ' render="'.$render.'"';
+            if ($render !== '' && is_numeric($render)) $code .= ' render="'.$render.'"';
             if ($rotate == 'true') $code .= ' rotate="true"';
             if ($rotate == 'true' && $effect !== '') $code .= ' effect="'.$effect.'"';
-            if ($rotate == 'true' && $speed !== '' && is_int($speed)) $code .= ' speed="'.$speed.'"';
-            if ($rotate == 'true' && $changespeed !== '' && is_int($changespeed)) $code .= ' changespeed="'.$changespeed.'"';
+            if ($rotate == 'true' && $speed !== '' && is_numeric($speed)) $code .= ' speed="'.$speed.'"';
+            if ($rotate == 'true' && $changespeed !== '' && is_numeric($changespeed)) $code .= ' changespeed="'.$changespeed.'"';
             if (function_exists('adkingpro_func')){ 
                 echo do_shortcode('[adkingpro '.$code.']');
             }
