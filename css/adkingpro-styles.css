@@ -282,7 +282,7 @@ font-size: 12px;
 }
 
 /***** Settings Area Styling *****/
-
+/*
 .akp_settings {
     width: 48%; float: left;
 }
@@ -304,7 +304,74 @@ font-size: 12px;
     color: #fff;
 }
 
+/***** Settings Area Styling *****/
+
+.akp_tabs {
+    margin-top: -20px;
+}
+
+.akp_tabs a {
+    padding: 0 15px;
+    font-size: 18px;
+    height: 32px;
+    line-height: 32px;
+    display: inline-block;
+    border: 1px solid #aaa;
+    border-top: none;
+    background: #ccc;
+    color: #666;
+    margin-right: 2px;
+    position: relative;
+    cursor: pointer;
+    font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",sans-serif;
+}
+
+.akp_tabs a.active, .akp_tabs a:hover {
+    top: -1px;
+    background: #efefef;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.wrap div.error.akp_notice, .wrap div.updated.akp_notice {
+    margin: 25px 0 5px;
+}
+
+.akp_sections div.akp_section {
+    width: 0%;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    -webkit-transition: opacity 0.5s ease;
+    -moz-transition: opacity 0.5s ease;
+    -ms-transition: opacity 0.5s ease;
+    -o-transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease;
+}
+
+.akp_sections div.akp_section.active {
+    width: 90%;
+    height: auto;
+    opacity: 1;
+    padding: 20px 0;
+}
+
+.akp_sections .form-table tr:nth-child(even) {
+    background: #eee;
+}
+
+.akp_sections .button-primary {margin: 20px 0;}
+
 /***** KPP Page *****/
+
+.kpp_block.filled {
+    padding:20px;
+    border: 1px solid #ccc;
+    background: #efefef;
+    border-top-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    margin: 20px 0;
+}
 
 .kpp_plugin {
     border: 1px solid #ccc;
