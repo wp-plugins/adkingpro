@@ -43,32 +43,38 @@ add_option( 'pdf_theme', 'default' );
 add_option( 'akp_image_sizes', '' );
 add_option( 'akp_auth_role', 'subscriber');
 
-// Register Adverts
-function akp_create_post_type() {
-    
+function akp_allowed_cap() {
     $role = get_option('akp_auth_role');
     $cap = 'akp_edit_one';
     switch ($role) {
         case 'administrator':
             $cap = 'akp_edit_five';
             break;
-        
+
         case 'editor':
             $cap = 'akp_edit_four';
             break;
-        
+
         case 'author':
             $cap = 'akp_edit_three';
             break;
-        
+
         case 'contributor':
             $cap = 'akp_edit_two';
             break;
-        
+
         case 'subscriber':
             $cap = 'akp_edit_one';
             break;
     }
+    
+    return $cap;
+}
+
+// Register Adverts
+function akp_create_post_type() {
+    
+    $cap = akp_allowed_cap();
     
     register_post_type( 'adverts_posts',
         array(
@@ -880,10 +886,12 @@ function akp_dashboard() {
     }
 } 
 
-function akp_add_dashboard_widgets() {
-	wp_add_dashboard_widget('akp_dashboard_widget', 'Ad King Pro - Banner Stats Summary', 'akp_dashboard');	
-} 
-add_action('wp_dashboard_setup', 'akp_add_dashboard_widgets' );
+if (current_user_can(akp_allowed_cap())) {
+    function akp_add_dashboard_widgets() {
+            wp_add_dashboard_widget('akp_dashboard_widget', 'Ad King Pro - Banner Stats Summary', 'akp_dashboard');	
+    } 
+    add_action('wp_dashboard_setup', 'akp_add_dashboard_widgets' );
+}
 
 // Add King Pro Plugins Section
 if(!function_exists('find_kpp_menu_item')) {
@@ -924,9 +932,10 @@ function akp_add_parent_page() {
 //  else {
 //    remove_submenu_page('kpp_menu','kpp_menu');
 //  }
-  
-  add_submenu_page('kpp_menu', 'Ad King Pro', 'Ad King Pro', 'manage_options', 'adkingpro', 'akp_settings_output');
-  add_dashboard_page('Ad King Pro Detailed Stats', 'Ad King Pro Stats', 'read', 'akp-detailed-stats', 'akp_detailed_output');
+  if (current_user_can(akp_allowed_cap())) {
+    add_submenu_page('kpp_menu', 'Ad King Pro', 'Ad King Pro', 'manage_options', 'adkingpro', 'akp_settings_output');
+    add_dashboard_page('Ad King Pro Detailed Stats', 'Ad King Pro Stats', 'read', 'akp-detailed-stats', 'akp_detailed_output');
+  }
 }
 add_action('admin_menu', 'akp_add_parent_page');
 
