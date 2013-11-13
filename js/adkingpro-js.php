@@ -104,18 +104,18 @@ function akp_date_range_ajax() {
         <table>
             <tr>
                 <td></td>
-                <th class="center">Count</th>
-                <th class="center">Cost Per</th>
-                <th class="center">Total</th>
+                <th class="center"><?= __('Count', 'akptext') ?></th>
+                <th class="center"><?= __('Cost Per', 'akptext') ?></th>
+                <th class="center"><?= __('Total', 'akptext') ?></th>
             </tr>
             <tr>
-                <td>Impressions</td>
+                <td><?= __('Impressions', 'akptext') ?></td>
                 <td class="center"><?= $date_impressions[0]->impressions ?></td>
                 <td class="right"><?= $per_impression ?></td>
                 <td class="right"><?= $impression_total_output ?></td>
             </tr>
             <tr>
-                <td>Clicks</td>
+                <td><?= __('Clicks', 'akptext') ?></td>
                 <td class="center"><?= $clicks ?></td>
                 <td class="right"><?= $per_click ?></td>
                 <td class="right"><?= $click_total_output ?></td>
@@ -123,20 +123,20 @@ function akp_date_range_ajax() {
             <tr>
                 <td></td>
                 <td></td>
-                <td class="right bold">TOTAL</td>
+                <td class="right bold"><?= __('TOTAL', 'akptext') ?></td>
                 <td class="right bold"><?= $total_made_output ?></td>
             </tr>
         </table>
         <br />
         <div class="akp_reporting">
-            <strong>Download report: </strong> <a class="akp_csv" rel="daterange/<?= $banner_id ?>">CSV</a> <a class="akp_pdf" rel="daterange/<?= $banner_id ?>">PDF</a>
+            <strong><?= __('Download report', 'akptext') ?>: </strong> <a class="akp_csv" rel="daterange/<?= $banner_id ?>"><?= __('CSV', 'akptext') ?></a> <a class="akp_pdf" rel="daterange/<?= $banner_id ?>"><?= __('PDF', 'akptext') ?></a>
         </div>
         <br />
         <table>
             <thead>
                 <tr>
-                    <th>Date/Time</th>
-                    <th>IP Address</th>
+                    <th><?= __('Date/Time', 'akptext') ?></th>
+                    <th><?= __('IP Address', 'akptext') ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -149,8 +149,8 @@ function akp_date_range_ajax() {
             </tbody>
             <tfoot>
                 <tr>
-                    <th>Date/Time</th>
-                    <th>IP Address</th>
+                    <th><?= __('Date/Time', 'akptext') ?></th>
+                    <th><?= __('IP Address', 'akptext') ?></th>
                 </tr>
             </tfoot>
         </table>

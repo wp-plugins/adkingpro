@@ -16,7 +16,7 @@ if (!current_user_can('akp_edit_one')) {
     function akp_admin_notice() {
         ?>
         <div class="error">
-            <p><?php _e( "Ad King Pro capabilities haven't been added to the list which will prevent you from using Ad King Pro. <strong>Please deactivate and reactivate the plugin to add these</strong>.", 'akp_text' ); ?></p>
+            <p>Ad King Pro <?= __("capabilities haven't been added to the list which will prevent you from using Ad King Pro. <strong>Please deactivate and reactivate the plugin to add these</strong>.", 'akptext' ); ?></p>
         </div>
         <?php
     }
@@ -79,13 +79,13 @@ function akp_create_post_type() {
     register_post_type( 'adverts_posts',
         array(
             'labels' => array(
-                'name' => __( 'Adverts' ),
-                'singular_name' => __( 'Advert' ),
-                'all_items'=>'All Adverts',
-                'edit_item'=>'Edit Advert',
-                'update_item'=>'Update Advert',
-                'add_new_item'=>'Add New Advert',
-                'new_item_name'=>'New Advert',
+                'name' => __( 'Adverts', 'akptext' ),
+                'singular_name' => __( 'Advert', 'akptext' ),
+                'all_items'=>__( 'All Adverts', 'akptext' ),
+                'edit_item'=>__( 'Edit Advert', 'akptext' ),
+                'update_item'=>__( 'Update Advert', 'akptext' ),
+                'add_new_item'=>__( 'Add New Advert', 'akptext' ),
+                'new_item_name'=>__( 'New Advert', 'akptext' ),
             ),
             'capabilities' => array(
                 'publish_posts' => $cap,
@@ -111,14 +111,14 @@ function akp_create_post_type() {
         array(
             'hierarchical' => true,
             'labels' => array(
-                'name'=>'Advert Types',
-                'singular_name'=>'Advert Type',
-                'all_items'=>'All Advert Types',
-                'edit_item'=>'Edit Advert Type',
-                'update_item'=>'Update Advert Type',
-                'add_new_item'=>'Add New Advert Type',
-                'new_item_name'=>'New Advert Type',
-                'search_items'=>'Search Advert Types',
+                'name'=>__('Advert Types', 'akptext' ),
+                'singular_name'=>__('Advert Type', 'akptext' ),
+                'all_items'=>__('All Advert Types', 'akptext' ),
+                'edit_item'=>__('Edit Advert Type', 'akptext' ),
+                'update_item'=>__('Update Advert Type', 'akptext' ),
+                'add_new_item'=>__('Add New Advert Type', 'akptext' ),
+                'new_item_name'=>__('New Advert Type', 'akptext' ),
+                'search_items'=>__('Search Advert Types', 'akptext' ),
             ),
             'query_var' => true,
             'rewrite' => array('slug' => 'adverts_slug')
@@ -179,25 +179,25 @@ function akp_extra_advert_types_fields( $tag ) {    //check for existing feature
 ?>
 <tr class="form-field">
 <td colspan="2">
-Leave the below blank to use the full size of the image you upload.          
+<?= __("Leave the below blank to use the full size of the image you upload.", 'akptext') ?>        
 </td>
 </tr>
 <tr class="form-field">
-<th scope="row" valign="top"><label for="advert_width"><?php _e('Set width of advert'); ?></label></th>
+<th scope="row" valign="top"><label for="advert_width"><?= __('Set width of advert', 'akptext'); ?></label></th>
 <td>
 <input type="text" name="Cat_meta[advert_width]" id="Cat_meta[advert_width]" size="5" style="width:20%;" value="<?php echo $cat_meta['advert_width'] ? $cat_meta['advert_width'] : ''; ?>" /><br />
-            <span class="description"><?php _e('If variable, please leave blank'); ?></span>
+            <span class="description"><?= __('If variable, please leave blank', 'akptext'); ?></span>
         </td>
 </tr>
 <tr class="form-field">
-<th scope="row" valign="top"><label for="advert_height"><?php _e('Set height of advert'); ?></label></th>
+<th scope="row" valign="top"><label for="advert_height"><?= __('Set height of advert', 'akptext'); ?></label></th>
 <td>
 <input type="text" name="Cat_meta[advert_height]" id="Cat_meta[advert_height]" size="5" style="width:20%;" value="<?php echo $cat_meta['advert_height'] ? $cat_meta['advert_height'] : ''; ?>" /><br />
-            <span class="description"><?php _e('If variable, please leave blank'); ?></span>
+            <span class="description"><?= __('If variable, please leave blank'); ?></span>
         </td>
 </tr>
 <tr class="form-field">
-<th scope="row" valign="top"><label for="advert_crop"><?php _e('Hard crop image?'); ?></label></th>
+<th scope="row" valign="top"><label for="advert_crop"><?= __('Hard crop image?', 'akptext'); ?></label></th>
 <td>
     <input type="hidden" name="Cat_meta[advert_crop]" value="0" />
 <input type="checkbox" name="Cat_meta[advert_crop]" id="Cat_meta[advert_crop]" value="1"<?php if ($cat_meta['advert_crop'] == '1') echo ' checked'; ?> /><br />
@@ -302,7 +302,7 @@ add_action( 'init', 'akp_image_sizes' );
 function akp_title_text_input( $title ){
     global $post;
     if($post->post_type == 'adverts_posts') 
-        return $title = 'Advert URL ie http://kingpro.me/plugins/ad-king-pro';
+        return $title = __('Advert URL ie http://kingpro.me/plugins/ad-king-pro', 'akptext');
     return $title;
 }
 add_filter( 'enter_title_here', 'akp_title_text_input' );
@@ -310,21 +310,21 @@ add_filter( 'enter_title_here', 'akp_title_text_input' );
 // Update Feature Image to become Advert Image
 function akp_change_meta_boxes()
 {
-    add_meta_box('akpmediatype', __('Media Type'), 'akp_media_type', 'adverts_posts', 'normal', 'high');
+    add_meta_box('akpmediatype', __('Media Type', 'akptext'), 'akp_media_type', 'adverts_posts', 'normal', 'high');
     
     remove_meta_box( 'postimagediv', 'adverts_posts', 'side' );
     if (current_theme_supports('post-thumbnails')) {
-        add_meta_box('postimagediv', __('Advert Image'), 'post_thumbnail_meta_box', 'adverts_posts', 'normal', 'high');
-        add_meta_box('akpimageattrbox', __('Advert Image Attributes'), 'akp_image_attrs_box', 'adverts_posts', 'normal', 'high');
+        add_meta_box('postimagediv', __('Advert Image', 'akptext'), 'post_thumbnail_meta_box', 'adverts_posts', 'normal', 'high');
+        add_meta_box('akpimageattrbox', __('Advert Image Attributes', 'akptext'), 'akp_image_attrs_box', 'adverts_posts', 'normal', 'high');
     } else 
-        add_meta_box('akpimagebox', __('Advert Image'), 'akp_image_box', 'adverts_posts', 'normal', 'high');
-    add_meta_box('akpflashbox', __('Advert Flash File'), 'akp_flash_box', 'adverts_posts', 'normal', 'high');
-    add_meta_box('akpadsensebox', __('Advert AdSense Code'), 'akp_adsense_box', 'adverts_posts', 'normal', 'high');
-    add_meta_box('akptextbox', __('Advert Text'), 'akp_text_box', 'adverts_posts', 'normal', 'high');
-    add_meta_box('postremoveurllink', __('Remove Link from Advert?'), 'akp_remove_url_link', 'adverts_posts', 'advanced', 'high');
-    add_meta_box('postclickstatsdiv', __('Advert Stats'), 'akp_post_click_stats', 'adverts_posts', 'advanced', 'low');
-    add_meta_box('revenuevaluesdiv', __('Advert Revenue'), 'akp_revenue_values', 'adverts_posts', 'side', 'low');
-    add_meta_box('linkoptionsdiv', __('Link Options'), 'akp_link_options', 'adverts_posts', 'side', 'low');
+        add_meta_box('akpimagebox', __('Advert Image', 'akptext'), 'akp_image_box', 'adverts_posts', 'normal', 'high');
+    add_meta_box('akpflashbox', __('Advert Flash File', 'akptext'), 'akp_flash_box', 'adverts_posts', 'normal', 'high');
+    add_meta_box('akpadsensebox', __('Advert AdSense Code', 'akptext'), 'akp_adsense_box', 'adverts_posts', 'normal', 'high');
+    add_meta_box('akptextbox', __('Advert Text', 'akptext'), 'akp_text_box', 'adverts_posts', 'normal', 'high');
+    add_meta_box('postremoveurllink', __('Remove Link from Advert?', 'akptext'), 'akp_remove_url_link', 'adverts_posts', 'advanced', 'high');
+    add_meta_box('postclickstatsdiv', __('Advert Stats', 'akptext'), 'akp_post_click_stats', 'adverts_posts', 'advanced', 'low');
+    add_meta_box('revenuevaluesdiv', __('Advert Revenue', 'akptext'), 'akp_revenue_values', 'adverts_posts', 'side', 'low');
+    add_meta_box('linkoptionsdiv', __('Link Options', 'akptext'), 'akp_link_options', 'adverts_posts', 'side', 'low');
 }
 add_action('do_meta_boxes', 'akp_change_meta_boxes');
 
@@ -354,22 +354,22 @@ function expiry_in_publish($post)
         }
         echo '<div class="misc-pub-section misc-pub-section-last curtime">
              <span id="expiry">
-            Expire on: <b>'.$expiry_output.'</b>
+            '.__('Expire on', 'akptext').': <b>'.$expiry_output.'</b>
             </span>
-            <a href="#edit_expiry" class="edit-expiry hide-if-no-js">Edit</a>
+            <a href="#edit_expiry" class="edit-expiry hide-if-no-js">'.__('Edit', 'akptext').'</a>
             <div id="expirydiv" class="hide-if-js"><div class="expiry-wrap"><select id="exp_m">
-                            <option value="01"'.(($expiry_m == '01') ? ' selected="selected"' : '').'>01-Jan</option>
-                            <option value="02"'.(($expiry_m == '02') ? ' selected="selected"' : '').'>02-Feb</option>
-                            <option value="03"'.(($expiry_m == '03') ? ' selected="selected"' : '').'>03-Mar</option>
-                            <option value="04"'.(($expiry_m == '04') ? ' selected="selected"' : '').'>04-Apr</option>
-                            <option value="05"'.(($expiry_m == '05') ? ' selected="selected"' : '').'>05-May</option>
-                            <option value="06"'.(($expiry_m == '06') ? ' selected="selected"' : '').'>06-Jun</option>
-                            <option value="07"'.(($expiry_m == '07') ? ' selected="selected"' : '').'>07-Jul</option>
-                            <option value="08"'.(($expiry_m == '08') ? ' selected="selected"' : '').'>08-Aug</option>
-                            <option value="09"'.(($expiry_m == '09') ? ' selected="selected"' : '').'>09-Sep</option>
-                            <option value="10"'.(($expiry_m == '10') ? ' selected="selected"' : '').'>10-Oct</option>
-                            <option value="11"'.(($expiry_m == '11') ? ' selected="selected"' : '').'>11-Nov</option>
-                            <option value="12"'.(($expiry_m == '12') ? ' selected="selected"' : '').'>12-Dec</option>
+                            <option value="01"'.(($expiry_m == '01') ? ' selected="selected"' : '').'>'.__('01-Jan', 'akptext').'</option>
+                            <option value="02"'.(($expiry_m == '02') ? ' selected="selected"' : '').'>'.__('02-Feb', 'akptext').'</option>
+                            <option value="03"'.(($expiry_m == '03') ? ' selected="selected"' : '').'>'.__('03-Mar', 'akptext').'</option>
+                            <option value="04"'.(($expiry_m == '04') ? ' selected="selected"' : '').'>'.__('04-Apr', 'akptext').'</option>
+                            <option value="05"'.(($expiry_m == '05') ? ' selected="selected"' : '').'>'.__('05-May', 'akptext').'</option>
+                            <option value="06"'.(($expiry_m == '06') ? ' selected="selected"' : '').'>'.__('06-Jun', 'akptext').'</option>
+                            <option value="07"'.(($expiry_m == '07') ? ' selected="selected"' : '').'>'.__('07-Jul', 'akptext').'</option>
+                            <option value="08"'.(($expiry_m == '08') ? ' selected="selected"' : '').'>'.__('08-Aug', 'akptext').'</option>
+                            <option value="09"'.(($expiry_m == '09') ? ' selected="selected"' : '').'>'.__('09-Sep', 'akptext').'</option>
+                            <option value="10"'.(($expiry_m == '10') ? ' selected="selected"' : '').'>'.__('10-Oct', 'akptext').'</option>
+                            <option value="11"'.(($expiry_m == '11') ? ' selected="selected"' : '').'>'.__('11-Nov', 'akptext').'</option>
+                            <option value="12"'.(($expiry_m == '12') ? ' selected="selected"' : '').'>'.__('12-Dec', 'akptext').'</option>
     </select><input type="text" id="exp_d" value="'.$expiry_d.'" size="2" maxlength="2" autocomplete="off">, <input type="text" id="exp_y" value="'.$expiry_y.'" size="4" maxlength="4" autocomplete="off"> @ <input type="text" id="exp_h" value="'.$expiry_h.'" size="2" maxlength="2" autocomplete="off"> : <input type="text" id="exp_i" value="'.$expiry_i.'" size="2" maxlength="2" autocomplete="off"></div><input type="hidden" id="exp_s" value="55">
 
     <input type="hidden" id="hidden_exp_m" value="'.$expiry_m.'">
@@ -381,9 +381,9 @@ function expiry_in_publish($post)
     <input type="hidden" name="akp_expiry_date" id="akp_expiry_date" value="'.$expiry_value.'" />
 
     <p>
-    <a href="#edit_expiry" class="save-expiry hide-if-no-js button">OK</a>
-    <a href="#edit_expiry" class="cancel-expiry hide-if-no-js">Cancel</a>
-    <a href="#edit_expiry" class="set-never-expiry hide-if-no-js button right">Set to Never</a>
+    <a href="#edit_expiry" class="save-expiry hide-if-no-js button">'.__('OK', 'akptext').'</a>
+    <a href="#edit_expiry" class="cancel-expiry hide-if-no-js">'.__('Cancel', 'akptext').'</a>
+    <a href="#edit_expiry" class="set-never-expiry hide-if-no-js button right">'.__('Set to Never', 'akptext').'</a>
     </p>
                     </div>
         </div>';
@@ -399,10 +399,10 @@ function akp_media_type($object, $box) {
     $text = ($media_type == 'text') ? ' selected' : '';
     
     echo "<select name='akp_media_type' id='akp_change_media_type'>";
-    echo "<option value='image'>Image</option>";
-    echo "<option value='flash'".$flash.">Flash</option>";
-    echo "<option value='adsense'".$adsense.">AdSense</option>";
-    echo "<option value='text'".$text.">Text</option>";
+    echo "<option value='image'>".__('Image', 'akptext')."</option>";
+    echo "<option value='flash'".$flash.">".__('Flash', 'akptext')."</option>";
+    echo "<option value='adsense'".$adsense.">".__('AdSense', 'akptext')."</option>";
+    echo "<option value='text'".$text.">".__('Text', 'akptext')."</option>";
     echo "</select>";
 }
 
@@ -413,10 +413,10 @@ function akp_image_box($object, $box) {
     
     echo '<label for="akp_image_url">';
     echo '<input id="akp_image_url" type="text" size="36" name="akp_image_url" value="'.$image_url.'" />';
-    echo '<input id="akp_image_url_button" class="button" type="button" value="Upload Image" />';
-    echo '<br />Enter a URL or upload an image (You are seeing this box as you have disabled "post-thumbnails" support.)';
+    echo '<input id="akp_image_url_button" class="button" type="button" value="'.__('Upload Image', 'akptext').'" />';
+    echo '<br />'.__('Enter a URL or upload an image (You are seeing this box as you have disabled "post-thumbnails" support.)', 'akptext');
     echo '</label><br /><br />';
-    echo '<label for="akp_image_alt">Banner description (this will be added to the alt tag on the image)</label>';
+    echo '<label for="akp_image_alt">'.__('Banner description (this will be added to the alt tag on the image)', 'akptext').'</label>';
     echo '<br /><input id="akp_image_alt" type="text" size="36" name="akp_image_alt" value="'.$image_alt.'" />';
     echo '<br /><br />';
 }
@@ -425,7 +425,7 @@ function akp_image_attrs_box($object, $box) {
     global $post;
     $image_alt = (get_post_meta( $post->ID, 'akp_image_alt', true )) ? get_post_meta( $post->ID, 'akp_image_alt', true ) : '';
 
-    echo '<label for="akp_image_alt">Banner description (this will be added to the alt tag on the image)</label>';
+    echo '<label for="akp_image_alt">'.__('Banner description (this will be added to the alt tag on the image)', 'akptext').'</label>';
     echo '<br /><input id="akp_image_alt" type="text" style="width: 100%;" name="akp_image_alt" value="'.$image_alt.'" />';
     echo '<br /><br />';
 }
@@ -437,26 +437,26 @@ function akp_flash_box($object, $box) {
     $flash_height = (get_post_meta( $post->ID, 'akp_flash_height', true )) ? get_post_meta( $post->ID, 'akp_flash_height', true ) : '';
     echo '<label for="akp_flash_url">';
     echo '<input id="akp_flash_url" type="text" size="36" name="akp_flash_url" value="'.$flash_url.'" />';
-    echo '<input id="akp_flash_url_button" class="button" type="button" value="Upload SWF File" />';
-    echo '<br />Enter a URL or upload a SWF file';
+    echo '<input id="akp_flash_url_button" class="button" type="button" value="'.__('Upload SWF File', 'akptext').'" />';
+    echo '<br />'.__('Enter a URL or upload a SWF file', 'akptext');
     echo '</label><br /><br />';
-    echo '<label for="akp_flash_width" style="width: 85px; display: block; float: left;">SWF Width</label><input type="text" name="akp_flash_width" value="'.$flash_width.'" style="width: 60px;" /><br />';
-    echo '<label for="akp_flash_height" style="width: 85px; display: block; float: left;">SWF Height</label><input type="text" name="akp_flash_height" value="'.$flash_height.'" style="width: 60px;" /><br />';
+    echo '<label for="akp_flash_width" style="width: 85px; display: block; float: left;">'.__('SWF Width', 'akptext').'</label><input type="text" name="akp_flash_width" value="'.$flash_width.'" style="width: 60px;" /><br />';
+    echo '<label for="akp_flash_height" style="width: 85px; display: block; float: left;">'.__('SWF Height', 'akptext').'</label><input type="text" name="akp_flash_height" value="'.$flash_height.'" style="width: 60px;" /><br />';
 }
 
 function akp_adsense_box($object, $box) {
     global $post;
     $adsense_code = (get_post_meta( $post->ID, 'akp_adsense_code', true )) ? get_post_meta( $post->ID, 'akp_adsense_code', true ) : '';
-    echo '<label for="akp_adsense_code">Enter the Ad Unit Code given from your Google AdSense account</label>';
+    echo '<label for="akp_adsense_code">'.__('Enter the Ad Unit Code given from your Google AdSense account', 'akptext').'</label>';
     echo '<br /><textarea name="akp_adsense_code" style="width: 100%; height: 200px;">'.$adsense_code.'</textarea><br />';
-    echo '<br /><strong>Please note that only impressions are tracked for these ads as the clicks are registers via AdSense</strong>';
+    echo '<br /><strong>'.__('Please note that only impressions are tracked for these ads as the clicks are registers via AdSense', 'akptext').'</strong>';
 }
 
 function akp_text_box($object, $box) {
     global $post;
     $text = (get_post_meta( $post->ID, 'akp_text', true )) ? get_post_meta( $post->ID, 'akp_text', true ) : '';
     
-    echo '<label for="akp_text">Enter the text you would like on the link that will be tracked</label>';
+    echo '<label for="akp_text">'.__('Enter the text you would like on the link that will be tracked', 'akptext').'</label>';
     echo '<br /><input type="text" name="akp_text" style="width: 100%;" value="'.$text.'" /><br />';
 }
 
@@ -464,8 +464,8 @@ function akp_text_box($object, $box) {
 function akp_post_click_stats($object, $box) {
     global $wpdb, $post;
     $clicks = $wpdb->get_results("SELECT COUNT(*) as clicks FROM ".$wpdb->prefix."akp_click_log WHERE post_id = '$object->ID'");
-    echo "This banner has had ".$clicks[0]->clicks." since being published. <a href='".admin_url('/index.php?page=akp-detailed-stats')."'>View Detailed Report</a>";
-    echo '<br /><br /><a href="'.admin_url('admin.php?action=akpresetdata&post='.$post->ID).'" onclick="if(!confirm(\'Are you sure you want to reset the tracking data back to 0? There is no reversing this action.\')){return false;}">Reset Tracking Data</a>';
+    echo __("This banner has had ", 'akptext').$clicks[0]->clicks.__(" since being published.", 'akptext')." <a href='".admin_url('/index.php?page=akp-detailed-stats')."'>".__("View Detailed Report", 'akptext')."</a>";
+    echo '<br /><br /><a href="'.admin_url('admin.php?action=akpresetdata&post='.$post->ID).'" onclick="if(!confirm(\''.__("Are you sure you want to reset the tracking data back to 0? There is no reversing this action", 'akptext').'.\')){return false;}">'.__("Reset Tracking Data", 'akptext').'</a>';
 }
 
 function akpresetdata_admin_action()
@@ -523,10 +523,10 @@ function akp_revenue_values($object, $box) {
     $revenue_impression = get_post_meta( $post->ID, 'akp_revenue_per_impression', true );
     $revenue_click = get_post_meta( $post->ID, 'akp_revenue_per_click', true );
     
-    echo '<div class="misc-pub-section"><label for="akp_revenue_per_impression">Revenue Per Impression:</label>';
+    echo '<div class="misc-pub-section"><label for="akp_revenue_per_impression">'.__("Revenue Per Impression", "akptext").':</label>';
     echo '<input type="text" name="akp_revenue_per_impression" value="', $revenue_impression ? $revenue_impression : '0.00', '" style="width: 70px;float: right;margin-top: -3px;" />';
     echo '</div>';
-    echo '<div class="misc-pub-section"><label for="akp_revenue_per_click">Revenue Per Click:</label>';
+    echo '<div class="misc-pub-section"><label for="akp_revenue_per_click">'.__("Revenue Per Click", 'akptext').':</label>';
     echo '<input type="text" name="akp_revenue_per_click" value="', $revenue_click ? $revenue_click : '0.00', '" style="width: 70px;float: right;margin-top: -3px;" />';
     echo '</div>';
 }
@@ -545,19 +545,19 @@ function akp_link_options($object, $box) {
     // Use nonce for verification
     echo '<input type="hidden" name="akp_meta_box_nonce" value="', wp_create_nonce(basename(__FILE__)), '" />';
     
-    echo '<div class="misc-pub-section"><label for="akp_remove_url">Remove URL from link:</label>';
+    echo '<div class="misc-pub-section"><label for="akp_remove_url">'.__("Remove URL from link", 'akptext').':</label>';
     echo '<input type="checkbox" value="1" name="akp_remove_url" id="akp_remove_url"', $remove_url ? ' checked="checked"' : '', ' style="width: 70px;float: right;margin-top: -3px;" />';
     echo '</div>';
     
-    echo "<div class='misc-pub-section'><label for='akp_target'>Window Target</label><select name='akp_target' style='width: 70px;float: right;margin-top: -3px;' >";
+    echo "<div class='misc-pub-section'><label for='akp_target'>".__("Window Target", "akptext")."</label><select name='akp_target' style='width: 70px;float: right;margin-top: -3px;' >";
     echo "<option value='blank'>_blank</option>";
     echo "<option value='self'".$self.">_self</option>";
     echo "<option value='parent'".$parent.">_parent</option>";
     echo "<option value='top'".$top.">_top</option>";
-    echo "<option value='none'".$none.">none</option>";
+    echo "<option value='none'".$none.">".__('none', 'akptext')."</option>";
     echo "</select></div>";
     
-    echo '<div class="misc-pub-section"><label for="akp_nofollow">Add "nofollow" to link?</label><input type="hidden" name="akp_nofollow" value="0" /><input type="checkbox" value="1" name="akp_nofollow" id="akp_nofollow"', $nofollow ? ' checked="checked"' : '', ' style="width: 70px;float: right;margin-top: -3px;" /></div>';
+    echo '<div class="misc-pub-section"><label for="akp_nofollow">'.__('Add "nofollow" to link?', 'akptext').'</label><input type="hidden" name="akp_nofollow" value="0" /><input type="checkbox" value="1" name="akp_nofollow" id="akp_nofollow"', $nofollow ? ' checked="checked"' : '', ' style="width: 70px;float: right;margin-top: -3px;" /></div>';
 }
 
 // Process the custom metabox fields
@@ -656,13 +656,13 @@ function akp_edit_adverts_columns( $columns ) {
 
     $columns = array(
         'cb' => '<input type="checkbox" />',
-        'banner_id' => __( 'Banner ID' ),
-        'impressions' => __( 'Impressions' ),
-        'clicks' => __( 'Clicks' ),
-        'title' => __( 'URL' ),
-        'advert_type' => __( 'Advert Type'),
-        'advert_image' => __( 'Advert Image'),
-        'date' => __( 'Date' ),
+        'banner_id' => __( 'Banner ID', 'akptext' ),
+        'impressions' => __( 'Impressions', 'akptext' ),
+        'clicks' => __( 'Clicks', 'akptext' ),
+        'title' => __( 'URL', 'akptext' ),
+        'advert_type' => __( 'Advert Type', 'akptext'),
+        'advert_image' => __( 'Advert Image', 'akptext'),
+        'date' => __( 'Date', 'akptext' ),
     );
 
     return $columns;
@@ -684,7 +684,7 @@ function akp_columns($column_name, $ID) {
                 }
                 echo join( ', ', $out );
             } else {
-                echo 'No Advert Types Assigned';
+                echo __('No Advert Types Assigned', 'akptext');
             }
             break;
             
@@ -869,10 +869,10 @@ function akp_dashboard() {
                         <a href='<?= admin_url("post.php?post=".$post_id."&action=edit") ?>'><img src='<?= $image ?>' /></a>
                     </div>
                     <div class='stats'>
-                        <div class='stat'><h4>All Time</h4><span title="Impressions: <?= $all_impressions[0]->impressions ?>" alt="Impressions: <?= $all_impressions[0]->impressions ?>"><?= $all_clicks[0]->clicks ?></span></div>
-                        <div class='stat'><h4>This Month</h4><span title="<?= $month_impressions[0]->impressions ?>" alt="<?= $month_impressions[0]->impressions ?>"><?= $month_clicks[0]->clicks ?></span></div>
-                        <div class='stat'><h4>This Week</h4><span title="<?= $week_impressions[0]->impressions ?>" alt="<?= $week_impressions[0]->impressions ?>"><?= $week_clicks[0]->clicks ?></span></div>
-                        <div class='stat'><h4>Today</h4><span title="<?= $today_impressions[0]->impressions ?>" alt="<?= $today_impressions[0]->impressions ?>"><?= $today_clicks[0]->clicks ?></span></div>
+                        <div class='stat'><h4><?= __('All Time', 'akptext') ?></h4><span title="<?= __('Impressions', 'akptext') ?>: <?= $all_impressions[0]->impressions ?>" alt="<?= __('Impressions', 'akptext') ?>: <?= $all_impressions[0]->impressions ?>"><?= $all_clicks[0]->clicks ?></span></div>
+                        <div class='stat'><h4><?= __('This Month', 'akptext') ?></h4><span title="<?= $month_impressions[0]->impressions ?>" alt="<?= $month_impressions[0]->impressions ?>"><?= $month_clicks[0]->clicks ?></span></div>
+                        <div class='stat'><h4><?= __('This Week', 'akptext') ?></h4><span title="<?= $week_impressions[0]->impressions ?>" alt="<?= $week_impressions[0]->impressions ?>"><?= $week_clicks[0]->clicks ?></span></div>
+                        <div class='stat'><h4><?= __('Today', 'akptext') ?></h4><span title="<?= $today_impressions[0]->impressions ?>" alt="<?= $today_impressions[0]->impressions ?>"><?= $today_clicks[0]->clicks ?></span></div>
                     </div>
                     <br style="clear: both;" />
                 </li>
@@ -888,7 +888,7 @@ function akp_dashboard() {
 
 if (current_user_can(akp_allowed_cap())) {
     function akp_add_dashboard_widgets() {
-            wp_add_dashboard_widget('akp_dashboard_widget', 'Ad King Pro - Banner Stats Summary', 'akp_dashboard');	
+            wp_add_dashboard_widget('akp_dashboard_widget', 'Ad King Pro - '.__('Banner Stats Summary', 'akptext'), 'akp_dashboard');	
     } 
     add_action('wp_dashboard_setup', 'akp_add_dashboard_widgets' );
 }
@@ -934,7 +934,7 @@ function akp_add_parent_page() {
 //  }
   if (current_user_can(akp_allowed_cap())) {
     add_submenu_page('kpp_menu', 'Ad King Pro', 'Ad King Pro', 'manage_options', 'adkingpro', 'akp_settings_output');
-    add_dashboard_page('Ad King Pro Detailed Stats', 'Ad King Pro Stats', 'read', 'akp-detailed-stats', 'akp_detailed_output');
+    add_dashboard_page('Ad King Pro '.__('Detailed Stats', 'akptext'), 'Ad King Pro '.__('Stats', 'akptext'), 'read', 'akp-detailed-stats', 'akp_detailed_output');
   }
 }
 add_action('admin_menu', 'akp_add_parent_page');

@@ -5,7 +5,7 @@ class AdKingPro_Widget extends WP_Widget {
             parent::__construct(
                     'adkingpro_widget', // Base ID
                     'AdKingPro', // Name
-                    array( 'description' => __( 'Display an advert in the sidebar', 'text_domain' ), ) // Args
+                    array( 'description' => __( 'Display an advert in the sidebar', 'akptext' ), ) // Args
             );
 	}
 
@@ -32,28 +32,28 @@ class AdKingPro_Widget extends WP_Widget {
 
  	public function form( $instance ) {
             if ( isset( $instance[ 'type' ] ) ) { $type = $instance[ 'type' ]; }
-            else { $type = __( 'sidebar', 'text_domain' ); }
+            else { $type = 'sidebar'; }
             
             if ( isset( $instance[ 'banner' ] ) ) { $banner = $instance[ 'banner' ]; }
-            else { $banner = __( '', 'text_domain' ); }
+            else { $banner = ''; }
             
             if ( isset( $instance[ 'render' ] ) ) { $render = $instance[ 'render' ]; }
-            else { $render = __( '', 'text_domain' ); }
+            else { $render = ''; }
             
             if ( isset( $instance[ 'rotate' ] ) ) { $rotate = $instance[ 'rotate' ]; }
-            else { $rotate = __( '', 'text_domain' ); }
+            else { $rotate = ''; }
             
             if ( isset( $instance[ 'effect' ] ) ) { $effect = $instance[ 'effect' ]; }
-            else { $effect = __( '', 'text_domain' ); }
+            else { $effect = ''; }
             
             if ( isset( $instance[ 'speed' ] ) ) { $speed = $instance[ 'speed' ]; }
-            else { $speed = __( '', 'text_domain' ); }
+            else { $speed = ''; }
             
             if ( isset( $instance[ 'changespeed' ] ) ) { $changespeed = $instance[ 'changespeed' ]; }
-            else { $changespeed = __( '', 'text_domain' ); }
+            else { $changespeed = ''; }
             ?>
             <p>
-            <label for="<?php echo $this->get_field_name( 'type' ); ?>"><?php _e( 'Advert Type:' ); ?></label> 
+            <label for="<?php echo $this->get_field_name( 'type' ); ?>"><?= __( 'Advert Type:', 'akptext' ); ?></label> 
             <select class="widefat" id="<?php echo $this->get_field_id( 'type' ); ?>" name="<?php echo $this->get_field_name( 'type' ); ?>">
                 <?php $types = get_terms(array('advert_types'));
                 foreach ($types as $t) : ?>
@@ -62,9 +62,9 @@ class AdKingPro_Widget extends WP_Widget {
             </select>
             </p>
             <p>
-            <label for="<?php echo $this->get_field_name( 'banner' ); ?>"><?php _e( 'Banner ID#:' ); ?></label> 
+            <label for="<?php echo $this->get_field_name( 'banner' ); ?>"><?= __( 'Banner ID#:', 'akptext' ); ?></label> 
             <select class="widefat" id="<?php echo $this->get_field_id( 'banner' ); ?>" name="<?php echo $this->get_field_name( 'banner' ); ?>">
-                <option value=''>Select Randomly</option>
+                <option value=''><?= __('Select Randomly', 'akptext') ?></option>
                 <?php $banners = get_posts(array('post_type'=>'adverts_posts'));
                 foreach ($banners as $b) : ?>
                 <option value='<?= $b->ID ?>'<?php if ($b->ID == esc_attr( $banner )) echo ' selected'; ?>><?= $b->ID ?></option>
@@ -72,31 +72,31 @@ class AdKingPro_Widget extends WP_Widget {
             </select>
             </p>
             <p>
-            <label for="<?php echo $this->get_field_name( 'render' ); ?>"><?php _e( '# to render:' ); ?></label> 
+            <label for="<?php echo $this->get_field_name( 'render' ); ?>"><?= __( '# to render:', 'akptext' ); ?></label> 
             <input class="widefat" id="<?php echo $this->get_field_id( 'render' ); ?>" name="<?php echo $this->get_field_name( 'render' ); ?>" value="<?= esc_attr( $render ) ?>">
             </p>
             <p>
-            <label for="<?php echo $this->get_field_name( 'rotate' ); ?>"><?php _e( 'Auto Rotation:' ); ?></label> 
+            <label for="<?php echo $this->get_field_name( 'rotate' ); ?>"><?= __( 'Auto Rotation:', 'akptext' ); ?></label> 
             <select class="widefat" id="<?php echo $this->get_field_id( 'rotate' ); ?>" name="<?php echo $this->get_field_name( 'rotate' ); ?>" onChange="if (jQuery(this).val() == 'true'){ jQuery(this).parents('form').find('.akp_slideshow_options').fadeIn();}else{jQuery(this).parents('form').find('.akp_slideshow_options').fadeOut();}">
-                <option value='false'<?php if ('false' == esc_attr( $rotate )) echo ' selected'; ?>>Off</option>
-                <option value='true'<?php if ('true' == esc_attr( $rotate )) echo ' selected'; ?>>On</option>
+                <option value='false'<?php if ('false' == esc_attr( $rotate )) echo ' selected'; ?>><?= __('Off', 'akptext') ?></option>
+                <option value='true'<?php if ('true' == esc_attr( $rotate )) echo ' selected'; ?>><?= __('On', 'akptext') ?></option>
             </select>
             </p>
             <div class="akp_slideshow_options" style="display: <?php if ($rotate == "true") echo 'block'; else echo 'none'; ?>;">
                 <p>
-                <label for="<?php echo $this->get_field_name( 'effect' ); ?>"><?php _e( 'Rotation Effect:' ); ?></label> 
+                <label for="<?php echo $this->get_field_name( 'effect' ); ?>"><?= __( 'Rotation Effect:', 'akptext' ); ?></label> 
                 <select class="widefat" id="<?php echo $this->get_field_id( 'effect' ); ?>" name="<?php echo $this->get_field_name( 'effect' ); ?>">
-                    <option value='fade'<?php if ('fade' == esc_attr( $effect )) echo ' selected'; ?>>Fade</option>
-                    <option value='slideLeft'<?php if ('slideLeft' == esc_attr( $effect )) echo ' selected'; ?>>Slide Left</option>
-                    <option value='none'<?php if ('none' == esc_attr( $effect )) echo ' selected'; ?>>None</option>
+                    <option value='fade'<?php if ('fade' == esc_attr( $effect )) echo ' selected'; ?>><?= __('Fade', 'akptext' ) ?></option>
+                    <option value='slideLeft'<?php if ('slideLeft' == esc_attr( $effect )) echo ' selected'; ?>><?= __('Slide Left', 'akptext' ) ?></option>
+                    <option value='none'<?php if ('none' == esc_attr( $effect )) echo ' selected'; ?>><?= __('None', 'akptext' ) ?></option>
                 </select>
                 </p>
                 <p>
-                <label for="<?php echo $this->get_field_name( 'speed' ); ?>"><?php _e( 'Pause Speed:' ); ?></label> 
+                <label for="<?php echo $this->get_field_name( 'speed' ); ?>"><?= __( 'Pause Speed:', 'akptext' ); ?></label> 
                 <input class="widefat" id="<?php echo $this->get_field_id( 'speed' ); ?>" name="<?php echo $this->get_field_name( 'speed' ); ?>" value="<?= esc_attr( $speed ) ?>">
                 </p>
                 <p>
-                <label for="<?php echo $this->get_field_name( 'changespeed' ); ?>"><?php _e( 'Change Speed:' ); ?></label> 
+                <label for="<?php echo $this->get_field_name( 'changespeed' ); ?>"><?= __( 'Change Speed:', 'akptext' ); ?></label> 
                 <input class="widefat" id="<?php echo $this->get_field_id( 'changespeed' ); ?>" name="<?php echo $this->get_field_name( 'changespeed' ); ?>" value="<?= esc_attr( $changespeed ) ?>">
                 </p>
             </div>

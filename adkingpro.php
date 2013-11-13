@@ -3,7 +3,7 @@
     Plugin Name: Ad King Pro
     Plugin URI: http://kingpro.me/plugins/ad-king-pro/
     Description: Ad King Pro allows you to manage, display, document and report all of your custom advertising on your wordpress site.
-    Version: 1.9.6
+    Version: 1.9.7
     Author: Ash Durham
     Author URI: http://durham.net.au/
     License: GPL2
@@ -27,7 +27,7 @@
     // INSTALL
 
     global $akp_db_version;
-    $akp_db_version = "1.9.6";
+    $akp_db_version = "1.9.7";
 
     function akp_install() {
        global $wpdb;
@@ -133,12 +133,14 @@
     
     function akp_settings_link($action_links,$plugin_file){
             if($plugin_file==plugin_basename(__FILE__)){
-                    $akp_settings_link = '<a href="admin.php?page=' . dirname(plugin_basename(__FILE__)) . '">' . __("Settings") . '</a>';
+                    $akp_settings_link = '<a href="admin.php?page=' . dirname(plugin_basename(__FILE__)) . '">' . __("Settings", 'akptext') . '</a>';
                     array_unshift($action_links,$akp_settings_link);
             }
             return $action_links;
     }
     add_filter('plugin_action_links','akp_settings_link',10,2);
+    
+    load_plugin_textdomain('akptext', false, basename( dirname( __FILE__ ) ) . '/languages' );
     
     require_once plugin_dir_path(__FILE__).'includes/widget.php';
     require_once plugin_dir_path(__FILE__).'includes/admin_area.php';

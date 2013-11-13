@@ -1,6 +1,6 @@
 <div class="wrap">
 <?php screen_icon(); ?>
-<h2>Ad King Pro Detailed Stats</h2>
+<h2>Ad King Pro <?= __("Detailed Stats", 'akptext') ?></h2>
 <div class="akp_detailed_stats">
     <?php
     global $wpdb;
@@ -114,20 +114,20 @@
                 <a href='<?= admin_url("post.php?post=".$post_id."&action=edit") ?>'><img src='<?= $image ?>' /></a><h3><?php the_title(); ?></h3>
             </div>
             <div class='stats'>
-                <h2>Summary</h2>
-                <div class='stat'><h4>All Time</h4><span title="Impressions: <?= $all_impressions[0]->impressions ?>" alt="Impressions: <?= $all_impressions[0]->impressions ?>"><?= $all_clicks[0]->clicks ?></span></div>
-                <div class='stat'><h4>This Month</h4><span title="Impressions: <?= $month_impressions[0]->impressions ?>" alt="Impressions: <?= $month_impressions[0]->impressions ?>"><?= $month_clicks[0]->clicks ?></span></div>
-                <div class='stat'><h4>This Week</h4><span title="Impressions: <?= $week_impressions[0]->impressions ?>" alt="Impressions: <?= $week_impressions[0]->impressions ?>"><?= $week_clicks[0]->clicks ?></span></div>
-                <div class='stat'><h4>Today</h4><span title="Impressions: <?= $today_impressions[0]->impressions ?>" alt="Impressions: <?= $today_impressions[0]->impressions ?>"><?= $today_clicks[0]->clicks ?></span></div>
+                <h2><?= __("Summary", 'akptext') ?></h2>
+                <div class='stat'><h4><?= __("All Time", 'akptext') ?></h4><span title="<?= __("Impressions", 'akptext') ?>: <?= $all_impressions[0]->impressions ?>" alt="<?= __("Impressions", 'akptext') ?>: <?= $all_impressions[0]->impressions ?>"><?= $all_clicks[0]->clicks ?></span></div>
+                <div class='stat'><h4><?= __("This Month", 'akptext') ?></h4><span title="<?= __("Impressions", 'akptext') ?>: <?= $month_impressions[0]->impressions ?>" alt="<?= __("Impressions", 'akptext') ?>: <?= $month_impressions[0]->impressions ?>"><?= $month_clicks[0]->clicks ?></span></div>
+                <div class='stat'><h4><?= __("This Week", 'akptext') ?></h4><span title="<?= __("Impressions", 'akptext') ?>: <?= $week_impressions[0]->impressions ?>" alt="<?= __("Impressions", 'akptext') ?>: <?= $week_impressions[0]->impressions ?>"><?= $week_clicks[0]->clicks ?></span></div>
+                <div class='stat'><h4><?= __("Today", 'akptext') ?></h4><span title="<?= __("Impressions", 'akptext') ?>: <?= $today_impressions[0]->impressions ?>" alt="<?= __("Impressions", 'akptext') ?>: <?= $today_impressions[0]->impressions ?>"><?= $today_clicks[0]->clicks ?></span></div>
             </div>
             <div class='detailed'>
-                <h2>Detailed</h2>
+                <h2><?= __("Detailed", 'akptext') ?></h2>
                 <div class="detailed_menu">
-                    <a class="active akp_detailed" rel="all">View all clicks</a>
-                    <a class="akp_detailed" rel="month">View this month clicks</a>
-                    <a class="akp_detailed" rel="week">View this week clicks</a>
-                    <a class="akp_detailed" rel="day">View todays clicks</a>
-                    <a class="akp_detailed" rel="date">View date range clicks</a>
+                    <a class="active akp_detailed" rel="all"><?= __("View all clicks", 'akptext') ?></a>
+                    <a class="akp_detailed" rel="month"><?= __("View this month clicks", 'akptext') ?></a>
+                    <a class="akp_detailed" rel="week"><?= __("View this week clicks", 'akptext') ?></a>
+                    <a class="akp_detailed" rel="day"><?= __("View todays clicks", 'akptext') ?></a>
+                    <a class="akp_detailed" rel="date"><?= __("View date range clicks", 'akptext') ?></a>
                 </div>
                 <div class="detailed_details">
                     <div class="akp_detailed_all_details" style="display: block;">
@@ -135,18 +135,18 @@
                         <table>
                             <tr>
                                 <td></td>
-                                <th class="center">Count</th>
-                                <th class="center">Cost Per</th>
-                                <th class="center">Total</th>
+                                <th class="center"><?= __("Count", 'akptext') ?></th>
+                                <th class="center"><?= __("Cost Per", 'akptext') ?></th>
+                                <th class="center"><?= __("Total", 'akptext') ?></th>
                             </tr>
                             <tr>
-                                <td>Impressions</td>
+                                <td><?= __("Impressions", 'akptext') ?></td>
                                 <td class="center"><?= $all_impressions[0]->impressions ?></td>
                                 <td class="right"><?= $all_per_impression ?></td>
                                 <td class="right"><?= $all_impression_total_output ?></td>
                             </tr>
                             <tr>
-                                <td>Clicks</td>
+                                <td><?= __("Clicks", 'akptext') ?></td>
                                 <td class="center"><?= $all_clicks[0]->clicks ?></td>
                                 <td class="right"><?= $all_per_click ?></td>
                                 <td class="right"><?= $all_click_total_output ?></td>
@@ -154,20 +154,20 @@
                             <tr>
                                 <td></td>
                                 <td></td>
-                                <td class="right bold">TOTAL</td>
+                                <td class="right bold"><?= __("TOTAL", 'akptext') ?></td>
                                 <td class="right bold"><?= $all_total_made_output ?></td>
                             </tr>
                         </table>
                         <br />
                         <div class="akp_reporting">
-                            <strong>Download report: </strong> <a class="akp_csv" rel="all/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="all/<?= $post_id ?>">PDF</a>
+                            <strong><?= __("Download report", 'akptext') ?>: </strong> <a class="akp_csv" rel="all/<?= $post_id ?>"><?= __("CSV", 'akptext') ?></a> <a class="akp_pdf" rel="all/<?= $post_id ?>"><?= __("PDF", 'akptext') ?></a>
                         </div>
                         <br />
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Date/Time</th>
-                                    <th>IP Address</th>
+                                    <th><?= __("Date/Time", 'akptext') ?></th>
+                                    <th><?= __("IP Address", 'akptext') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -180,8 +180,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Date/Time</th>
-                                    <th>IP Address</th>
+                                    <th><?= __("Date/Time", 'akptext') ?></th>
+                                    <th><?= __("IP Address", 'akptext') ?></th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -191,18 +191,18 @@
                         <table>
                             <tr>
                                 <td></td>
-                                <th class="center">Count</th>
-                                <th class="center">Cost Per</th>
-                                <th class="center">Total</th>
+                                <th class="center"><?= __("Count", 'akptext') ?></th>
+                                <th class="center"><?= __("Cost Per", 'akptext') ?></th>
+                                <th class="center"><?= __("Total", 'akptext') ?></th>
                             </tr>
                             <tr>
-                                <td>Impressions</td>
+                                <td><?= __("Impressions", 'akptext') ?></td>
                                 <td class="center"><?= $month_impressions[0]->impressions ?></td>
                                 <td class="right"><?= $month_per_impression ?></td>
                                 <td class="right"><?= $month_impression_total_output ?></td>
                             </tr>
                             <tr>
-                                <td>Clicks</td>
+                                <td><?= __("Clicks", 'akptext') ?></td>
                                 <td class="center"><?= $month_clicks[0]->clicks ?></td>
                                 <td class="right"><?= $month_per_click ?></td>
                                 <td class="right"><?= $month_click_total_output ?></td>
@@ -210,20 +210,20 @@
                             <tr>
                                 <td></td>
                                 <td></td>
-                                <td class="right bold">TOTAL</td>
+                                <td class="right bold"><?= __("TOTAL", 'akptext') ?></td>
                                 <td class="right bold"><?= $month_total_made_output ?></td>
                             </tr>
                         </table>
                         <br />
                         <div class="akp_reporting">
-                            <strong>Download report: </strong> <a class="akp_csv" rel="month/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="month/<?= $post_id ?>">PDF</a>
+                            <strong><?= __("Download report", 'akptext') ?>: </strong> <a class="akp_csv" rel="month/<?= $post_id ?>"><?= __("CSV", 'akptext') ?></a> <a class="akp_pdf" rel="month/<?= $post_id ?>"><?= __("PDF", 'akptext') ?></a>
                         </div>
                         <br />
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Date/Time</th>
-                                    <th>IP Address</th>
+                                    <th><?= __("Date/Time", 'akptext') ?></th>
+                                    <th><?= __("IP Address", 'akptext') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -236,8 +236,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Date/Time</th>
-                                    <th>IP Address</th>
+                                    <th><?= __("Date/Time", 'akptext') ?></th>
+                                    <th><?= __("IP Address", 'akptext') ?></th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -247,18 +247,18 @@
                         <table>
                             <tr>
                                 <td></td>
-                                <th class="center">Count</th>
-                                <th class="center">Cost Per</th>
-                                <th class="center">Total</th>
+                                <th class="center"><?= __("Count", 'akptext') ?></th>
+                                <th class="center"><?= __("Cost Per", 'akptext') ?></th>
+                                <th class="center"><?= __("Total", 'akptext') ?></th>
                             </tr>
                             <tr>
-                                <td>Impressions</td>
+                                <td><?= __("Impressions", 'akptext') ?></td>
                                 <td class="center"><?= $week_impressions[0]->impressions ?></td>
                                 <td class="right"><?= $week_per_impression ?></td>
                                 <td class="right"><?= $week_impression_total_output ?></td>
                             </tr>
                             <tr>
-                                <td>Clicks</td>
+                                <td><?= __("Clicks", 'akptext') ?></td>
                                 <td class="center"><?= $week_clicks[0]->clicks ?></td>
                                 <td class="right"><?= $week_per_click ?></td>
                                 <td class="right"><?= $week_click_total_output ?></td>
@@ -266,20 +266,20 @@
                             <tr>
                                 <td></td>
                                 <td></td>
-                                <td class="right bold">TOTAL</td>
+                                <td class="right bold"><?= __("TOTAL", 'akptext') ?></td>
                                 <td class="right bold"><?= $week_total_made_output ?></td>
                             </tr>
                         </table>
                         <br />
                         <div class="akp_reporting">
-                            <strong>Download report: </strong> <a class="akp_csv" rel="week/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="week/<?= $post_id ?>">PDF</a>
+                            <strong><?= __("Download report", 'akptext') ?>: </strong> <a class="akp_csv" rel="week/<?= $post_id ?>"><?= __("CSV", 'akptext') ?></a> <a class="akp_pdf" rel="week/<?= $post_id ?>"><?= __("PDF", 'akptext') ?></a>
                         </div>
                         <br />
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Date/Time</th>
-                                    <th>IP Address</th>
+                                    <th><?= __("Date/Time", 'akptext') ?></th>
+                                    <th><?= __("IP Address", 'akptext') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -292,8 +292,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Date/Time</th>
-                                    <th>IP Address</th>
+                                    <th><?= __("Date/Time", 'akptext') ?></th>
+                                    <th><?= __("IP Address", 'akptext') ?></th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -303,18 +303,18 @@
                         <table>
                             <tr>
                                 <td></td>
-                                <th class="center">Count</th>
-                                <th class="center">Cost Per</th>
-                                <th class="center">Total</th>
+                                <th class="center"><?= __("Count", 'akptext') ?></th>
+                                <th class="center"><?= __("Cost Per", 'akptext') ?></th>
+                                <th class="center"><?= __("Total", 'akptext') ?></th>
                             </tr>
                             <tr>
-                                <td>Impressions</td>
+                                <td><?= __("Impressions", 'akptext') ?></td>
                                 <td class="center"><?= $today_impressions[0]->impressions ?></td>
                                 <td class="right"><?= $today_per_impression ?></td>
                                 <td class="right"><?= $today_impression_total_output ?></td>
                             </tr>
                             <tr>
-                                <td>Clicks</td>
+                                <td><?= __("Clicks", 'akptext') ?></td>
                                 <td class="center"><?= $today_clicks[0]->clicks ?></td>
                                 <td class="right"><?= $today_per_click ?></td>
                                 <td class="right"><?= $today_click_total_output ?></td>
@@ -322,20 +322,20 @@
                             <tr>
                                 <td></td>
                                 <td></td>
-                                <td class="right bold">TOTAL</td>
+                                <td class="right bold"><?= __("TOTAL", 'akptext') ?></td>
                                 <td class="right bold"><?= $today_total_made_output ?></td>
                             </tr>
                         </table>
                         <br />
                         <div class="akp_reporting">
-                            <strong>Download report: </strong> <a class="akp_csv" rel="today/<?= $post_id ?>">CSV</a> <a class="akp_pdf" rel="today/<?= $post_id ?>">PDF</a>
+                            <strong><?= __("Download report", 'akptext') ?>: </strong> <a class="akp_csv" rel="today/<?= $post_id ?>"><?= __("CSV", 'akptext') ?></a> <a class="akp_pdf" rel="today/<?= $post_id ?>"><?= __("PDF", 'akptext') ?></a>
                         </div>
                         <br />
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Date/Time</th>
-                                    <th>IP Address</th>
+                                    <th><?= __("Date/Time", 'akptext') ?></th>
+                                    <th><?= __("IP Address", 'akptext') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -348,18 +348,18 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Date/Time</th>
-                                    <th>IP Address</th>
+                                    <th><?= __("Date/Time", 'akptext') ?></th>
+                                    <th><?= __("IP Address", 'akptext') ?></th>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
                     <div class="akp_detailed_date_details">
                         <div class="choose_custom_date">
-                            <h4>Choose your date range:</h4>
-                            <label>From: </label><input type="text" class="akp_datepicker from_adkingpro_date" />
-                            <label>To: </label><input type="text" class="akp_datepicker to_adkingpro_date" />
-                            <a class="akp_custom_date" rel="<?= $post_id ?>">Search</a>
+                            <h4><?= __("Choose your date range", 'akptext') ?>:</h4>
+                            <label><?= __("From", 'akptext') ?>: </label><input type="text" class="akp_datepicker from_adkingpro_date" />
+                            <label><?= __("To", 'akptext') ?>: </label><input type="text" class="akp_datepicker to_adkingpro_date" />
+                            <a class="akp_custom_date" rel="<?= $post_id ?>"><?= __("Search", 'akptext') ?></a>
                         </div>
                         <div class="returned_data">
                             
