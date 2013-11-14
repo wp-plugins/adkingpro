@@ -7,6 +7,7 @@
     Author: Ash Durham
     Author URI: http://durham.net.au/
     License: GPL2
+    Text Domain: akptext
 
     Copyright 2013  Ash Durham  (email : plugins@kingpro.me)
 
@@ -84,6 +85,11 @@
     
     // END INSTALL
     
+    function akp_languages_init() {
+        load_plugin_textdomain('akptext', false, basename( dirname( __FILE__ ) ) . '/languages' );
+    }
+    add_action('plugins_loaded', 'akp_languages_init');
+    
     if (get_option("apk_db_version") != $akp_db_version) {
         // Execute your upgrade logic here
         
@@ -139,8 +145,6 @@
             return $action_links;
     }
     add_filter('plugin_action_links','akp_settings_link',10,2);
-    
-    load_plugin_textdomain('akptext', false, basename( dirname( __FILE__ ) ) . '/languages' );
     
     require_once plugin_dir_path(__FILE__).'includes/widget.php';
     require_once plugin_dir_path(__FILE__).'includes/admin_area.php';
