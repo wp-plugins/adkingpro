@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Ad King Pro package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ad King Pro 1.9.7\n"
+"Project-Id-Version: Ad King Pro 1.9.8\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/adkingpro\n"
-"POT-Creation-Date: 2013-11-13 18:55:34+00:00\n"
+"POT-Creation-Date: 2013-12-04 19:55:20+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: adkingpro.php:136
+#: adkingpro.php:142
 msgid "Settings"
 msgstr ""
 
@@ -23,310 +23,332 @@ msgid ""
 "add these</strong>."
 msgstr ""
 
-#: includes/admin_area.php:82
+#: includes/admin_area.php:84
 msgid "Adverts"
 msgstr ""
 
-#: includes/admin_area.php:83
+#: includes/admin_area.php:85
 msgid "Advert"
 msgstr ""
 
-#: includes/admin_area.php:84
+#: includes/admin_area.php:86
 msgid "All Adverts"
 msgstr ""
 
-#: includes/admin_area.php:85
+#: includes/admin_area.php:87
 msgid "Edit Advert"
 msgstr ""
 
-#: includes/admin_area.php:86
+#: includes/admin_area.php:88
 msgid "Update Advert"
 msgstr ""
 
-#: includes/admin_area.php:87
+#: includes/admin_area.php:89
 msgid "Add New Advert"
 msgstr ""
 
-#: includes/admin_area.php:88
+#: includes/admin_area.php:90
 msgid "New Advert"
 msgstr ""
 
-#: includes/admin_area.php:114
+#: includes/admin_area.php:116
 msgid "Advert Types"
 msgstr ""
 
-#: includes/admin_area.php:115 includes/admin_area.php:663
+#: includes/admin_area.php:117 includes/admin_area.php:697
 msgid "Advert Type"
 msgstr ""
 
-#: includes/admin_area.php:116
+#: includes/admin_area.php:118
 msgid "All Advert Types"
 msgstr ""
 
-#: includes/admin_area.php:117
+#: includes/admin_area.php:119
 msgid "Edit Advert Type"
 msgstr ""
 
-#: includes/admin_area.php:118
+#: includes/admin_area.php:120
 msgid "Update Advert Type"
 msgstr ""
 
-#: includes/admin_area.php:119
+#: includes/admin_area.php:121
 msgid "Add New Advert Type"
 msgstr ""
 
-#: includes/admin_area.php:120
+#: includes/admin_area.php:122
 msgid "New Advert Type"
 msgstr ""
 
-#: includes/admin_area.php:121
+#: includes/admin_area.php:123
 msgid "Search Advert Types"
 msgstr ""
 
-#: includes/admin_area.php:182
+#: includes/admin_area.php:203
 msgid "Leave the below blank to use the full size of the image you upload."
 msgstr ""
 
-#: includes/admin_area.php:186
+#: includes/admin_area.php:207
 msgid "Set width of advert"
 msgstr ""
 
-#: includes/admin_area.php:189 includes/admin_area.php:196
+#: includes/admin_area.php:210 includes/admin_area.php:217
 msgid "If variable, please leave blank"
 msgstr ""
 
-#: includes/admin_area.php:193
+#: includes/admin_area.php:214
 msgid "Set height of advert"
 msgstr ""
 
-#: includes/admin_area.php:200
+#: includes/admin_area.php:221
 msgid "Hard crop image?"
 msgstr ""
 
-#: includes/admin_area.php:305
+#: includes/admin_area.php:326
 msgid "Advert URL ie http://kingpro.me/plugins/ad-king-pro"
 msgstr ""
 
-#: includes/admin_area.php:313
+#: includes/admin_area.php:334
 msgid "Media Type"
 msgstr ""
 
-#: includes/admin_area.php:317 includes/admin_area.php:320
-#: includes/admin_area.php:664
+#: includes/admin_area.php:338 includes/admin_area.php:341
+#: includes/admin_area.php:698
 msgid "Advert Image"
 msgstr ""
 
-#: includes/admin_area.php:318
+#: includes/admin_area.php:339
 msgid "Advert Image Attributes"
 msgstr ""
 
-#: includes/admin_area.php:321
+#: includes/admin_area.php:342
 msgid "Advert Flash File"
 msgstr ""
 
-#: includes/admin_area.php:322
+#: includes/admin_area.php:343
+msgid "Advert HTML5 File"
+msgstr ""
+
+#: includes/admin_area.php:344
 msgid "Advert AdSense Code"
 msgstr ""
 
-#: includes/admin_area.php:323
+#: includes/admin_area.php:345
 msgid "Advert Text"
 msgstr ""
 
-#: includes/admin_area.php:324
-msgid "Remove Link from Advert?"
-msgstr ""
-
-#: includes/admin_area.php:325
+#: includes/admin_area.php:346
 msgid "Advert Stats"
 msgstr ""
 
-#: includes/admin_area.php:326
+#: includes/admin_area.php:347
 msgid "Advert Revenue"
 msgstr ""
 
-#: includes/admin_area.php:327
+#: includes/admin_area.php:348
 msgid "Link Options"
 msgstr ""
 
-#: includes/admin_area.php:357
+#: includes/admin_area.php:378
 msgid "Expire on"
 msgstr ""
 
-#: includes/admin_area.php:359
+#: includes/admin_area.php:380
 msgid "Edit"
 msgstr ""
 
-#: includes/admin_area.php:361
+#: includes/admin_area.php:382
 msgid "01-Jan"
 msgstr ""
 
-#: includes/admin_area.php:362
+#: includes/admin_area.php:383
 msgid "02-Feb"
 msgstr ""
 
-#: includes/admin_area.php:363
+#: includes/admin_area.php:384
 msgid "03-Mar"
 msgstr ""
 
-#: includes/admin_area.php:364
+#: includes/admin_area.php:385
 msgid "04-Apr"
 msgstr ""
 
-#: includes/admin_area.php:365
+#: includes/admin_area.php:386
 msgid "05-May"
 msgstr ""
 
-#: includes/admin_area.php:366
+#: includes/admin_area.php:387
 msgid "06-Jun"
 msgstr ""
 
-#: includes/admin_area.php:367
+#: includes/admin_area.php:388
 msgid "07-Jul"
 msgstr ""
 
-#: includes/admin_area.php:368
+#: includes/admin_area.php:389
 msgid "08-Aug"
 msgstr ""
 
-#: includes/admin_area.php:369
+#: includes/admin_area.php:390
 msgid "09-Sep"
 msgstr ""
 
-#: includes/admin_area.php:370
+#: includes/admin_area.php:391
 msgid "10-Oct"
 msgstr ""
 
-#: includes/admin_area.php:371
+#: includes/admin_area.php:392
 msgid "11-Nov"
 msgstr ""
 
-#: includes/admin_area.php:372
+#: includes/admin_area.php:393
 msgid "12-Dec"
 msgstr ""
 
-#: includes/admin_area.php:384
+#: includes/admin_area.php:405
 msgid "OK"
 msgstr ""
 
-#: includes/admin_area.php:385
+#: includes/admin_area.php:406
 msgid "Cancel"
 msgstr ""
 
-#: includes/admin_area.php:386
+#: includes/admin_area.php:407
 msgid "Set to Never"
 msgstr ""
 
-#: includes/admin_area.php:402
+#: includes/admin_area.php:424
 msgid "Image"
 msgstr ""
 
-#: includes/admin_area.php:403
+#: includes/admin_area.php:425
+msgid "HTML5"
+msgstr ""
+
+#: includes/admin_area.php:426
 msgid "Flash"
 msgstr ""
 
-#: includes/admin_area.php:404
+#: includes/admin_area.php:427
 msgid "AdSense"
 msgstr ""
 
-#: includes/admin_area.php:405
+#: includes/admin_area.php:428
 msgid "Text"
 msgstr ""
 
-#: includes/admin_area.php:416
+#: includes/admin_area.php:439
 msgid "Upload Image"
 msgstr ""
 
-#: includes/admin_area.php:417
+#: includes/admin_area.php:440
 msgid ""
 "Enter a URL or upload an image (You are seeing this box as you have disabled "
 "\"post-thumbnails\" support.)"
 msgstr ""
 
-#: includes/admin_area.php:419 includes/admin_area.php:428
+#: includes/admin_area.php:442 includes/admin_area.php:451
 msgid "Banner description (this will be added to the alt tag on the image)"
 msgstr ""
 
-#: includes/admin_area.php:440
+#: includes/admin_area.php:463
+msgid "Upload HTML5 File"
+msgstr ""
+
+#: includes/admin_area.php:464
+msgid ""
+"Enter a URL or upload a HTML5 file - PLEASE NOTE: Must contain at least one "
+"(1) anchor tag (<a />) with a \"href\" attribute"
+msgstr ""
+
+#: includes/admin_area.php:466
+msgid "Frame Width"
+msgstr ""
+
+#: includes/admin_area.php:467
+msgid "Frame Height"
+msgstr ""
+
+#: includes/admin_area.php:477
 msgid "Upload SWF File"
 msgstr ""
 
-#: includes/admin_area.php:441
+#: includes/admin_area.php:478
 msgid "Enter a URL or upload a SWF file"
 msgstr ""
 
-#: includes/admin_area.php:443
+#: includes/admin_area.php:480
 msgid "SWF Width"
 msgstr ""
 
-#: includes/admin_area.php:444
+#: includes/admin_area.php:481
 msgid "SWF Height"
 msgstr ""
 
-#: includes/admin_area.php:450
+#: includes/admin_area.php:487
 msgid "Enter the Ad Unit Code given from your Google AdSense account"
 msgstr ""
 
-#: includes/admin_area.php:452
+#: includes/admin_area.php:489
 msgid ""
 "Please note that only impressions are tracked for these ads as the clicks "
 "are registers via AdSense"
 msgstr ""
 
-#: includes/admin_area.php:459
+#: includes/admin_area.php:496
 msgid "Enter the text you would like on the link that will be tracked"
 msgstr ""
 
-#: includes/admin_area.php:467
+#: includes/admin_area.php:504
 msgid "This banner has had "
 msgstr ""
 
-#: includes/admin_area.php:467
+#: includes/admin_area.php:504
 msgid " since being published."
 msgstr ""
 
-#: includes/admin_area.php:467
+#: includes/admin_area.php:504
 msgid "View Detailed Report"
 msgstr ""
 
-#: includes/admin_area.php:468
+#: includes/admin_area.php:505
 msgid ""
 "Are you sure you want to reset the tracking data back to 0? There is no "
 "reversing this action"
 msgstr ""
 
-#: includes/admin_area.php:468
+#: includes/admin_area.php:505
 msgid "Reset Tracking Data"
 msgstr ""
 
-#: includes/admin_area.php:526
+#: includes/admin_area.php:554
 msgid "Revenue Per Impression"
 msgstr ""
 
-#: includes/admin_area.php:529
+#: includes/admin_area.php:557
 msgid "Revenue Per Click"
 msgstr ""
 
-#: includes/admin_area.php:548
+#: includes/admin_area.php:576
 msgid "Remove URL from link"
 msgstr ""
 
-#: includes/admin_area.php:552
+#: includes/admin_area.php:580
 msgid "Window Target"
 msgstr ""
 
-#: includes/admin_area.php:557
+#: includes/admin_area.php:585
 msgid "none"
 msgstr ""
 
-#: includes/admin_area.php:560
+#: includes/admin_area.php:588
 msgid "Add \"nofollow\" to link?"
 msgstr ""
 
-#: includes/admin_area.php:659
+#: includes/admin_area.php:693
 msgid "Banner ID"
 msgstr ""
 
-#: includes/admin_area.php:660 includes/admin_area.php:872
+#: includes/admin_area.php:694 includes/admin_area.php:906
 #: includes/screens/detailed.php:118 includes/screens/detailed.php:119
 #: includes/screens/detailed.php:120 includes/screens/detailed.php:121
 #: includes/screens/detailed.php:143 includes/screens/detailed.php:199
@@ -335,49 +357,49 @@ msgstr ""
 msgid "Impressions"
 msgstr ""
 
-#: includes/admin_area.php:661 includes/screens/detailed.php:149
+#: includes/admin_area.php:695 includes/screens/detailed.php:149
 #: includes/screens/detailed.php:205 includes/screens/detailed.php:261
 #: includes/screens/detailed.php:317 js/adkingpro-js.php:118
 msgid "Clicks"
 msgstr ""
 
-#: includes/admin_area.php:662
+#: includes/admin_area.php:696
 msgid "URL"
 msgstr ""
 
-#: includes/admin_area.php:665
+#: includes/admin_area.php:699
 msgid "Date"
 msgstr ""
 
-#: includes/admin_area.php:687
+#: includes/admin_area.php:721
 msgid "No Advert Types Assigned"
 msgstr ""
 
-#: includes/admin_area.php:872 includes/screens/detailed.php:118
+#: includes/admin_area.php:906 includes/screens/detailed.php:118
 msgid "All Time"
 msgstr ""
 
-#: includes/admin_area.php:873 includes/screens/detailed.php:119
+#: includes/admin_area.php:907 includes/screens/detailed.php:119
 msgid "This Month"
 msgstr ""
 
-#: includes/admin_area.php:874 includes/screens/detailed.php:120
+#: includes/admin_area.php:908 includes/screens/detailed.php:120
 msgid "This Week"
 msgstr ""
 
-#: includes/admin_area.php:875 includes/screens/detailed.php:121
+#: includes/admin_area.php:909 includes/screens/detailed.php:121
 msgid "Today"
 msgstr ""
 
-#: includes/admin_area.php:891
+#: includes/admin_area.php:925
 msgid "Banner Stats Summary"
 msgstr ""
 
-#: includes/admin_area.php:937 includes/screens/detailed.php:3
+#: includes/admin_area.php:971 includes/screens/detailed.php:3
 msgid "Detailed Stats"
 msgstr ""
 
-#: includes/admin_area.php:937
+#: includes/admin_area.php:971
 msgid "Stats"
 msgstr ""
 
@@ -513,13 +535,13 @@ msgstr ""
 
 #: includes/screens/kpp.php:19 includes/screens/kpp.php:25
 #: includes/screens/kpp.php:31 includes/screens/kpp.php:37
-#: includes/screens/kpp.php:43
+#: includes/screens/kpp.php:43 includes/screens/kpp.php:49
 msgid "More information about"
 msgstr ""
 
 #: includes/screens/kpp.php:19 includes/screens/kpp.php:25
 #: includes/screens/kpp.php:31 includes/screens/kpp.php:37
-#: includes/screens/kpp.php:43
+#: includes/screens/kpp.php:43 includes/screens/kpp.php:49
 msgid "Install"
 msgstr ""
 
@@ -532,22 +554,26 @@ msgid "RSS feeds your way"
 msgstr ""
 
 #: includes/screens/kpp.php:36
-msgid "Send mail from WP from your email"
+msgid "Site details the way you need them"
 msgstr ""
 
 #: includes/screens/kpp.php:42
+msgid "Send mail from WP from your email"
+msgstr ""
+
+#: includes/screens/kpp.php:48
 msgid "Keep traffic on your site"
 msgstr ""
 
-#: includes/screens/settings.php:12 includes/screens/settings.php:200
+#: includes/screens/settings.php:12 includes/screens/settings.php:209
 msgid "Found an issue? Post your issue on the"
 msgstr ""
 
-#: includes/screens/settings.php:12 includes/screens/settings.php:200
+#: includes/screens/settings.php:12 includes/screens/settings.php:209
 msgid "support forums"
 msgstr ""
 
-#: includes/screens/settings.php:12 includes/screens/settings.php:200
+#: includes/screens/settings.php:12 includes/screens/settings.php:209
 msgid "If you would prefer, please email your concern to"
 msgstr ""
 
@@ -559,7 +585,7 @@ msgstr ""
 msgid "How-To"
 msgstr ""
 
-#: includes/screens/settings.php:18 includes/screens/settings.php:183
+#: includes/screens/settings.php:18 includes/screens/settings.php:192
 msgid "FAQ"
 msgstr ""
 
@@ -571,7 +597,7 @@ msgstr ""
 msgid "Settings have <strong>NOT</strong> been saved. Please try again."
 msgstr ""
 
-#: includes/screens/settings.php:38 includes/screens/settings.php:140
+#: includes/screens/settings.php:38 includes/screens/settings.php:149
 msgid "Save Settings"
 msgstr ""
 
@@ -700,170 +726,174 @@ msgstr ""
 msgid "website"
 msgstr ""
 
-#: includes/screens/settings.php:145
+#: includes/screens/settings.php:141
+msgid "Custom CSS"
+msgstr ""
+
+#: includes/screens/settings.php:154
 msgid "How To"
 msgstr ""
 
-#: includes/screens/settings.php:146
+#: includes/screens/settings.php:155
 msgid "Use Shortcodes"
 msgstr ""
 
-#: includes/screens/settings.php:147
+#: includes/screens/settings.php:156
 msgid "Shortcodes can be used in any page or post on your site. By default"
 msgstr ""
 
-#: includes/screens/settings.php:149
+#: includes/screens/settings.php:158
 msgid ""
 "is defaulting to the advert type 'Sidebar' and randomly chosing from that. "
 "You can define your own advert type and display the adverts attached to that "
 "type by"
 msgstr ""
 
-#: includes/screens/settings.php:151
+#: includes/screens/settings.php:160
 msgid ""
 "Alternatively, you can display a single advert by entering its \"Banner ID\" "
 "which can be found in the table under the Adverts section"
 msgstr ""
 
-#: includes/screens/settings.php:153
+#: includes/screens/settings.php:162
 msgid ""
 "Have a select few adverts that you'd like to show? No problem, just specify "
 "the ids separated by commas"
 msgstr ""
 
-#: includes/screens/settings.php:155
+#: includes/screens/settings.php:164
 msgid ""
 "Want to output a few adverts at once? Use the 'render' option in the "
 "shortcode"
 msgstr ""
 
-#: includes/screens/settings.php:158
+#: includes/screens/settings.php:167
 msgid ""
 "Only have a small space and what a few adverts to display? Turn on the auto "
 "rotating slideshow!"
 msgstr ""
 
-#: includes/screens/settings.php:160
+#: includes/screens/settings.php:169
 msgid "There are also some settings you can play with to get it just right"
 msgstr ""
 
-#: includes/screens/settings.php:162
+#: includes/screens/settings.php:171
 msgid "Effect: \"fade | slideLeft | none\" Default - fade"
 msgstr ""
 
-#: includes/screens/settings.php:163
+#: includes/screens/settings.php:172
 msgid "Pause Speed: \"Time in ms\" Default - 5000 (5s)"
 msgstr ""
 
-#: includes/screens/settings.php:164
+#: includes/screens/settings.php:173
 msgid "Change Speed: \"Time in ms\" Default - 600 (0.6s)"
 msgstr ""
 
-#: includes/screens/settings.php:166
+#: includes/screens/settings.php:175
 msgid "Use one or all of these settings"
 msgstr ""
 
-#: includes/screens/settings.php:168
+#: includes/screens/settings.php:177
 msgid "To add this into a template, just use the \"do_shortcode\" function"
 msgstr ""
 
-#: includes/screens/settings.php:173
+#: includes/screens/settings.php:182
 msgid "Install PDF Themes"
 msgstr ""
 
-#: includes/screens/settings.php:174
+#: includes/screens/settings.php:183
 msgid "Download themes from the"
 msgstr ""
 
-#: includes/screens/settings.php:174
+#: includes/screens/settings.php:183
 msgid "page"
 msgstr ""
 
-#: includes/screens/settings.php:174
+#: includes/screens/settings.php:183
 msgid ""
 "Locate the themes folder in the adkingpro plugin folder, generally located"
 msgstr ""
 
-#: includes/screens/settings.php:176
+#: includes/screens/settings.php:185
 msgid ""
 "Unzip the downloaded zip file and upload the entire folder into the themes "
 "folder mentioned above."
 msgstr ""
 
-#: includes/screens/settings.php:177
+#: includes/screens/settings.php:186
 msgid ""
 "Once uploaded, return to this page and your theme will be present in the PDF "
 "Theme dropdown to the left. Choose the theme and save the options. Next time "
 "you generate a report, the theme you have chosen will be used."
 msgstr ""
 
-#: includes/screens/settings.php:178
+#: includes/screens/settings.php:187
 msgid ""
 "The ability to upload the zip file straight from here will be added soon"
 msgstr ""
 
-#: includes/screens/settings.php:184
+#: includes/screens/settings.php:193
 msgid "Q. After activating this plugin, my site has broken! Why?"
 msgstr ""
 
-#: includes/screens/settings.php:185
+#: includes/screens/settings.php:194
 msgid ""
 "Nine times out of ten it will be due to your own scripts being added above "
 "the standard area where all the plugins are included. "
 msgstr ""
 
-#: includes/screens/settings.php:186
+#: includes/screens/settings.php:195
 msgid ""
 "If you move your javascript files below the function, \"wp_head()\" in the "
 "\"header.php\" file of your theme, it should fix your problem."
 msgstr ""
 
-#: includes/screens/settings.php:187
+#: includes/screens/settings.php:196
 msgid ""
 "Q. I want to track clicks on a banner that scrolls to or opens a flyout div "
 "on my site. Is it possible?"
 msgstr ""
 
-#: includes/screens/settings.php:188
+#: includes/screens/settings.php:197
 msgid ""
 "Yes. Enter a '#' in as the URL for the banner when setting it up. At output, "
 "the banner is given a number of classes to allow for styling, one being "
 "\"banner{banner_id}\","
 msgstr ""
 
-#: includes/screens/settings.php:189
+#: includes/screens/settings.php:198
 msgid ""
 "where you would replace the \"{banner_id}\" for the number in the required "
 "adverts class."
 msgstr ""
 
-#: includes/screens/settings.php:190
+#: includes/screens/settings.php:199
 msgid ""
 "Use this in a jquery click event and prevent the default action of the click "
 "to make it do the action you require"
 msgstr ""
 
-#: includes/screens/settings.php:196
+#: includes/screens/settings.php:205
 msgid ""
 "I get an error saying the PDF can't be saved due to write permissions on the "
 "server. What do I do?"
 msgstr ""
 
-#: includes/screens/settings.php:197
+#: includes/screens/settings.php:206
 msgid ""
 "The plugin needs your permission to save the PDFs you generate to the output "
 "folder in the plugins folder. To do this, you are required to"
 msgstr ""
 
-#: includes/screens/settings.php:198
+#: includes/screens/settings.php:207
 msgid "update the outputs permissions to be writable. Please see"
 msgstr ""
 
-#: includes/screens/settings.php:198
+#: includes/screens/settings.php:207
 msgid "the wordpress help page"
 msgstr ""
 
-#: includes/screens/settings.php:198
+#: includes/screens/settings.php:207
 msgid "to carry this out."
 msgstr ""
 
