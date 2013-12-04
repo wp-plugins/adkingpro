@@ -31,6 +31,7 @@ function register_akp_options() {
   register_setting( 'akp-options', 'pdf_theme' );
   register_setting( 'akp-options', 'akp_image_sizes' );
   register_setting( 'akp-options', 'akp_auth_role' );
+  register_setting( 'akp-options', 'akp_custom_css' );
 }
 add_action( 'admin_init', 'register_akp_options' );
 
@@ -42,6 +43,7 @@ add_option( 'revenue_currency', '$' );
 add_option( 'pdf_theme', 'default' );
 add_option( 'akp_image_sizes', '' );
 add_option( 'akp_auth_role', 'subscriber');
+add_option( 'akp_custom_css', '/* Add any CSS you would like to modify your banner ads here */' );
 
 function akp_allowed_cap() {
     $role = get_option('akp_auth_role');
@@ -169,8 +171,27 @@ function akp_my_scripts_method() {
         array('jquery')
     );
     wp_localize_script( 'adkingpro-js', 'AkpAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'ajaxnonce' => wp_create_nonce( 'akpN0nc3' ), ) );
+    wp_enqueue_style('akp-dynamic-css', admin_url('admin-ajax.php').'?action=akp_dynamic_css');
 }
 add_action('wp_enqueue_scripts', 'akp_my_scripts_method');
+
+//function akp_dynaminc_css() {
+//    echo plugins_url('/css/dynamic.css.php', dirname(__FILE__));
+//  require(plugins_url('/css/dynamic.css.php', dirname(__FILE__)));
+//  exit;
+//}
+//add_action('wp_ajax_akp_dynamic_css', 'akp_dynaminc_css');
+//add_action('wp_ajax_nopriv_akp_dynamic_css', 'akp_dynaminc_css');
+
+function akp_dynamic_css() {
+    ?>
+    <style type="text/css">
+        <?= get_option('akp_custom_css') ?>
+    </style>
+    <?php
+}
+
+add_action('wp_head', 'akp_dynamic_css');
 
 //add extra fields to category edit form callback function
 function akp_extra_advert_types_fields( $tag ) {    //check for existing featured ID
@@ -319,9 +340,9 @@ function akp_change_meta_boxes()
     } else 
         add_meta_box('akpimagebox', __('Advert Image', 'akptext'), 'akp_image_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('akpflashbox', __('Advert Flash File', 'akptext'), 'akp_flash_box', 'adverts_posts', 'normal', 'high');
+    add_meta_box('akphtml5box', __('Advert HTML5 File', 'akptext'), 'akp_html5_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('akpadsensebox', __('Advert AdSense Code', 'akptext'), 'akp_adsense_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('akptextbox', __('Advert Text', 'akptext'), 'akp_text_box', 'adverts_posts', 'normal', 'high');
-    add_meta_box('postremoveurllink', __('Remove Link from Advert?', 'akptext'), 'akp_remove_url_link', 'adverts_posts', 'advanced', 'high');
     add_meta_box('postclickstatsdiv', __('Advert Stats', 'akptext'), 'akp_post_click_stats', 'adverts_posts', 'advanced', 'low');
     add_meta_box('revenuevaluesdiv', __('Advert Revenue', 'akptext'), 'akp_revenue_values', 'adverts_posts', 'side', 'low');
     add_meta_box('linkoptionsdiv', __('Link Options', 'akptext'), 'akp_link_options', 'adverts_posts', 'side', 'low');
@@ -394,12 +415,14 @@ function expiry_in_publish($post)
 function akp_media_type($object, $box) {
     global $wpdb, $post;
     $media_type = (get_post_meta( $post->ID, 'akp_media_type', true )) ? get_post_meta( $post->ID, 'akp_media_type', true ) : 'image';
+    $html5 = ($media_type == 'html5') ? ' selected' : '';
     $flash = ($media_type == 'flash') ? ' selected' : '';
     $adsense = ($media_type == 'adsense') ? ' selected' : '';
     $text = ($media_type == 'text') ? ' selected' : '';
     
     echo "<select name='akp_media_type' id='akp_change_media_type'>";
     echo "<option value='image'>".__('Image', 'akptext')."</option>";
+    echo "<option value='html5'".$html5.">".__('HTML5', 'akptext')."</option>";
     echo "<option value='flash'".$flash.">".__('Flash', 'akptext')."</option>";
     echo "<option value='adsense'".$adsense.">".__('AdSense', 'akptext')."</option>";
     echo "<option value='text'".$text.">".__('Text', 'akptext')."</option>";
@@ -428,6 +451,20 @@ function akp_image_attrs_box($object, $box) {
     echo '<label for="akp_image_alt">'.__('Banner description (this will be added to the alt tag on the image)', 'akptext').'</label>';
     echo '<br /><input id="akp_image_alt" type="text" style="width: 100%;" name="akp_image_alt" value="'.$image_alt.'" />';
     echo '<br /><br />';
+}
+
+function akp_html5_box($object, $box) {
+    global $post;
+    $html5_url = (get_post_meta( $post->ID, 'akp_html5_url', true )) ? get_post_meta( $post->ID, 'akp_html5_url', true ) : '';
+    $html5_width = (get_post_meta( $post->ID, 'akp_html5_width', true )) ? get_post_meta( $post->ID, 'akp_html5_width', true ) : '';
+    $html5_height = (get_post_meta( $post->ID, 'akp_html5_height', true )) ? get_post_meta( $post->ID, 'akp_html5_height', true ) : '';
+    echo '<label for="akp_html5_url">';
+    echo '<input id="akp_html5_url" type="text" size="36" name="akp_html5_url" value="'.$html5_url.'" />';
+    echo '<input id="akp_html5_url_button" class="button" type="button" value="'.__('Upload HTML5 File', 'akptext').'" />';
+    echo '<br />'.__('Enter a URL or upload a HTML5 file - PLEASE NOTE: Must contain at least one (1) anchor tag (<a />) with a "href" attribute', 'akptext');
+    echo '</label><br /><br />';
+    echo '<label for="akp_html5_width" style="width: 85px; display: block; float: left;">'.__('Frame Width', 'akptext').'</label><input type="text" name="akp_html5_width" value="'.$html5_width.'" style="width: 60px;" /><br />';
+    echo '<label for="akp_html5_height" style="width: 85px; display: block; float: left;">'.__('Frame Height', 'akptext').'</label><input type="text" name="akp_html5_height" value="'.$html5_height.'" style="width: 60px;" /><br />';
 }
 
 function akp_flash_box($object, $box) {
@@ -509,15 +546,6 @@ function akpresetdata_admin_action()
 add_action( 'admin_action_akpresetdata', 'akpresetdata_admin_action' );
 
 // Add checkbox to remove URL Link off advert
-//function akp_remove_url_link($object, $box) {
-//    global $post;
-//    $remove_url = get_post_meta( $post->ID, 'akp_remove_url', true );
-//    // Use nonce for verification
-//    echo '<input type="hidden" name="akp_meta_box_nonce" value="', wp_create_nonce(basename(__FILE__)), '" />';
-//    echo '<input type="checkbox" value="1" name="akp_remove_url" id="akp_remove_url"', $remove_url ? ' checked="checked"' : '', ' />';
-//}
-
-// Add checkbox to remove URL Link off advert
 function akp_revenue_values($object, $box) {
     global $post;
     $revenue_impression = get_post_meta( $post->ID, 'akp_revenue_per_impression', true );
@@ -586,6 +614,9 @@ function akp_save_custom_fields( ) {
             if (isset($_POST['akp_image_url']))
                 update_post_meta( $post->ID, 'akp_image_url', $_POST['akp_image_url'] );
             update_post_meta( $post->ID, 'akp_image_alt', $_POST['akp_image_alt'] );
+            update_post_meta( $post->ID, 'akp_html5_url', $_POST['akp_html5_url'] );
+            update_post_meta( $post->ID, 'akp_html5_width', $_POST['akp_html5_width'] );
+            update_post_meta( $post->ID, 'akp_html5_height', $_POST['akp_html5_height'] );
             update_post_meta( $post->ID, 'akp_flash_url', $_POST['akp_flash_url'] );
             update_post_meta( $post->ID, 'akp_flash_width', $_POST['akp_flash_width'] );
             update_post_meta( $post->ID, 'akp_flash_height', $_POST['akp_flash_height'] );
@@ -614,6 +645,9 @@ function akp_return_fields( $id = NULL ) {
         $output['akp_media_type'] = (get_post_meta( $id, 'akp_media_type' ) ? get_post_meta( $id, 'akp_media_type' ) : array(''));
         $output['akp_image_url'] = (get_post_meta( $id, 'akp_image_url' ) ? get_post_meta( $id, 'akp_image_url' ) : array(''));
         $output['akp_image_alt'] = (get_post_meta( $id, 'akp_image_alt' ) ? get_post_meta( $id, 'akp_image_alt' ) : array(''));
+        $output['akp_html5_url'] = (get_post_meta( $id, 'akp_html5_url' ) ? get_post_meta( $id, 'akp_html5_url' ) : array(''));
+        $output['akp_html5_width'] = (get_post_meta( $id, 'akp_html5_width' ) ? get_post_meta( $id, 'akp_html5_width' ) : array(''));
+        $output['akp_html5_height'] = (get_post_meta( $id, 'akp_html5_height' ) ? get_post_meta( $id, 'akp_html5_height' ) : array(''));
         $output['akp_flash_url'] = (get_post_meta( $id, 'akp_flash_url' ) ? get_post_meta( $id, 'akp_flash_url' ) : array(''));
         $output['akp_flash_width'] = (get_post_meta( $id, 'akp_flash_width' ) ? get_post_meta( $id, 'akp_flash_width' ) : array(''));
         $output['akp_flash_height'] = (get_post_meta( $id, 'akp_flash_height' ) ? get_post_meta( $id, 'akp_flash_height' ) : array(''));
@@ -796,7 +830,7 @@ function akp_enqueue($hook) {
     if (akp_check_page($hook)) :
         wp_register_style( 'akp_jquery_ui', plugins_url('css/jquery-ui.css', dirname(__FILE__)), false, '1.9.2' );
         wp_register_style( 'akp_css', plugins_url('css/adkingpro-styles.css', dirname(__FILE__)), false, '1.0.0' );
-        wp_register_style( 'fontawesome', '//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css', false, '3.2.1');
+        wp_register_style( 'fontawesome', plugins_url('css/font-awesome.min.css', dirname(__FILE__)), false, '3.2.1');
 
         wp_enqueue_style('akp_jquery_ui');
         wp_enqueue_style( 'fontawesome' );

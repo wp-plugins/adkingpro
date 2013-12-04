@@ -1,12 +1,15 @@
 jQuery(document).ready(function($) {
     if ($("#akp_change_media_type").length > 0) {
-        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox, #akpimageattrbox').hide();
+        $('#postimagediv, #akphtml5box, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox, #akpimageattrbox').hide();
         if ($("#akp_change_media_type").val() === 'image') {
-            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro');
+            $('#title-prompt-text').text('Advert URL ie http://kingpro.me/plugins/ad-king-pro');
             $('#postimagediv').fadeIn();
             $('#akpimagebox').fadeIn();
             $('#akpimageattrbox').fadeIn();
             $('#postremoveurllink').fadeIn();
+        } else if ($("#akp_change_media_type").val() === 'html5') {
+            $('#title-prompt-text').text('Advert URL ie http://kingpro.me/plugins/ad-king-pro');
+            $('#akphtml5box').fadeIn();
         } else if ($("#akp_change_media_type").val() === 'flash') {
             $('#title-prompt-text').text('Advert description (for internal use)');
             $('#akpflashbox').fadeIn();
@@ -14,18 +17,21 @@ jQuery(document).ready(function($) {
             $('#title-prompt-text').text('Advert description (for internal use)');
             $('#akpadsensebox').fadeIn();
         } else if ($("#akp_change_media_type").val() === 'text') {
-            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro');
+            $('#title-prompt-text').text('Advert URL ie http://kingpro.me/plugins/ad-king-pro');
             $('#akptextbox').fadeIn();
         }
     }
     $('#akp_change_media_type').change(function() {
         // Change views
-        $('#postimagediv, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox, #akpimageattrbox').hide();
+        $('#postimagediv, #akphtml5box, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox, #akpimageattrbox').hide();
         if ($(this).val() === 'image') {
-            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro');
+            $('#title-prompt-text').text('Advert URL ie http://kingpro.me/plugins/ad-king-pro');
             $('#postimagediv').fadeIn();
             $('#akpimagebox').fadeIn();
             $('#postremoveurllink').fadeIn();
+        } else if ($("#akp_change_media_type").val() === 'html5') {
+            $('#title-prompt-text').text('Advert URL ie http://kingpro.me/plugins/ad-king-pro');
+            $('#akphtml5box').fadeIn();
         } else if ($(this).val() === 'flash') {
             $('#title-prompt-text').text('Advert description (for internal use)');
             $('#akpflashbox').fadeIn();
@@ -33,9 +39,40 @@ jQuery(document).ready(function($) {
             $('#title-prompt-text').text('Advert description (for internal use)');
             $('#akpadsensebox').fadeIn();
         } else if ($(this).val() === 'text') {
-            $('#title-prompt-text').text('Advert URL ie http://durham.net.au/wordpress/plugins/adkingpro');
+            $('#title-prompt-text').text('Advert URL ie http://kingpro.me/plugins/ad-king-pro');
             $('#akptextbox').fadeIn();
         }
+    });
+    
+    var html5_custom_uploader;
+    $('#akp_html5_url_button').click(function(e) {
+        e.preventDefault();
+        
+        //If the uploader object has already been created, reopen the dialog
+        if (html5_custom_uploader) {
+            html5_custom_uploader.open();
+            return;
+        }
+ 
+        //Extend the wp.media object
+        html5_custom_uploader = wp.media.frames.file_frame = wp.media({
+            title: 'Choose HTML5 File',
+            button: {
+                text: 'Choose HTML5 File'
+            },
+            multiple: false
+        });
+ 
+        //When a file is selected, grab the URL and set it as the text field's value
+        flash_custom_uploader.on('select', function() {
+            attachment = flash_custom_uploader.state().get('selection').first().toJSON();
+            var url = '';
+            url = attachment['url'];
+            $('#akp_html5_url').val(url);
+        });
+ 
+        //Open the uploader dialog
+        html5_custom_uploader.open();
     });
     
     var flash_custom_uploader;

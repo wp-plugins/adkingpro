@@ -20,11 +20,11 @@
     
     <?php if (isset($_GET['settings-updated']) && $_GET['settings-updated'] === 'true') : ?>
     <div class="updated akp_notice">
-        <p><?php __( "Settings have been saved", 'akptext' ); ?></p>
+        <p><?= __( "Settings have been saved", 'akptext' ); ?></p>
     </div>
     <?php elseif (isset($_GET['settings-updated']) && $_GET['settings-updated'] === 'false') : ?>
     <div class="error akp_notice">
-        <p><?php __( "Settings have <strong>NOT</strong> been saved. Please try again.", 'akptext' ); ?></p>
+        <p><?= __( "Settings have <strong>NOT</strong> been saved. Please try again.", 'akptext' ); ?></p>
     </div>
     <?php endif; ?>
     
@@ -135,6 +135,15 @@
                     </select>
                 </td>
                 <td><?= __("* More themes can be downloaded from the", 'akptext' ); ?> <a href="http://kingpro.me/plugins/ad-king-pro/themes/" target="_blank">King Pro Plugins <?= __("website", 'akptext' ); ?></a></td>
+                </tr>
+                
+                <tr valign="top">
+                <th scope="row"><?= __("Custom CSS", 'akptext' ); ?></th>
+                <td>
+                    <?php $css = get_option('akp_custom_css'); ?>
+                    <textarea name="akp_custom_css"><?= $css ?></textarea>
+                </td>
+                <td></td>
                 </tr>
             </table>
             <?php submit_button(__('Save Settings', 'akptext'), 'primary', 'submit', false, array('id'=>'akp_advert_settings_bottom_submit')); ?>

@@ -89,6 +89,12 @@ function adkingpro_func( $atts ) {
                             $output .= "</a>";
                         $output .= "</div>";
                         break;
+                        
+                    case 'html5':
+                        $output .= "<div class='adkingprobannerhtml5 ".$type." akpbanner banner".$post_id."'>";
+                        $output .= '<iframe width="'.$cfields['akp_html5_width'][0].'" height="'.$cfields['akp_html5_height'][0].'" src="'.$cfields['akp_html5_url'][0].'" id="akpbanner'.$post_id.'-iframe" name="akpbanner'.$post_id.'-iframe" class="akpbanner-iframe" data-id="'.$post_id.'" style="border: none;"></iframe>';
+                        $output .= "</div>";
+                        break;
                     
                     case 'flash':
                         $output .= "<div class='adkingprobannerflash ".$type." akpbanner banner".$post_id."'>";
@@ -189,6 +195,12 @@ function adkingpro_func( $atts ) {
                             $output .= "</a>";
                         $output .= "</div>";
                         break;
+                        
+                    case 'html5':
+                        $output .= "<div class='adkingprobannerhtml5 ".$type." akpbanner banner".$post_id."'>";
+                        $output .= '<iframe width="'.$cfields['akp_html5_width'][0].'" height="'.$cfields['akp_html5_height'][0].'" src="'.$cfields['akp_html5_url'][0].'" id="akpbanner'.$post_id.'-iframe" name="akpbanner'.$post_id.'-iframe" class="akpbanner-iframe" data-id="'.$post_id.'" style="border: none;"></iframe>';
+                        $output .= "</div>";
+                        break;
                     
                     case 'flash':
                         $output .= "<div class='adkingprobannerflash ".$type." akpbanner banner".$post_id."'>";
@@ -275,6 +287,12 @@ function adkingpro_func( $atts ) {
                         $output .= "<img src='".$image."' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
+                        $output .= "</div>";
+                        break;
+                        
+                    case 'html5':
+                        $output .= "<div class='adkingprobannerhtml5 ".$type." akpbanner banner".$post_id."'>";
+                        $output .= '<iframe width="'.$cfields['akp_html5_width'][0].'" height="'.$cfields['akp_html5_height'][0].'" src="'.$cfields['akp_html5_url'][0].'" id="akpbanner'.$post_id.'-iframe" name="akpbanner'.$post_id.'-iframe" class="akpbanner-iframe" data-id="'.$post_id.'" style="border: none;"></iframe>';
                         $output .= "</div>";
                         break;
                     

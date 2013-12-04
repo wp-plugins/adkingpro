@@ -31,6 +31,12 @@
             <span class="links"><a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=rsskingpro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="<?= __("More information about", 'akptext') ?> RSS King Pro"><?= __("Install", 'akptext') ?></a></span>
         </div>
         <div class="kpp_plugin">
+            <img src="<?= plugins_url('../images/kpp_dkp.jpg', dirname(__FILE__)) ?>" alt="Details King Pro" />
+            <span class="title">Details King Pro</span>
+            <span class="description"><?= __("Site details the way you need them", 'akptext') ?></span>
+            <span class="links"><a href="<?= admin_url('plugin-install.php?tab=plugin-information&amp;plugin=details-king-pro&amp;TB_iframe=true&amp;width=600&amp;height=550'); ?>" class="thickbox" title="<?= __("More information about", 'akptext') ?> Details King Pro"><?= __("Install", 'akptext') ?></a></span>
+        </div>
+        <div class="kpp_plugin">
             <img src="<?= plugins_url('../images/kpp_smtpkp.jpg', dirname(__FILE__)) ?>" alt="SMTP King Pro" />
             <span class="title">SMTP King Pro</span>
             <span class="description"><?= __("Send mail from WP from your email", 'akptext') ?></span>
