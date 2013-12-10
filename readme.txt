@@ -4,7 +4,7 @@ Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes, flash, adsense, text, resize, rotate, slideshow, multiple
 Requires at least: 3.0.1
 Tested up to: 3.7.1
-Stable tag: 1.9.8
+Stable tag: 1.9.9
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,6 +130,9 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 
 == Changelog ==
 
+= 1.9.9 =
+* Updated Spanish translation
+
 = 1.9.8 =
 * Spanish Translation included thanks to WebHostingHub.com
 * Update to KPP section with release of new plugin
@@ -229,6 +232,9 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 * Initial
 
 == Upgrade Notice ==
+
+= 1.9.9 =
+* Updated Spanish translation
 
 = 1.9.8 =
 * Spanish Translation included thanks to WebHostingHub.com
