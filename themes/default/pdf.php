@@ -2,32 +2,35 @@
     $pdf = new FPDF('P','mm','A4');
     $pdf->AliasNbPages();
     $pdf->AddPage();
+    
+    $image_url = str_replace('http://'.$_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT'], $image);
+    if (file_exists($image_url)) {
+        $imagesize = getimagesize($image_url);
+        $imagesize[0] = ($imagesize[0] * 25.4) / 72;
+        $imagesize[1] = ($imagesize[1] * 25.4) / 72;
+        $imw = 190;
+        $imh = 20;
+        if ($imagesize[0] > $imagesize[1]) {
+            if ($imagesize[0] > 190) {
+                $wpc = 190 / $imagesize[0];
+                $imh = $imagesize[1] * $wpc;
+            } else {
+                $imh = $imagesize[1];
+                $imw = $imagesize[0];
+            }
+        } else {
+            if ($imagesize[1] > 20) {
+                $wph = 20 / $imagesize[1];
+                $imw = $imagesize[0] * $wph;
+            } else {
+                $imh = $imagesize[1];
+                $imw = $imagesize[0];
+            }
+        }
 
-    $imagesize = getimagesize(str_replace('http://'.$_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT'], $image));
-    $imagesize[0] = ($imagesize[0] * 25.4) / 72;
-    $imagesize[1] = ($imagesize[1] * 25.4) / 72;
-    $imw = 190;
-    $imh = 20;
-    if ($imagesize[0] > $imagesize[1]) {
-        if ($imagesize[0] > 190) {
-            $wpc = 190 / $imagesize[0];
-            $imh = $imagesize[1] * $wpc;
-        } else {
-            $imh = $imagesize[1];
-            $imw = $imagesize[0];
-        }
-    } else {
-        if ($imagesize[1] > 20) {
-            $wph = 20 / $imagesize[1];
-            $imw = $imagesize[0] * $wph;
-        } else {
-            $imh = $imagesize[1];
-            $imw = $imagesize[0];
-        }
+        $pdf->Image(str_replace('http://'.$_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT'], $image), 10, 6, $imw, $imh);
     }
-
-    $pdf->Image(str_replace('http://'.$_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT'], $image), 10, 6, $imw, $imh);
-
+    
     $pdf->SetX(15); $pdf->SetY($pdf->GetY()+ $imh + 5);
     $pdf->SetFont('Arial','BU',10);
     $pdf->Cell(95,8,$title,0,0,'L');
