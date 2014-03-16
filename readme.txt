@@ -3,8 +3,8 @@ Contributors: ashdurham
 Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes, flash, adsense, text, resize, rotate, slideshow, multiple
 Requires at least: 3.0.1
-Tested up to: 3.8
-Stable tag: 1.9.10
+Tested up to: 3.8.1
+Stable tag: 1.9.11
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,12 @@ much you are owed.
 Choose how your PDF reports look by choosing a PDF theme from the settings. The amount of themes are a bit light on at the moment, but please
 feel free to contact me if you would like to implement your own custom branded design. Visit the [King Pro Plugins website](http://kingpro.me/plugins/ad-king-pro/themes/) to
 make a request for development (and design if required).
+
+= Translations =
+
+Thanks to the team at [Web Hosting Hub](http://www.webhostinghub.com) for providing the two translations for this plugin:
+- Spanish
+- Serbian
 
 --
 
@@ -129,6 +135,9 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 5. AdKingPro settings and FAQ/Help
 
 == Changelog ==
+
+= 1.9.11 =
+* Serbian Translation included thanks to Borisa @ WebHostingHub.com
 
 = 1.9.10 =
 * Fix to report PDF when generating for text advert
@@ -235,6 +244,9 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 * Initial
 
 == Upgrade Notice ==
+
+= 1.9.11 =
+* Serbian Translation included thanks to Borisa @ WebHostingHub.com
 
 = 1.9.10 =
 * Fix to report PDF when generating for text advert
