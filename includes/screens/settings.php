@@ -38,6 +38,10 @@
             <?php submit_button(__('Save Settings', 'akptext'), 'primary', 'submit', false, array('id'=>'akp_advert_settings_top_submit')); ?>
             <table class="form-table">
                 <tr valign="top">
+                    <th scope="row" colspan="3"><h2><?= __("Permissions", 'akptext' ); ?></h2></th>
+                </tr>
+                
+                <tr valign="top">
                 <th scope="row"><?= __("Minimum Authorised Role", 'akptext' ); ?></th>
                 <td>
                     <?php $role = get_option('akp_auth_role'); ?>
@@ -50,6 +54,14 @@
                     </select>
                 </td>
                 <td></td>
+                </tr>
+                
+                <tr valign="top">
+                    <th scope="row" colspan="3"><hr /></th>
+                </tr>
+                
+                <tr valign="top">
+                    <th scope="row" colspan="3"><h2><?= __("Tracking Settings", 'akptext' ); ?></h2></th>
                 </tr>
 
                 <tr valign="top">
@@ -88,6 +100,14 @@
                     </select>
                 </td>
                 <td></td>
+                </tr>
+                
+                <tr valign="top">
+                    <th scope="row" colspan="3"><hr /></th>
+                </tr>
+                
+                <tr valign="top">
+                    <th scope="row" colspan="3"><h2><?= __("Reporting Settings", 'akptext' ); ?></h2></th>
                 </tr>
 
                 <tr valign="top">
@@ -138,12 +158,93 @@
                 </tr>
                 
                 <tr valign="top">
-                <th scope="row"><?= __("Custom CSS", 'akptext' ); ?></th>
-                <td>
-                    <?php $css = get_option('akp_custom_css'); ?>
-                    <textarea name="akp_custom_css"><?= $css ?></textarea>
+                    <th scope="row" colspan="3"><hr /></th>
+                </tr>
+                
+                <tr valign="top">
+                    <th scope="row" colspan="3"><h2><?= __("Defaults", 'akptext' ); ?></h2></th>
+                </tr>
+                
+                <tr valign="top">
+                <th scope="row"><?= __("Media Type", 'akptext' ); ?></th>
+                <td colspan="2">
+                    <?php
+                    $media_type = get_option('akp_default_media_type', 'image');
+                    ?>
+                    <select name='akp_default_media_type'>
+                        <option value='image'><?php _e('Image', 'akptext') ?></option>
+                        <option value='html5'<?php echo ($media_type == 'html5') ? ' selected' : '' ?>><?php _e('HTML5', 'akptext') ?></option>
+                        <option value='flash'<?php echo ($media_type == 'flash') ? ' selected' : '' ?>><?php _e('Flash', 'akptext') ?></option>
+                        <option value='adsense'<?php echo ($media_type == 'adsense') ? ' selected' : '' ?>><?php _e('AdSense', 'akptext') ?></option>
+                        <option value='text'<?php echo ($media_type == 'text') ? ' selected' : '' ?>><?php _e('Text', 'akptext') ?></option>
+                    </select>
                 </td>
-                <td></td>
+                </tr>
+                
+                <tr valign="top">
+                <th scope="row"><?= __("Window Target", 'akptext' ); ?></th>
+                <td colspan="2">
+                    <?php
+                    $target = get_option('akp_default_window_target', 'blank');
+                    ?>
+                    <select name='akp_default_window_target'>
+                        <option value='blank'>_blank</option>
+                        <option value='self'<?php echo ($target == 'self') ? ' selected' : '' ?>>_self</option>
+                        <option value='parent'<?php echo ($target == 'parent') ? ' selected' : '' ?>>_parent</option>
+                        <option value='top'<?php echo ($target == 'top') ? ' selected' : '' ?>>_top</option>
+                        <option value='none'<?php echo ($target == 'none') ? ' selected' : '' ?>><?php _e('none', 'akptext') ?></option>
+                    </select>
+                </td>
+                </tr>
+                
+                <tr valign="top">
+                <th scope="row"><?= __("No Follow", 'akptext' ); ?></th>
+                <td colspan="2">
+                    <?php $nofollow = get_option('akp_default_nofollow', '0'); ?>
+                    <input type="hidden" name="akp_default_nofollow" value="0" />
+                    <input type="checkbox" value="1" name="akp_default_nofollow"<?php echo $nofollow ? ' checked="checked"' : '' ?> />
+                </td>
+                </tr>
+                
+                <tr valign="top">
+                <th scope="row"><?= __("Remove Link", 'akptext' ); ?></th>
+                <td colspan="2">
+                    <?php $removelink = get_option('akp_default_remove_link', '0'); ?>
+                    <input type="hidden" name="akp_default_remove_link" value="0" />
+                    <input type="checkbox" value="1" name="akp_default_remove_link"<?php echo $removelink ? ' checked="checked"' : '' ?> />
+                </td>
+                </tr>
+                
+                <tr valign="top">
+                <th scope="row"><?= __("Revenue per Impression", 'akptext' ); ?></th>
+                <td colspan="2">
+                    <?php $rev_imp = get_option('akp_default_rev_imp', '0.00'); ?>
+                    <input type="text" value="<?php echo $rev_imp; ?>" name="akp_default_rev_imp" />
+                </td>
+                </tr>
+                
+                <tr valign="top">
+                <th scope="row"><?= __("Revenue per Click", 'akptext' ); ?></th>
+                <td colspan="2">
+                    <?php $rev_click = get_option('akp_default_rev_click', '0.00'); ?>
+                    <input type="text" value="<?php echo $rev_click; ?>" name="akp_default_rev_click" />
+                </td>
+                </tr>
+                
+                <tr valign="top">
+                    <th scope="row" colspan="3"><hr /></th>
+                </tr>
+                
+                <tr valign="top">
+                    <th scope="row" colspan="3"><h2><?= __("Customisation", 'akptext' ); ?></h2></th>
+                </tr>
+                
+                <tr valign="top">
+                <th scope="row"><?= __("Custom CSS", 'akptext' ); ?></th>
+                <td colspan="2">
+                    <?php $css = get_option('akp_custom_css'); ?>
+                    <textarea name="akp_custom_css" style="width: 100%; height: 200px;"><?= $css ?></textarea>
+                </td>
                 </tr>
             </table>
             <?php submit_button(__('Save Settings', 'akptext'), 'primary', 'submit', false, array('id'=>'akp_advert_settings_bottom_submit')); ?>

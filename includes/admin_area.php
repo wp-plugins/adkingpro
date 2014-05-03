@@ -32,6 +32,12 @@ function register_akp_options() {
   register_setting( 'akp-options', 'akp_image_sizes' );
   register_setting( 'akp-options', 'akp_auth_role' );
   register_setting( 'akp-options', 'akp_custom_css' );
+  register_setting( 'akp-options', 'akp_default_media_type' );
+  register_setting( 'akp-options', 'akp_default_window_target' );
+  register_setting( 'akp-options', 'akp_default_nofollow' );
+  register_setting( 'akp-options', 'akp_default_remove_link' );
+  register_setting( 'akp-options', 'akp_default_rev_imp' );
+  register_setting( 'akp-options', 'akp_default_rev_click' );
 }
 add_action( 'admin_init', 'register_akp_options' );
 
@@ -44,6 +50,12 @@ add_option( 'pdf_theme', 'default' );
 add_option( 'akp_image_sizes', '' );
 add_option( 'akp_auth_role', 'subscriber');
 add_option( 'akp_custom_css', '/* Add any CSS you would like to modify your banner ads here */' );
+add_option( 'akp_default_media_type', 'image' );
+add_option( 'akp_default_window_target', 'blank' );
+add_option( 'akp_default_nofollow', '0' );
+add_option( 'akp_default_remove_link', '0' );
+add_option( 'akp_default_rev_imp', '0.00' );
+add_option( 'akp_default_rev_click', '0.00' );
 
 function akp_allowed_cap() {
     $role = get_option('akp_auth_role');
@@ -81,13 +93,22 @@ function akp_create_post_type() {
     register_post_type( 'adverts_posts',
         array(
             'labels' => array(
-                'name' => __( 'Adverts', 'akptext' ),
-                'singular_name' => __( 'Advert', 'akptext' ),
-                'all_items'=>__( 'All Adverts', 'akptext' ),
-                'edit_item'=>__( 'Edit Advert', 'akptext' ),
-                'update_item'=>__( 'Update Advert', 'akptext' ),
-                'add_new_item'=>__( 'Add New Advert', 'akptext' ),
-                'new_item_name'=>__( 'New Advert', 'akptext' ),
+                'name'               => __( 'Adverts', 'akptext' ),
+                'singular_name'      => __( 'Advert', 'akptext' ),
+                'all_items'          => __( 'All Adverts', 'akptext' ),
+                'edit_item'          => __( 'Edit Advert', 'akptext' ),
+                'update_item'        => __( 'Update Advert', 'akptext' ),
+                'add_new_item'       => __( 'Add New Advert', 'akptext' ),
+                'new_item_name'      => __( 'New Advert', 'akptext' ),
+		'menu_name'          => _x( 'Adverts', 'admin menu', 'akptext' ),
+		'name_admin_bar'     => _x( 'Advert', 'add new on admin bar', 'akptext' ),
+		'add_new'            => _x( 'Add New', 'advert', 'akptext' ),
+		'new_item'           => __( 'New Advert', 'akptext' ),
+		'view_item'          => __( 'View Advert', 'akptext' ),
+		'search_items'       => __( 'Search Adverts', 'akptext' ),
+		'parent_item_colon'  => __( 'Parent Adverts:', 'akptext' ),
+		'not_found'          => __( 'No adverts found.', 'akptext' ),
+		'not_found_in_trash' => __( 'No adverts found in Trash.', 'akptext' ),
             ),
             'capabilities' => array(
                 'publish_posts' => $cap,
@@ -144,6 +165,7 @@ function wpt_akp_icons() {
         #menu-posts-adverts_posts .wp-menu-image {
             background: url(<?= plugins_url('/images/akp-icon_16x16_sat.png', dirname(__FILE__)) ?>) no-repeat center center !important;
         }
+        #menu-posts-adverts_posts .wp-menu-image:before {display: none;}
 	#menu-posts-adverts_posts:hover .wp-menu-image, #menu-posts-adverts_posts.wp-has-current-submenu .wp-menu-image {
             background: url(<?= plugins_url('/images/akp-icon_16x16.png', dirname(__FILE__)) ?>) no-repeat center center !important;
         }
@@ -331,6 +353,8 @@ add_filter( 'enter_title_here', 'akp_title_text_input' );
 // Update Feature Image to become Advert Image
 function akp_change_meta_boxes()
 {
+    add_meta_box('akpshortcode', __('Ad King Pro Shortcode Builder', 'akptext'), 'akp_shortcode', 'adverts_posts', 'normal', 'high');
+    add_filter( "postbox_classes_adverts_posts_akpshortcode", 'minify_akpshortcode' );
     add_meta_box('akpmediatype', __('Media Type', 'akptext'), 'akp_media_type', 'adverts_posts', 'normal', 'high');
     
     remove_meta_box( 'postimagediv', 'adverts_posts', 'side' );
@@ -411,10 +435,88 @@ function expiry_in_publish($post)
     }
 }
 
+// Display example shortcode
+function akp_shortcode($object, $box) {
+    global $wpdb, $post;
+    ?>
+    <div class="akp_shortcode_builder">
+        <div class="akp_shortcode_q">
+            <span><?php _e('What do you want to display?') ?></span>
+            <select id="akp_shortcode_display" data-post_id='<?php echo $post->ID ?>'>
+                <option>-- SELECT --</option>
+                <option value="single">This single banner</option>
+                <option value='selected'>Selected banners</option>
+                <option value="group">A group of banners based on Advert Type</option>
+            </select>
+        </div>
+        <div class="akp_shortcode_q group" style='display: none;'>
+            <span><?php _e('Which advert type would you like to display banners from?') ?></span>
+            <select id="akp_shortcode_adverttype">
+                <option>-- SELECT --</option>
+                <?php
+                    $adverttypes = get_terms(array('advert_types'), array('hide_empty'=>false));
+                    foreach ($adverttypes as $type) :
+                        echo "<option value='".$type->slug."'>".$type->name."</option>";
+                    endforeach;
+                ?>
+            </select>
+        </div>
+        <div class="akp_shortcode_q selected" style='display: none;'>
+            <span><?php _e('Which adverts would you like to display?') ?></span>
+            <select id="akp_shortcode_banners" multiple style='width: 100%;'>
+                <?php
+                    $adverts = new WP_Query(array('post_type'=>'adverts_posts', 'showposts'=>-1));
+                    if ($adverts->have_posts()) :
+                        while ($adverts->have_posts()) :
+                            $adverts->the_post();
+                            echo "<option value='".get_the_ID()."'>".get_the_ID()." - ".get_the_title()."</option>";
+                        endwhile;
+                    endif;
+                ?>
+            </select>
+        </div>
+        <div class="akp_shortcode_q group selected" style='display: none;'>
+            <span><?php _e('Would you like the advert to rotate through all adverts in the group?') ?></span>
+            <input type='checkbox' id='akp_shortcode_rotate' value='1' />
+        </div>
+        <div class="akp_shortcode_q rotate" style='display: none;'>
+            <span><?php _e('How long would you like the advert to pause for?') ?></span>
+            <input type='text' id='akp_shortcode_speed' value='5000' />
+        </div>
+        <div class="akp_shortcode_q rotate" style='display: none;'>
+            <span><?php _e('How long would you like change between each advert to be?') ?></span>
+            <input type='text' id='akp_shortcode_changespeed' value='600' />
+        </div>
+        <div class="akp_shortcode_q rotate" style='display: none;'>
+            <span><?php _e('Would you like a transition effect?') ?></span>
+            <select id="akp_shortcode_effect">
+                <option value="fade">Fade</option>
+                <option value="slideLeft">SlideLeft</option>
+                <option value="none">None</option>
+            </select>
+        </div>
+        <div class="akp_shortcode_q group" style='display: none;'>
+            <span><?php _e('How many adverts would you like to be displayed at once?') ?></span>
+            <input type='text' id='akp_shortcode_render' value='' />
+        </div>
+    </div>
+    <div class="akp_shortcode_example">
+        [adkingpro<span class="akp_shortcode_type"></span><span class="akp_shortcode_banner"></span><span class="akp_shortcode_rotate"></span><span class="akp_shortcode_speed"></span><span class="akp_shortcode_changespeed"></span><span class="akp_shortcode_effect"></span><span class="akp_shortcode_render"></span>]
+    </div>
+    <?php
+}
+
+function minify_akpshortcode( $classes ) {
+    
+    array_push( $classes, 'closed' );
+
+    return $classes;
+}
+
 // Selection of media type
 function akp_media_type($object, $box) {
     global $wpdb, $post;
-    $media_type = (get_post_meta( $post->ID, 'akp_media_type', true )) ? get_post_meta( $post->ID, 'akp_media_type', true ) : 'image';
+    $media_type = (get_post_meta( $post->ID, 'akp_media_type', true )) ? get_post_meta( $post->ID, 'akp_media_type', true ) : get_option('akp_default_media_type', 'image');
     $html5 = ($media_type == 'html5') ? ' selected' : '';
     $flash = ($media_type == 'flash') ? ' selected' : '';
     $adsense = ($media_type == 'adsense') ? ' selected' : '';
@@ -548,8 +650,8 @@ add_action( 'admin_action_akpresetdata', 'akpresetdata_admin_action' );
 // Add checkbox to remove URL Link off advert
 function akp_revenue_values($object, $box) {
     global $post;
-    $revenue_impression = get_post_meta( $post->ID, 'akp_revenue_per_impression', true );
-    $revenue_click = get_post_meta( $post->ID, 'akp_revenue_per_click', true );
+    $revenue_impression = (get_post_meta( $post->ID, 'akp_revenue_per_impression', true )) ? get_post_meta( $post->ID, 'akp_revenue_per_impression', true ) : get_option('akp_default_rev_imp', '0.00');
+    $revenue_click = (get_post_meta( $post->ID, 'akp_revenue_per_click', true )) ? get_post_meta( $post->ID, 'akp_revenue_per_click', true ) : get_option('akp_default_rev_click', '0.00');
     
     echo '<div class="misc-pub-section"><label for="akp_revenue_per_impression">'.__("Revenue Per Impression", "akptext").':</label>';
     echo '<input type="text" name="akp_revenue_per_impression" value="', $revenue_impression ? $revenue_impression : '0.00', '" style="width: 70px;float: right;margin-top: -3px;" />';
@@ -562,19 +664,19 @@ function akp_revenue_values($object, $box) {
 // Add checkbox to remove URL Link off advert
 function akp_link_options($object, $box) {
     global $post;
-    $remove_url = get_post_meta( $post->ID, 'akp_remove_url', true );
-    $target = (get_post_meta( $post->ID, 'akp_target', true )) ? get_post_meta( $post->ID, 'akp_target', true ) : '';
+    $remove_url = (get_post_meta( $post->ID, 'akp_remove_url', true )) ? get_post_meta( $post->ID, 'akp_remove_url', true ) : get_option('akp_default_remove_link', '0');
+    $target = (get_post_meta( $post->ID, 'akp_target', true )) ? get_post_meta( $post->ID, 'akp_target', true ) : get_option('akp_default_window_target', 'blank');
     $self = ($target == 'self') ? ' selected' : '';
     $parent = ($target == 'parent') ? ' selected' : '';
     $top = ($target == 'top') ? ' selected' : '';
     $none = ($target == 'none') ? ' selected' : '';
-    $nofollow = (get_post_meta( $post->ID, 'akp_nofollow', true )) ? get_post_meta( $post->ID, 'akp_nofollow', true ) : '';
+    $nofollow = (get_post_meta( $post->ID, 'akp_nofollow', true )) ? get_post_meta( $post->ID, 'akp_nofollow', true ) : get_option('akp_default_nofollow', '0');
     
     // Use nonce for verification
     echo '<input type="hidden" name="akp_meta_box_nonce" value="', wp_create_nonce(basename(__FILE__)), '" />';
     
     echo '<div class="misc-pub-section"><label for="akp_remove_url">'.__("Remove URL from link", 'akptext').':</label>';
-    echo '<input type="checkbox" value="1" name="akp_remove_url" id="akp_remove_url"', $remove_url ? ' checked="checked"' : '', ' style="width: 70px;float: right;margin-top: -3px;" />';
+    echo '<input type="checkbox" value="1" name="akp_remove_url" id="akp_remove_url"', $remove_url ? ' checked="checked"' : '', ' style="width: auto;float: right;margin-top: -3px;" />';
     echo '</div>';
     
     echo "<div class='misc-pub-section'><label for='akp_target'>".__("Window Target", "akptext")."</label><select name='akp_target' style='width: 70px;float: right;margin-top: -3px;' >";
@@ -585,7 +687,7 @@ function akp_link_options($object, $box) {
     echo "<option value='none'".$none.">".__('none', 'akptext')."</option>";
     echo "</select></div>";
     
-    echo '<div class="misc-pub-section"><label for="akp_nofollow">'.__('Add "nofollow" to link?', 'akptext').'</label><input type="hidden" name="akp_nofollow" value="0" /><input type="checkbox" value="1" name="akp_nofollow" id="akp_nofollow"', $nofollow ? ' checked="checked"' : '', ' style="width: 70px;float: right;margin-top: -3px;" /></div>';
+    echo '<div class="misc-pub-section"><label for="akp_nofollow">'.__('Add "nofollow" to link?', 'akptext').'</label><input type="hidden" name="akp_nofollow" value="0" /><input type="checkbox" value="1" name="akp_nofollow" id="akp_nofollow"', $nofollow ? ' checked="checked"' : '', ' style="width: auto;float: right;margin-top: -3px;" /></div>';
 }
 
 // Process the custom metabox fields
@@ -691,9 +793,11 @@ function akp_edit_adverts_columns( $columns ) {
     $columns = array(
         'cb' => '<input type="checkbox" />',
         'banner_id' => __( 'Banner ID', 'akptext' ),
+        'shortcode' => __( 'Shortcode', 'akptext'),
         'impressions' => __( 'Impressions', 'akptext' ),
         'clicks' => __( 'Clicks', 'akptext' ),
         'title' => __( 'URL', 'akptext' ),
+        'media_type' => __('Media','akptext'),
         'advert_type' => __( 'Advert Type', 'akptext'),
         'advert_image' => __( 'Advert Image', 'akptext'),
         'date' => __( 'Date', 'akptext' ),
@@ -731,6 +835,16 @@ function akp_columns($column_name, $ID) {
             
         case 'banner_id' :
             echo $ID;
+            break;
+        
+        case 'shortcode' :
+            echo "[adkingpro banner=\"$ID\"]";
+            break;
+        
+        case 'media_type' :
+            global $wpdb;
+            $mediatype = get_post_meta($ID, 'akp_media_type');
+            echo strtoupper($mediatype[0]);
             break;
         
         case 'impressions' :

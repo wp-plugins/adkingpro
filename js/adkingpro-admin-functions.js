@@ -44,6 +44,130 @@ jQuery(document).ready(function($) {
         }
     });
     
+    // Shortcode Builder
+    // Select type
+    $("#akp_shortcode_display").change(function() {
+        $(".akp_shortcode_q").not($(this).parent()).fadeOut();
+        $(".akp_shortcode_example span").text('');
+        $("#akp_shortcode_rotate").removeAttr('checked');
+        $("#akp_shortcode_banners").children('option').removeAttr('selected');
+        $("#akp_shortcode_effect").children('option').removeAttr('selected');
+        var option = $(this).val();
+        if (option == 'single') {
+            // Single banner
+            var current_id = $(this).data('post_id');
+            $(".akp_shortcode_example .akp_shortcode_banner").text(' banner="'+current_id+'"');
+        } else if (option == 'selected') {
+            // Multiple selected banners
+            $(".akp_shortcode_q.selected").fadeIn();
+        } else if (option == 'group') {
+            // Advert type
+            $(".akp_shortcode_q.group").fadeIn();
+        }
+    });
+    
+    // Select banners
+    $("#akp_shortcode_banners").change(function() {
+        // Get selected ids
+        var options = [];
+        var output = '';
+        $(this).children('option:selected').each(function() {
+            options[options.length] = $(this).val();
+            output += $(this).val()+",";
+        });
+        
+        output = output.substr(0, output.length-1);
+        
+        $(".akp_shortcode_example .akp_shortcode_banner").text(' banner="'+output+'"');
+        
+        // Check if rotate is selected and process render as required
+        if (!$("#akp_shortcode_rotate").is(':checked'))
+            $(".akp_shortcode_example .akp_shortcode_render").text(' render="'+options.length+'"');
+        else
+            $(".akp_shortcode_example .akp_shortcode_render").text('');
+    });
+    
+    // Select Advert Type
+    $("#akp_shortcode_adverttype").change(function() {
+        var adverttype = $(this).val();
+        $(".akp_shortcode_example .akp_shortcode_type").text(' type="'+adverttype+'"');
+    });
+    
+    // Enter render amount
+    $("#akp_shortcode_render").keyup(function() {
+        var render = $(this).val();
+        // validate entry
+        
+        if (render !== '') {
+            $("#akp_shortcode_rotate").parent().fadeOut();
+            $(".akp_shortcode_example .akp_shortcode_render").text(' render="'+render+'"');
+        } else {
+            $("#akp_shortcode_rotate").parent().fadeIn();
+            $(".akp_shortcode_example .akp_shortcode_render").text('');
+        }
+    });
+    
+    // Select auto rotate
+    $("#akp_shortcode_rotate").click(function() {
+        if ($(this).is(":checked")) {
+            // Display rotate options
+            $(".akp_shortcode_q.rotate").fadeIn();
+            $("#akp_shortcode_render").parent().fadeOut();
+            $(".akp_shortcode_example .akp_shortcode_render").text('');
+            $(".akp_shortcode_example .akp_shortcode_rotate").text(' rotate="true"');
+            $(".akp_shortcode_example .akp_shortcode_speed").text(' speed="'+$("#akp_shortcode_speed").val()+'"');
+            $(".akp_shortcode_example .akp_shortcode_changespeed").text(' changespeed="'+$("#akp_shortcode_changespeed").val()+'"');
+            $(".akp_shortcode_example .akp_shortcode_effect").text(' effect="'+$("#akp_shortcode_effect").val()+'"');
+        } else {
+            // hide rotate options
+            if ($("#akp_shortcode_display").val() == 'selected') {
+                var options = [];
+                var output = '';
+                $("#akp_shortcode_banners").children('option:selected').each(function() {
+                    options[options.length] = $(this).val();
+                    output += $(this).val()+",";
+                });
+
+                output = output.substr(0, output.length-1);
+                $(".akp_shortcode_example .akp_shortcode_render").text(' render="'+options.length+'"');
+            } else {
+                $("#akp_shortcode_render").parent().fadeIn();
+            }
+            $(".akp_shortcode_q.rotate").fadeOut();
+            $(".akp_shortcode_example .akp_shortcode_rotate").text('');
+            $(".akp_shortcode_example .akp_shortcode_speed").text('');
+            $(".akp_shortcode_example .akp_shortcode_changespeed").text('');
+            $(".akp_shortcode_example .akp_shortcode_effect").text('');
+        }
+    });
+    
+    // Enter speed amount
+    $("#akp_shortcode_speed").keyup(function() {
+        var speed = $(this).val();
+        // validate entry
+        
+        if (speed !== '') {
+            $(".akp_shortcode_example .akp_shortcode_speed").text(' speed="'+speed+'"');
+        }
+    });
+    
+    // Enter changespeed amount
+    $("#akp_shortcode_changespeed").keyup(function() {
+        var changespeed = $(this).val();
+        // validate entry
+        
+        if (changespeed !== '') {
+            $(".akp_shortcode_example .akp_shortcode_changespeed").text(' changespeed="'+changespeed+'"');
+        }
+    });
+    
+    // Select efect
+    $("#akp_shortcode_effect").change(function() {
+        var option = $(this).val();
+        
+        $(".akp_shortcode_example .akp_shortcode_effect").text(' effect="'+option+'"');
+    });
+    
     var html5_custom_uploader;
     $('#akp_html5_url_button').click(function(e) {
         e.preventDefault();

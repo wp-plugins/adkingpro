@@ -38,6 +38,20 @@ padding: 1px;
 font-size: 12px;
 }
 
+.akp_shortcode_example {
+    height: 40px;
+    line-height: 40px;
+    width: 100%;
+    background-color: #ccc;
+    color: #333;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 20px;
+}
+.akp_shortcode_q {
+    padding: 10px 0;
+}
+
 /**** Dashboard Styling ****/
 
 #akp_dashboard_widget ul {
