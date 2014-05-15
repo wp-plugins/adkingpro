@@ -11,19 +11,23 @@ function akp_check_page($hook) {
 }
 
 // Check for capabilities and throw error if doesn't exist.
-require_once(ABSPATH . 'wp-includes/pluggable.php');
-if (!current_user_can('akp_edit_one')) {
-    function akp_admin_notice() {
-        ?>
-        <div class="error">
-            <p>Ad King Pro <?= __("capabilities haven't been added to the list which will prevent you from using Ad King Pro. <strong>Please deactivate and reactivate the plugin to add these</strong>.", 'akptext' ); ?></p>
-        </div>
-        <?php
+function akp_admin_notice() {
+    if (!current_user_can('akp_edit_one')) {
+    ?>
+    <div class="error">
+        <p>Ad King Pro <?= __("capabilities haven't been added to the list which will prevent you from using Ad King Pro. <strong>Please deactivate and reactivate the plugin to add these</strong>.", 'akptext' ); ?></p>
+    </div>
+    <?php
     }
-    add_action( 'admin_notices', 'akp_admin_notice' );
 }
+add_action( 'admin_notices', 'akp_admin_notice' );
+
 
 function register_akp_options() {
+  register_setting( 'akp-options', 'akp_ga_intergrated' );
+  register_setting( 'akp-options', 'akp_ga_implemented' );
+  register_setting( 'akp-options', 'akp_ga_imp_action' );
+  register_setting( 'akp-options', 'akp_ga_click_action' );
   register_setting( 'akp-options', 'expiry_time' );
   register_setting( 'akp-options', 'impression_expiry_time' );
   register_setting( 'akp-options', 'week_start' );
@@ -42,6 +46,10 @@ function register_akp_options() {
 add_action( 'admin_init', 'register_akp_options' );
 
 // Default Options
+add_option( 'akp_ga_intergrated', '0' );
+add_option( 'akp_ga_implemented', 'universal' );
+add_option( 'akp_ga_imp_action', 'Impression' );
+add_option( 'akp_ga_click_action', 'Click' );
 add_option( 'expiry_time', '+6 hours' );
 add_option( 'impression_expiry_time', '+0 hours' );
 add_option( 'week_starts', 'monday' );
@@ -367,6 +375,7 @@ function akp_change_meta_boxes()
     add_meta_box('akphtml5box', __('Advert HTML5 File', 'akptext'), 'akp_html5_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('akpadsensebox', __('Advert AdSense Code', 'akptext'), 'akp_adsense_box', 'adverts_posts', 'normal', 'high');
     add_meta_box('akptextbox', __('Advert Text', 'akptext'), 'akp_text_box', 'adverts_posts', 'normal', 'high');
+    add_meta_box('akpgaintergration', __('Google Analytics Event Values', 'akptext'), 'akp_ga_intergration', 'adverts_posts', 'normal', 'high');
     add_meta_box('postclickstatsdiv', __('Advert Stats', 'akptext'), 'akp_post_click_stats', 'adverts_posts', 'advanced', 'low');
     add_meta_box('revenuevaluesdiv', __('Advert Revenue', 'akptext'), 'akp_revenue_values', 'adverts_posts', 'side', 'low');
     add_meta_box('linkoptionsdiv', __('Link Options', 'akptext'), 'akp_link_options', 'adverts_posts', 'side', 'low');
@@ -438,6 +447,7 @@ function expiry_in_publish($post)
 // Display example shortcode
 function akp_shortcode($object, $box) {
     global $wpdb, $post;
+    
     ?>
     <div class="akp_shortcode_builder">
         <div class="akp_shortcode_q">
@@ -465,6 +475,7 @@ function akp_shortcode($object, $box) {
             <span><?php _e('Which adverts would you like to display?') ?></span>
             <select id="akp_shortcode_banners" multiple style='width: 100%;'>
                 <?php
+                    $bk_post = $post;
                     $adverts = new WP_Query(array('post_type'=>'adverts_posts', 'showposts'=>-1));
                     if ($adverts->have_posts()) :
                         while ($adverts->have_posts()) :
@@ -472,6 +483,8 @@ function akp_shortcode($object, $box) {
                             echo "<option value='".get_the_ID()."'>".get_the_ID()." - ".get_the_title()."</option>";
                         endwhile;
                     endif;
+                    wp_reset_postdata();
+                    $post = $bk_post;
                 ?>
             </select>
         </div>
@@ -504,6 +517,43 @@ function akp_shortcode($object, $box) {
         [adkingpro<span class="akp_shortcode_type"></span><span class="akp_shortcode_banner"></span><span class="akp_shortcode_rotate"></span><span class="akp_shortcode_speed"></span><span class="akp_shortcode_changespeed"></span><span class="akp_shortcode_effect"></span><span class="akp_shortcode_render"></span>]
     </div>
     <?php
+}
+
+// Replace GA variables with post data
+function akp_ga_data($post_id) {
+    $campaign = (get_post_meta( $post_id, 'akp_ga_campaign', true )) ? get_post_meta( $post_id, 'akp_ga_campaign', true ) : '';
+    $banner = (get_post_meta( $post_id, 'akp_ga_banner', true )) ? get_post_meta( $post_id, 'akp_ga_banner', true ) : '';
+    
+    $ga_implemented = get_option('akp_ga_implemented');
+    $ga_imp_action = get_option('akp_ga_imp_action');
+    $ga_click_action = get_option('akp_ga_click_action');
+    
+    return array('campaign'=>$campaign, 'banner'=>$banner, 'implemented'=>$ga_implemented, 'imp_action'=>$ga_imp_action, 'click_action'=>$ga_click_action);
+}
+
+// GA Intergration fields
+function akp_ga_intergration($object, $box) {
+    global $wpdb, $post;
+    
+    $ga_data = akp_ga_data($post->ID);
+    
+    echo '<label for="akp_ga_campaign">'.__('Campaign (GA Category)', 'akptext').'</label>';
+    echo '<br /><input type="text" class="akp_ga_field" data-field="campaign" name="akp_ga_campaign" style="width: 100%;" value="'.$ga_data['campaign'].'" /><br />';
+    echo '<label for="akp_ga_banner">'.__('Banner Name (GA Label)', 'akptext').'</label>';
+    echo '<br /><input type="text" class="akp_ga_field" data-field="banner" name="akp_ga_banner" style="width: 100%;" value="'.$ga_data['banner'].'" /><br />';
+    
+    echo '<p>Below is what will be used to input data into your Google Analytics account for the events:</p>';
+    echo '<label>'.__('Impressions Event', 'akptext').'</label>';
+    if ($ga_data['implemented'] == 'classic')
+        echo "<br /><div class='akp_shortcode_example'>_gaq.push(['_trackEvent','<span class='akp_ga_campaign_text'>".$ga_data['campaign']."</span>','".$ga_data['imp_action']."', '<span class='akp_ga_banner_text'>".$ga_data['banner']."</span>']);</div><br />";
+    elseif ($ga_data['implemented'] == 'universal')
+        echo "<br /><div class='akp_shortcode_example'>ga('send', 'event', '<span class='akp_ga_campaign_text'>".$ga_data['campaign']."</span>', '".$ga_data['imp_action']."', '<span class='akp_ga_banner_text'>".$ga_data['banner']."</span>');</div><br />";
+    
+    echo '<label>'.__('Clicks Event', 'akptext').'</label>';
+    if ($ga_data['implemented'] == 'classic')
+        echo "<br /><div class='akp_shortcode_example'>_gaq.push(['_trackEvent','<span class='akp_ga_campaign_text'>".$ga_data['campaign']."</span>','".$ga_data['click_action']."', '<span class='akp_ga_banner_text'>".$ga_data['banner']."</span>']);</div><br />";
+    elseif ($ga_data['implemented'] == 'universal')
+        echo "<br /><div class='akp_shortcode_example'>ga('send', 'event', '<span class='akp_ga_campaign_text'>".$ga_data['campaign']."</span>', '".$ga_data['click_action']."', '<span class='akp_ga_banner_text'>".$ga_data['banner']."</span>');</div><br />";
 }
 
 function minify_akpshortcode( $classes ) {
@@ -548,6 +598,7 @@ function akp_image_box($object, $box) {
 
 function akp_image_attrs_box($object, $box) {
     global $post;
+    
     $image_alt = (get_post_meta( $post->ID, 'akp_image_alt', true )) ? get_post_meta( $post->ID, 'akp_image_alt', true ) : '';
 
     echo '<label for="akp_image_alt">'.__('Banner description (this will be added to the alt tag on the image)', 'akptext').'</label>';
@@ -563,7 +614,7 @@ function akp_html5_box($object, $box) {
     echo '<label for="akp_html5_url">';
     echo '<input id="akp_html5_url" type="text" size="36" name="akp_html5_url" value="'.$html5_url.'" />';
     echo '<input id="akp_html5_url_button" class="button" type="button" value="'.__('Upload HTML5 File', 'akptext').'" />';
-    echo '<br />'.__('Enter a URL or upload a HTML5 file - PLEASE NOTE: Must contain at least one (1) anchor tag (<a />) with a "href" attribute', 'akptext');
+    echo '<br />'.__('Enter a URL or upload a HTML5 file - PLEASE NOTE: Must contain at least one (1) anchor tag (&lt;a /&gt;) with a "href" attribute', 'akptext');
     echo '</label><br /><br />';
     echo '<label for="akp_html5_width" style="width: 85px; display: block; float: left;">'.__('Frame Width', 'akptext').'</label><input type="text" name="akp_html5_width" value="'.$html5_width.'" style="width: 60px;" /><br />';
     echo '<label for="akp_html5_height" style="width: 85px; display: block; float: left;">'.__('Frame Height', 'akptext').'</label><input type="text" name="akp_html5_height" value="'.$html5_height.'" style="width: 60px;" /><br />';
@@ -724,6 +775,8 @@ function akp_save_custom_fields( ) {
             update_post_meta( $post->ID, 'akp_flash_height', $_POST['akp_flash_height'] );
             update_post_meta( $post->ID, 'akp_adsense_code', $_POST['akp_adsense_code'] );
             update_post_meta( $post->ID, 'akp_text', $_POST['akp_text'] );
+            update_post_meta( $post->ID, 'akp_ga_campaign', $_POST['akp_ga_campaign']);
+            update_post_meta( $post->ID, 'akp_ga_banner', $_POST['akp_ga_banner']);
             
             if (isset($_POST['akp_target']))
                 update_post_meta( $post->ID, 'akp_target', $_POST['akp_target'] );
@@ -757,6 +810,8 @@ function akp_return_fields( $id = NULL ) {
         $output['akp_text'] = (get_post_meta( $id, 'akp_text' ) ? get_post_meta( $id, 'akp_text' ) : array(''));
         $output['akp_target'] = (get_post_meta( $id, 'akp_target' ) ? get_post_meta( $id, 'akp_target' ) : array('blank'));
         $output['akp_nofollow'] = (get_post_meta( $id, 'akp_nofollow' ) ? get_post_meta( $id, 'akp_nofollow' ) : array('0'));
+        $output['akp_ga_campaign'] = (get_post_meta( $id, 'akp_ga_campaign' ) ? get_post_meta( $id, 'akp_ga_campaign' ) : array(''));
+        $output['akp_ga_banner'] = (get_post_meta( $id, 'akp_ga_banner' ) ? get_post_meta( $id, 'akp_ga_banner' ) : array(''));
         
         return $output;
 }
@@ -878,21 +933,53 @@ function akp_get_featured_image($post_ID, $thumb = 'custom_thumbnail') {
 }
 
 function akp_log_impression($post_id) {
-    $timestamp = current_time('timestamp');
-    $expire = strtotime(get_option('impression_expiry_time'), $timestamp);
-    $ip_address = $_SERVER['REMOTE_ADDR'];
-    global $wpdb;
-    $ip = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."akp_impressions_expire WHERE ip_address = '$ip_address' AND post_id = '$post_id'");
-    if ($ip != null) {
-        if ($ip->expire < $timestamp) {
-            $wpdb->query( $wpdb->prepare( 
-                    "DELETE FROM ".$wpdb->prefix."akp_impressions_expire
-                     WHERE post_id = %d
-                     AND ip_address = %s
-                    ",
-                    $post_id, $ip_address
-                    )
-            );
+    if (get_option('akp_ga_intergrated', 0)) {
+        // GA Enabled
+        $ga_data = akp_ga_data($post_id);
+        if ($ga_data['implemented'] == 'classic')
+            $output = "<script type='text/javascript'>_gaq.push(['_trackEvent','".$ga_data['campaign']."', '".$ga_data['imp_action']."', ".$ga_data['banner']."]);</script>";
+        elseif ($ga_data['implemented'] == 'universal')
+            $output = "<script type='text/javascript'>ga('send', 'event', '".$ga_data['campaign']."', '".$ga_data['imp_action']."', '".$ga_data['banner']."');</script>";
+        return $output;
+    } else {
+        // GA Disabled
+        $timestamp = current_time('timestamp');
+        $expire = strtotime(get_option('impression_expiry_time'), $timestamp);
+        $ip_address = $_SERVER['REMOTE_ADDR'];
+        global $wpdb;
+        $ip = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."akp_impressions_expire WHERE ip_address = '$ip_address' AND post_id = '$post_id'");
+        if ($ip != null) {
+            if ($ip->expire < $timestamp) {
+                $wpdb->query( $wpdb->prepare( 
+                        "DELETE FROM ".$wpdb->prefix."akp_impressions_expire
+                         WHERE post_id = %d
+                         AND ip_address = %s
+                        ",
+                        $post_id, $ip_address
+                        )
+                );
+                $wpdb->query( $wpdb->prepare( 
+                        "INSERT INTO ".$wpdb->prefix."akp_impressions_log
+                        ( post_id, ip_address, timestamp )
+                        VALUES ( %d, %s, %d )", 
+                        array(
+                            $post_id, 
+                            $ip_address, 
+                            $timestamp
+                        ) 
+                ) );
+                $wpdb->query( $wpdb->prepare( 
+                        "INSERT INTO ".$wpdb->prefix."akp_impressions_expire
+                        ( post_id, ip_address, expire )
+                        VALUES ( %d, %s, %d )", 
+                        array(
+                            $post_id, 
+                            $ip_address, 
+                            $expire
+                        ) 
+                ) );
+            }
+        } else {
             $wpdb->query( $wpdb->prepare( 
                     "INSERT INTO ".$wpdb->prefix."akp_impressions_log
                     ( post_id, ip_address, timestamp )
@@ -914,27 +1001,6 @@ function akp_log_impression($post_id) {
                     ) 
             ) );
         }
-    } else {
-        $wpdb->query( $wpdb->prepare( 
-                "INSERT INTO ".$wpdb->prefix."akp_impressions_log
-                ( post_id, ip_address, timestamp )
-                VALUES ( %d, %s, %d )", 
-                array(
-                    $post_id, 
-                    $ip_address, 
-                    $timestamp
-                ) 
-        ) );
-        $wpdb->query( $wpdb->prepare( 
-                "INSERT INTO ".$wpdb->prefix."akp_impressions_expire
-                ( post_id, ip_address, expire )
-                VALUES ( %d, %s, %d )", 
-                array(
-                    $post_id, 
-                    $ip_address, 
-                    $expire
-                ) 
-        ) );
     }
 }
        
@@ -1034,12 +1100,11 @@ function akp_dashboard() {
     }
 } 
 
-if (current_user_can(akp_allowed_cap())) {
-    function akp_add_dashboard_widgets() {
-            wp_add_dashboard_widget('akp_dashboard_widget', 'Ad King Pro - '.__('Banner Stats Summary', 'akptext'), 'akp_dashboard');	
-    } 
-    add_action('wp_dashboard_setup', 'akp_add_dashboard_widgets' );
-}
+function akp_add_dashboard_widgets() {
+    if (current_user_can(akp_allowed_cap()))
+        wp_add_dashboard_widget('akp_dashboard_widget', 'Ad King Pro - '.__('Banner Stats Summary', 'akptext'), 'akp_dashboard');	
+} 
+add_action('wp_dashboard_setup', 'akp_add_dashboard_widgets' );
 
 // Add King Pro Plugins Section
 if(!function_exists('find_kpp_menu_item')) {
@@ -1100,4 +1165,5 @@ function akp_settings_output() {
 function akp_detailed_output() {
     include 'screens/detailed.php';
 } 
+
 ?>

@@ -26,11 +26,15 @@ function adkingpro_func( $atts ) {
             }
         }
         
+        $ga_enabled = false;
+        if (get_option('akp_ga_intergrated', 0))
+            $ga_enabled = true;
+        
         if ($banner == 'random') {
             // ADVERT TYPE OUTPUT
             if ($render == 0 && $rotate) $render = -1;
             if ($render == 0) $render = 1;
-            query_posts(array(
+            $adverts = new WP_Query(array(
                 'post_type'=>'adverts_posts',
                 'orderby'=>'rand',
                 'showposts'=>$render,
@@ -61,11 +65,18 @@ function adkingpro_func( $atts ) {
                 if ($rotate) $slideshow = "akp_slideshow".rand(10000, 99999);
                 $output .= "<div class='adkingprocontainer' id='".$slideshow."'>";
             }
-            while (have_posts()) : the_post();
+            while ($adverts->have_posts()) : $adverts->the_post();
                 $term = get_term_by("slug", $type, 'advert_types');
                 $term_meta = get_option( "akp_advert_type_".$term->term_id);
                 $post_id = get_the_ID();
                 $cfields = akp_return_fields();
+                $ga = '';
+                if ($ga_enabled) {
+                    $ga_data = akp_ga_data($post_id);
+                    $ga_data = json_encode($ga_data);
+                    $ga = " data-ga='".$ga_data."'";
+                }
+                
                 if ($cfields['akp_expiry_date'][0] == '') $cfields['akp_expiry_date'][0] = 'never';
                 if ($cfields['akp_expiry_date'][0] !== 'never')
                 if ($cfields['akp_media_type'][0] == '') $cfields['akp_media_type'][0] = 'image';
@@ -83,7 +94,7 @@ function adkingpro_func( $atts ) {
                         if (!isset($cfields['akp_remove_url']) || (isset($cfields['akp_remove_url']) && $cfields['akp_remove_url'][0] == 1)) $display_link = false;
                         $output .= "<div class='adkingprobanner ".$type." akpbanner banner".$post_id."' style='width: ".$term_meta['advert_width']."px; height: ".$term_meta['advert_height']."px;'>";
                         if ($display_link)
-                            $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'>";
+                            $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'".$ga.">";
                         $output .= "<img src='".$image."' style='max-width: ".$term_meta['advert_width']."px; max-height: ".$term_meta['advert_height']."px;' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
@@ -92,7 +103,7 @@ function adkingpro_func( $atts ) {
                         
                     case 'html5':
                         $output .= "<div class='adkingprobannerhtml5 ".$type." akpbanner banner".$post_id."'>";
-                        $output .= '<iframe width="'.$cfields['akp_html5_width'][0].'" height="'.$cfields['akp_html5_height'][0].'" src="'.$cfields['akp_html5_url'][0].'" id="akpbanner'.$post_id.'-iframe" name="akpbanner'.$post_id.'-iframe" class="akpbanner-iframe" data-id="'.$post_id.'" style="border: none;"></iframe>';
+                        $output .= '<iframe width="'.$cfields['akp_html5_width'][0].'" height="'.$cfields['akp_html5_height'][0].'" src="'.$cfields['akp_html5_url'][0].'" id="akpbanner'.$post_id.'-iframe" name="akpbanner'.$post_id.'-iframe" class="akpbanner-iframe" data-id="'.$post_id.'"'.$ga.' style="border: none;"></iframe>';
                         $output .= "</div>";
                         break;
                     
@@ -118,14 +129,14 @@ function adkingpro_func( $atts ) {
                         $target = '';
                         if ($cfields['akp_target'][0] !== 'none') $target = ' target="_'.$cfields['akp_target'][0].'"';
                         if ($rotate) $output .= "<div class='adkingprobannertextcontainer ".$type." akpbanner banner".$post_id."'>";
-                        $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."' class='adkingprobannertext ".$type." banner".$post_id."'>";
+                        $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'".$ga." class='adkingprobannertext ".$type." banner".$post_id."'>";
                         $output .= $cfields['akp_text'][0];
                         $output .= "</a>";
                         if ($rotate) $output .= "</div>";
                         break;
                 }
                 if (isset($post_id))
-                    akp_log_impression($post_id);
+                    $output .= akp_log_impression($post_id);
             endwhile;
             if ($render > 1 || $render === -1) {
                 $output .= "</div>";
@@ -133,12 +144,12 @@ function adkingpro_func( $atts ) {
                     $output .= "<script type='text/javascript'>jQuery('#".$slideshow."').jshowoff({ speed:".$speed.", changeSpeed:".$changespeed.", effect: '".$effect."', links: false, controls: false });</script>";
                 }
             }
-            wp_reset_query();
+            wp_reset_postdata();
         } elseif (is_array($banner)) {
             // MULTIPLE BANNER IDS
             if ($render == 0 && $rotate) count($banner);
             if ($render == 0) $render = 1;
-            query_posts(array(
+            $adverts = new WP_Query(array(
                 'post_type'=>'adverts_posts',
                 'orderby'=>'rand',
                 'showposts'=>$render,
@@ -169,9 +180,16 @@ function adkingpro_func( $atts ) {
                 if ($rotate) $slideshow = "akp_slideshow".rand(10000, 99999);
                 $output .= "<div class='adkingprocontainer' id='".$slideshow."'>";
             }
-            while (have_posts()) : the_post();
+            while ($adverts->have_posts()) : $adverts->the_post();
                 $post_id = get_the_ID();
                 $cfields = akp_return_fields();
+                $ga = '';
+                if ($ga_enabled) {
+                    $ga_data = akp_ga_data($post_id);
+                    $ga_data = json_encode($ga_data);
+                    $ga = " data-ga='".$ga_data."'";
+                }
+                
                 if ($cfields['akp_expiry_date'][0] == '') $cfields['akp_expiry_date'][0] = 'never';
                 if ($cfields['akp_expiry_date'][0] !== 'never')
                 if ($cfields['akp_media_type'][0] == '') $cfields['akp_media_type'][0] = 'image';
@@ -189,7 +207,7 @@ function adkingpro_func( $atts ) {
                         if (!isset($cfields['akp_remove_url']) || (isset($cfields['akp_remove_url']) && $cfields['akp_remove_url'][0] == 1)) $display_link = false;
                         $output .= "<div class='adkingprobanner ".$type." akpbanner banner".$post_id."'>";
                         if ($display_link)
-                            $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'>";
+                            $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'".$ga.">";
                         $output .= "<img src='".$image."' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
@@ -198,7 +216,7 @@ function adkingpro_func( $atts ) {
                         
                     case 'html5':
                         $output .= "<div class='adkingprobannerhtml5 ".$type." akpbanner banner".$post_id."'>";
-                        $output .= '<iframe width="'.$cfields['akp_html5_width'][0].'" height="'.$cfields['akp_html5_height'][0].'" src="'.$cfields['akp_html5_url'][0].'" id="akpbanner'.$post_id.'-iframe" name="akpbanner'.$post_id.'-iframe" class="akpbanner-iframe" data-id="'.$post_id.'" style="border: none;"></iframe>';
+                        $output .= '<iframe width="'.$cfields['akp_html5_width'][0].'" height="'.$cfields['akp_html5_height'][0].'" src="'.$cfields['akp_html5_url'][0].'" id="akpbanner'.$post_id.'-iframe" name="akpbanner'.$post_id.'-iframe" class="akpbanner-iframe" data-id="'.$post_id.'"'.$ga.' style="border: none;"></iframe>';
                         $output .= "</div>";
                         break;
                     
@@ -224,14 +242,14 @@ function adkingpro_func( $atts ) {
                         $target = '';
                         if ($cfields['akp_target'][0] !== 'none') $target = ' target="_'.$cfields['akp_target'][0].'"';
                         if ($rotate) $output .= "<div class='adkingprobannertextcontainer ".$type." akpbanner banner".$post_id."'>";
-                        $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."' class='adkingprobannertext ".$type." banner".$post_id."'>";
+                        $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'".$ga." class='adkingprobannertext ".$type." banner".$post_id."'>";
                         $output .= $cfields['akp_text'][0];
                         $output .= "</a>";
                         if ($rotate) $output .= "</div>";
                         break;
                 }
                 if (isset($post_id))
-                    akp_log_impression($post_id);
+                    $output .= akp_log_impression($post_id);
             endwhile;
             if ($render > 1) {
                 $output .= "</div>";
@@ -239,10 +257,10 @@ function adkingpro_func( $atts ) {
                     $output .= "<script type='text/javascript'>jQuery('#".$slideshow."').jshowoff({ speed:".$speed.", changeSpeed:".$changespeed.", effect: '".$effect."', links: false, controls: false });</script>";
                 }
             }
-            wp_reset_query();
+            wp_reset_postdata();
         } elseif (is_numeric($banner)) {
             // SINGLE BANNER ID
-            query_posts(array(
+            $adverts = new WP_Query(array(
                 'post_type'=>'adverts_posts',
                 'p'=>$banner,
                 'meta_query' => array(
@@ -265,9 +283,16 @@ function adkingpro_func( $atts ) {
                     )
                 )
                 ));
-            while (have_posts()) : the_post();
+            while ($adverts->have_posts()) : $adverts->the_post();
                 $post_id = get_the_ID();
                 $cfields = akp_return_fields();
+                $ga = '';
+                if ($ga_enabled) {
+                    $ga_data = akp_ga_data($post_id);
+                    $ga_data = json_encode($ga_data);
+                    $ga = " data-ga='".$ga_data."'";
+                }
+                
                 if ($cfields['akp_media_type'][0] == '') $cfields['akp_media_type'][0] = 'image';
                 switch ($cfields['akp_media_type'][0]) {
                     case 'image':
@@ -283,7 +308,7 @@ function adkingpro_func( $atts ) {
                         if (!isset($cfields['akp_remove_url']) || (isset($cfields['akp_remove_url']) && $cfields['akp_remove_url'][0] == 1)) $display_link = false;
                         $output .= "<div class='adkingprobanner ".$type." banner".$post_id."'>";
                         if ($display_link)
-                            $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'>";
+                            $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'".$ga.">";
                         $output .= "<img src='".$image."' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
@@ -292,7 +317,7 @@ function adkingpro_func( $atts ) {
                         
                     case 'html5':
                         $output .= "<div class='adkingprobannerhtml5 ".$type." akpbanner banner".$post_id."'>";
-                        $output .= '<iframe width="'.$cfields['akp_html5_width'][0].'" height="'.$cfields['akp_html5_height'][0].'" src="'.$cfields['akp_html5_url'][0].'" id="akpbanner'.$post_id.'-iframe" name="akpbanner'.$post_id.'-iframe" class="akpbanner-iframe" data-id="'.$post_id.'" style="border: none;"></iframe>';
+                        $output .= '<iframe width="'.$cfields['akp_html5_width'][0].'" height="'.$cfields['akp_html5_height'][0].'" src="'.$cfields['akp_html5_url'][0].'" id="akpbanner'.$post_id.'-iframe" name="akpbanner'.$post_id.'-iframe" class="akpbanner-iframe" data-id="'.$post_id.'"'.$ga.' style="border: none;"></iframe>';
                         $output .= "</div>";
                         break;
                     
@@ -317,15 +342,15 @@ function adkingpro_func( $atts ) {
                         if ($cfields['akp_nofollow'][0] == '1') $nofollow = ' rel="nofollow"';
                         $target = '';
                         if ($cfields['akp_target'][0] !== 'none') $target = ' target="_'.$cfields['akp_target'][0].'"';
-                        $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."' class='adkingprobannertext ".$type." banner".$post_id."'>";
+                        $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'".$ga." class='adkingprobannertext ".$type." banner".$post_id."'>";
                         $output .= $cfields['akp_text'][0];
                         $output .= "</a>";
                         break;
                 }
                 if (isset($post_id))
-                    akp_log_impression($post_id);
+                    $output .= akp_log_impression($post_id);
             endwhile;
-            wp_reset_query();
+            wp_reset_postdata();
         }
 	return $output;
 }

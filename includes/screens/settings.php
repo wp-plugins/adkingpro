@@ -63,8 +63,18 @@
                 <tr valign="top">
                     <th scope="row" colspan="3"><h2><?= __("Tracking Settings", 'akptext' ); ?></h2></th>
                 </tr>
-
+                
                 <tr valign="top">
+                <th scope="row"><?= __("Enable tracking via Google Analytics", 'akptext' ); ?></th>
+                <td>
+                    <?php $ga_intergrated = get_option('akp_ga_intergrated'); ?>
+                    <input type="hidden" name="akp_ga_intergrated" value="0" />
+                    <input type="checkbox" name="akp_ga_intergrated" id="akp_ga_intergrated" value="1"<?php if ($ga_intergrated == 1) echo " checked" ?> />
+                </td>
+                <td>This removes all tracking and reporting locally</td>
+                </tr>
+
+                <tr valign="top" class="akp_ga_disabled"<?php if ($ga_intergrated == 1) echo " style='display: none;'" ?>>
                 <th scope="row"><?= __("Click Expiry Time Length (per IP)", 'akptext' ); ?></th>
                 <td>
                     <?php $expiry = get_option('expiry_time'); ?>
@@ -83,7 +93,7 @@
                 <td></td>
                 </tr>
 
-                <tr valign="top">
+                <tr valign="top" class="akp_ga_disabled"<?php if ($ga_intergrated == 1) echo " style='display: none;'" ?>>
                 <th scope="row"><?= __("Impression Expiry Time Length (per IP)", 'akptext' ); ?></th>
                 <td>
                     <?php $expiry = get_option('impression_expiry_time'); ?>
@@ -100,6 +110,31 @@
                     </select>
                 </td>
                 <td></td>
+                </tr>
+                
+                <tr valign="top" class="akp_ga_enabled"<?php if ($ga_intergrated == 0) echo " style='display: none;'" ?>>
+                    <th scope="row"><?= __("What GA code are you using?", 'akptext' ); ?></th>
+                    <td colspan="2">
+                        <?php $ga_implemented = get_option('akp_ga_implemented'); ?>
+                        <input type="radio" name="akp_ga_implemented" value="universal"<?php if ($ga_implemented == 'universal') echo ' checked'; ?> /> <label>Universal (<a href="https://developers.google.com/analytics/devguides/collection/analyticsjs/" target="_blank">analytics.js</a>)</label><br />
+                        <input type="radio" name="akp_ga_implemented" value="classic"<?php if ($ga_implemented == 'classic') echo ' checked'; ?> /> <label>Classic (<a href="https://developers.google.com/analytics/devguides/collection/gajs/" target="_blank">ga.js</a>)</label><br />
+                    </td>
+                </tr>
+                
+                <tr valign="top" class="akp_ga_enabled"<?php if ($ga_intergrated == 0) echo " style='display: none;'" ?>>
+                <th scope="row"><?= __("Impression action name (GA Action)", 'akptext' ); ?></th>
+                <td colspan="2">
+                    <?php $ga_imp_action = get_option('akp_ga_imp_action'); ?>
+                    <input type="text" name="akp_ga_imp_action" value="<?php echo $ga_imp_action ?>" style="width: 100%;" />
+                </td>
+                </tr>
+                
+                <tr valign="top" class="akp_ga_enabled"<?php if ($ga_intergrated == 0) echo " style='display: none;'" ?>>
+                <th scope="row"><?= __("Click action name (GA Action)", 'akptext' ); ?></th>
+                <td colspan="2">
+                    <?php $ga_click_action = get_option('akp_ga_click_action'); ?>
+                    <input type="text" name="akp_ga_click_action" value="<?php echo $ga_click_action ?>" style="width: 100%;" />
+                </td>
                 </tr>
                 
                 <tr valign="top">
@@ -303,9 +338,12 @@
             &nbsp;&nbsp;&nbsp;&nbsp;e.preventDefault();
             &nbsp;&nbsp;&nbsp;&nbsp;// Your action here
             });</pre>
-            <h4><?= __("I get an error saying the PDF can't be saved due to write permissions on the server. What do I do?", 'akptext' ); ?></h4>
+            <h4><?= __("Q. I get an error saying the PDF can't be saved due to write permissions on the server. What do I do?", 'akptext' ); ?></h4>
             <p><?= __("The plugin needs your permission to save the PDFs you generate to the output folder in the plugins folder. To do this, you are required to", 'akptext' ); ?>
             <?= __("update the outputs permissions to be writable. Please see", 'akptext' ); ?> <a href="http://codex.wordpress.org/Changing_File_Permissions" target="_blank"><?= __("the wordpress help page", 'akptext' ); ?></a> <?= __("to carry this out.", 'akptext' ); ?></p>
+            <h4><?= __("Q. I'm using the Google Analyics intergration and I'm getting a _gaq or ga is not defined error. Why?", 'akptext' ); ?></h4>
+            <p><?= __("This is most probably due to either you don't have your standard Google Analytics tracking code implemented or that code is in the footer. ", 'akptext' ); ?>
+                <?= __("Bring the tracking code up into the header to allow the code it initialise for the event functions to work on the page.", 'akptext' ); ?></p>
             <br />
             <h4><?= __("Found an issue? Post your issue on the", 'akptext' ); ?> <a href="http://wordpress.org/support/plugin/adkingpro" target="_blank"><?= __("support forums", 'akptext' ); ?></a>. <?= __("If you would prefer, please email your concern to", 'akptext' ); ?> <a href="mailto:plugins@kingpro.me">plugins@kingpro.me</a></h4>
         </div>

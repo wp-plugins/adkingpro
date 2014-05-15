@@ -413,4 +413,26 @@ jQuery(document).ready(function($) {
             window.location = response;
         });
     });
+    
+    // Settings functionality
+    $("#akp_ga_intergrated").click(function() {
+        if ($(this).is(":checked")) {
+            // GA Intergrated
+            $(".akp_ga_disabled").slideUp();
+            $(".akp_ga_enabled").slideDown();
+        } else {
+            // GA not Intergrated
+            $(".akp_ga_disabled").slideDown();
+            $(".akp_ga_enabled").slideUp();
+        }
+    });
+    
+    // Edit screen GA fields
+    $(".akp_ga_field").keyup(function() {
+        var field = $(this).data('field');
+        var val = $(this).val();
+        $("#akpgaintergration .akp_ga_"+field+"_text").each(function() {
+            $(this).text(val);
+        });
+    });
 });
