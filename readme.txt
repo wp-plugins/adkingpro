@@ -4,7 +4,7 @@ Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes, flash, adsense, text, resize, rotate, slideshow, multiple
 Requires at least: 3.0.1
 Tested up to: 3.9
-Stable tag: 1.9.13
+Stable tag: 1.9.14
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -136,6 +136,11 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 
 == Changelog ==
 
+= 1.9.14 =
+* Update settings on custom post types to prevent URLs being created
+* Enable or disable tracking or impressions and clicks
+* Added ability to add rollover images
+
 = 1.9.13 =
 * Fix to permissions which cause bbPress to stop working with Ad King Pro
 * Fix to shortcode builder code changing the post ID on the edit screen
@@ -255,6 +260,11 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 * Initial
 
 == Upgrade Notice ==
+
+= 1.9.14 =
+* Update settings on custom post types to prevent URLs being created
+* Enable or disable tracking or impressions and clicks
+* Added ability to add rollover images
 
 = 1.9.13 =
 * Fix to permissions which cause bbPress to stop working with Ad King Pro

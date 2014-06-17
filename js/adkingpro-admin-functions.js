@@ -1,9 +1,10 @@
 jQuery(document).ready(function($) {
     if ($("#akp_change_media_type").length > 0) {
-        $('#postimagediv, #akphtml5box, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox, #akpimageattrbox').hide();
+        $('#postimagediv, #postrolloverdiv, #akphtml5box, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox, #akpimageattrbox').hide();
         if ($("#akp_change_media_type").val() === 'image') {
             $('#title-prompt-text').text('Advert URL ie http://kingpro.me/plugins/ad-king-pro');
             $('#postimagediv').fadeIn();
+            $('#postrolloverdiv').fadeIn();
             $('#akpimagebox').fadeIn();
             $('#akpimageattrbox').fadeIn();
             $('#postremoveurllink').fadeIn();
@@ -23,10 +24,11 @@ jQuery(document).ready(function($) {
     }
     $('#akp_change_media_type').change(function() {
         // Change views
-        $('#postimagediv, #akphtml5box, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox, #akpimageattrbox').hide();
+        $('#postimagediv, #postrolloverdiv, #akphtml5box, #akpflashbox, #akpadsensebox, #postremoveurllink, #akpimagebox, #akptextbox, #akpimageattrbox').hide();
         if ($(this).val() === 'image') {
             $('#title-prompt-text').text('Advert URL ie http://kingpro.me/plugins/ad-king-pro');
             $('#postimagediv').fadeIn();
+            $('#postrolloverdiv').fadeIn();
             $('#akpimagebox').fadeIn();
             $('#postremoveurllink').fadeIn();
         } else if ($("#akp_change_media_type").val() === 'html5') {
@@ -259,6 +261,82 @@ jQuery(document).ready(function($) {
  
         //Open the uploader dialog
         image_custom_uploader.open();
+    });
+    
+    var image_rollover_custom_uploader;
+    $('body').on("click", '#akp_rollover_image_button, #set-advert_types-akp_rollover_image-thumbnail', function(e) {
+        e.preventDefault();
+        
+        //If the uploader object has already been created, reopen the dialog
+        if (image_rollover_custom_uploader) {
+            image_rollover_custom_uploader.open();
+            return;
+        }
+ 
+        //Extend the wp.media object
+        image_rollover_custom_uploader = wp.media.frames.file_frame = wp.media({
+            title: 'Choose Rollover Image',
+            button: {
+                text: 'Choose Rollover Image'
+            },
+            multiple: false
+        });
+ 
+        //When a file is selected, grab the URL and set it as the text field's value
+        image_rollover_custom_uploader.on('select', function() {
+            attachment = image_rollover_custom_uploader.state().get('selection').first().toJSON();
+            var url = '';
+            url = attachment['url'];
+            if ($('#akp_rollover_image').length > 0) {
+                // No post thumbnail support
+                $('#akp_rollover_image').val(url);
+            } else {
+                // Post thumbnail support replicating feature image functionality
+                var post_id = $("#post_ID").val();
+                var thumb_id = attachment['id'];
+                var $link = $('a#adverts_posts-akp_rollover_image-thumbnail-' + thumb_id);
+                    $link.data('thumbnail_id', thumb_id);
+                $link.text( 'Saving...' );
+                jQuery.post(akp_ajax_object.ajax_url, {
+                        action:'set-adverts_posts-akp_rollover_image-thumbnail', post_id: post_id, thumbnail_id: thumb_id, _ajax_nonce: akp_ajax_object.akp_ajaxnonce, cookie: encodeURIComponent(document.cookie)
+                }, function(str){
+                        var win = window.dialogArguments || opener || parent || top;
+                        $link.text( "Remove Rollover Image" );
+                        if ( str == '0' ) {
+                                alert( "An error occured" );
+                        } else {
+                                $link.show();
+                                $link.text( "Complete" );
+                                $link.fadeOut( 2000, function() {
+                                        $('tr.adverts_posts-akp_rollover_image-thumbnail').hide();
+                                });
+                                var field = jQuery('input[value=_akp_rollover_image]', '#list-table');
+                                if ( field.size() > 0 ) {
+                                        $('#meta\\[' + field.attr('id').match(/[0-9]+/) + '\\]\\[value\\]').text(thumb_id);
+                                }
+                                $('.inside', '#postrolloverdiv').html(str);
+                        }
+                }
+                );
+            }
+        });
+ 
+        //Open the uploader dialog
+        image_rollover_custom_uploader.open();
+    });
+    
+    $("body").on("click", "#remove-akp_rollover_image-thumbnail", function(e) {
+        e.preventDefault();
+        $.post(akp_ajax_object.ajax_url, {
+            action:'set-adverts_posts-akp_rollover_image-thumbnail', post_id: $('#post_ID').val(), thumbnail_id: -1, _ajax_nonce: akp_ajax_object.akp_ajaxnonce, cookie: encodeURIComponent(document.cookie)
+        }, function(str){
+            if ( str == '0' ) {
+                    alert("An error occured");
+            } else {
+                    $('.inside', '#postrolloverdiv').html(str);
+            }
+        }
+        );
     });
     
     $('#expirydiv').siblings('a.edit-expiry').click(function() {

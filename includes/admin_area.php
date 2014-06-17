@@ -24,6 +24,8 @@ add_action( 'admin_notices', 'akp_admin_notice' );
 
 
 function register_akp_options() {
+  register_setting( 'akp-options', 'akp_track_impressions' );
+  register_setting( 'akp-options', 'akp_track_clicks' );
   register_setting( 'akp-options', 'akp_ga_intergrated' );
   register_setting( 'akp-options', 'akp_ga_implemented' );
   register_setting( 'akp-options', 'akp_ga_imp_action' );
@@ -46,6 +48,8 @@ function register_akp_options() {
 add_action( 'admin_init', 'register_akp_options' );
 
 // Default Options
+add_option( 'akp_track_impressions', '1' );
+add_option( 'akp_track_clicks', '1' );
 add_option( 'akp_ga_intergrated', '0' );
 add_option( 'akp_ga_implemented', 'universal' );
 add_option( 'akp_ga_imp_action', 'Impression' );
@@ -131,6 +135,10 @@ function akp_create_post_type() {
             ),
             'public' => true,
             'exclude_from_search' => true,
+            'publicly_queryable' => false,
+            'show_in_nav_menus' => false,
+            'rewrite' => false,
+            'query_var' => false,
             'menu_position' => 5,
             'supports' => array( 'title', 'thumbnail' )
         )
@@ -151,7 +159,7 @@ function akp_create_post_type() {
                 'new_item_name'=>__('New Advert Type', 'akptext' ),
                 'search_items'=>__('Search Advert Types', 'akptext' ),
             ),
-            'query_var' => true,
+            'query_var' => false,
             'rewrite' => array('slug' => 'adverts_slug')
         )
     );
@@ -216,6 +224,15 @@ add_action('wp_enqueue_scripts', 'akp_my_scripts_method');
 function akp_dynamic_css() {
     ?>
     <style type="text/css">
+        .adkingprobanner.rollover {position: relative;}
+        .adkingprobanner.rollover .akp_rollover_image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .adkingprobanner.rollover .akp_rollover_image.over {z-index: 0;}
+        .adkingprobanner.rollover:hover .akp_rollover_image.over {z-index: 2;}
         <?= get_option('akp_custom_css') ?>
     </style>
     <?php
@@ -368,6 +385,7 @@ function akp_change_meta_boxes()
     remove_meta_box( 'postimagediv', 'adverts_posts', 'side' );
     if (current_theme_supports('post-thumbnails')) {
         add_meta_box('postimagediv', __('Advert Image', 'akptext'), 'post_thumbnail_meta_box', 'adverts_posts', 'normal', 'high');
+        add_meta_box('postrolloverdiv', __('Advert Rollover Image', 'akptext'), 'akp_rollover_image_box', 'adverts_posts', 'normal', 'high');
         add_meta_box('akpimageattrbox', __('Advert Image Attributes', 'akptext'), 'akp_image_attrs_box', 'adverts_posts', 'normal', 'high');
     } else 
         add_meta_box('akpimagebox', __('Advert Image', 'akptext'), 'akp_image_box', 'adverts_posts', 'normal', 'high');
@@ -584,6 +602,7 @@ function akp_media_type($object, $box) {
 function akp_image_box($object, $box) {
     global $post;
     $image_url = (get_post_meta( $post->ID, 'akp_image_url', true )) ? get_post_meta( $post->ID, 'akp_image_url', true ) : '';
+    $image_rollover = (get_post_meta( $post->ID, 'akp_rollover_image', true )) ? get_post_meta( $post->ID, 'akp_rollover_image', true ) : '';
     $image_alt = (get_post_meta( $post->ID, 'akp_image_alt', true )) ? get_post_meta( $post->ID, 'akp_image_alt', true ) : '';
     
     echo '<label for="akp_image_url">';
@@ -591,9 +610,56 @@ function akp_image_box($object, $box) {
     echo '<input id="akp_image_url_button" class="button" type="button" value="'.__('Upload Image', 'akptext').'" />';
     echo '<br />'.__('Enter a URL or upload an image (You are seeing this box as you have disabled "post-thumbnails" support.)', 'akptext');
     echo '</label><br /><br />';
+    echo '<label for="akp_rollover_image">';
+    echo '<input id="akp_rollover_image" type="text" size="36" name="akp_rollover_image" value="'.$image_rollover.'" />';
+    echo '<input id="akp_rollover_image_button" class="button" type="button" value="'.__('Upload Rollover Image', 'akptext').'" />';
+    echo '<br />'.__("Enter a URL or upload a rollover image (Leave blank if you don't want/need one)", 'akptext');
+    echo '</label><br /><br />';
     echo '<label for="akp_image_alt">'.__('Banner description (this will be added to the alt tag on the image)', 'akptext').'</label>';
     echo '<br /><input id="akp_image_alt" type="text" size="36" name="akp_image_alt" value="'.$image_alt.'" />';
     echo '<br /><br />';
+}
+
+function akp_rollover_image_box($object, $box) {
+    global $post;
+
+    $thumbnail_id = get_post_meta($post->ID, "akp_rollover_image", true);
+    echo akp_rollover_image_box_html($thumbnail_id);
+}
+
+function akp_rollover_image_box_html($thumbnail_id = NULL) {
+    global $content_width, $_wp_additional_image_sizes, $post_ID, $wp_version;
+    $url_class = "";
+
+    if (version_compare($wp_version, '3.5', '<')) {
+            // Use the old thickbox for versions prior to 3.5
+            $image_library_url = get_upload_iframe_src('image');
+            // if TB_iframe is not moved to end of query string, thickbox will remove all query args after it.
+            $image_library_url = add_query_arg( array( 'context' => "akp_rollover_image", 'TB_iframe' => 1 ), remove_query_arg( 'TB_iframe', $image_library_url ) );
+            $url_class = "thickbox";
+    } else {
+            // Use the media modal for 3.5 and up
+            $image_library_url = "#";
+    }
+    $format_string = '<p class="hide-if-no-js"><a title="%1$s" href="%2$s" id="set-%3$s-%4$s-thumbnail" class="%5$s" data-thumbnail_id="%7$s" data-uploader_title="%1$s" data-uploader_button_text="%1$s">%%s</a></p>';
+    $set_thumbnail_link = sprintf( $format_string, sprintf( esc_attr__( "Set %s" , 'multiple-post-thumbnails' ), "Rollover Image" ), $image_library_url, "advert_types", "akp_rollover_image", $url_class, "Rollver Image", $thumbnail_id );
+    $content = sprintf( $set_thumbnail_link, sprintf( esc_html__( "Set %s", 'multiple-post-thumbnails' ), "Rollover Image" ) );
+
+    if ($thumbnail_id && get_post($thumbnail_id)) {
+            $old_content_width = $content_width;
+            $content_width = 266;
+            if ( !isset($_wp_additional_image_sizes["adverts_posts-akp_rollover_image-thumbnail"]))
+                    $thumbnail_html = wp_get_attachment_image($thumbnail_id, array($content_width, $content_width));
+            else
+                    $thumbnail_html = wp_get_attachment_image($thumbnail_id, "adverts_posts-akp_rollover_image-thumbnail");
+            if (!empty($thumbnail_html)) {
+                    $content = sprintf($set_thumbnail_link, $thumbnail_html);
+                    $content .= '<p class="hide-if-no-js"><a href="#" id="remove-akp_rollover_image-thumbnail">Remove Rollover Image</a></p>';
+            }
+            $content_width = $old_content_width;
+    }
+
+    return $content;
 }
 
 function akp_image_attrs_box($object, $box) {
@@ -766,6 +832,8 @@ function akp_save_custom_fields( ) {
             update_post_meta( $post->ID, 'akp_media_type', $_POST['akp_media_type'] );
             if (isset($_POST['akp_image_url']))
                 update_post_meta( $post->ID, 'akp_image_url', $_POST['akp_image_url'] );
+            if (isset($_POST['akp_rollover_image']))
+                update_post_meta( $post->ID, 'akp_rollover_image', $_POST['akp_rollover_image'] );
             update_post_meta( $post->ID, 'akp_image_alt', $_POST['akp_image_alt'] );
             update_post_meta( $post->ID, 'akp_html5_url', $_POST['akp_html5_url'] );
             update_post_meta( $post->ID, 'akp_html5_width', $_POST['akp_html5_width'] );
@@ -788,6 +856,33 @@ function akp_save_custom_fields( ) {
 
 add_action( 'save_post', 'akp_save_custom_fields' );
 
+// Ajax save for rollover uploader
+function akp_set_rollover() {
+    global $post_ID;
+    if (wp_verify_nonce( $_POST['_ajax_nonce'], "akpN0nc3" )) {
+        $post_ID = intval($_POST['post_id']);
+        
+        if ( !current_user_can('edit_post', $post_ID))
+                die('-1');
+        $thumbnail_id = intval($_POST['thumbnail_id']);
+        
+        if ($thumbnail_id == '-1') {
+                delete_post_meta($post_ID, "akp_rollover_image");
+                die(akp_rollover_image_box_html(NULL));
+        }
+
+        if ($thumbnail_id && get_post($thumbnail_id)) {
+                $thumbnail_html = wp_get_attachment_image($thumbnail_id, 'thumbnail');
+                if (!empty($thumbnail_html)) {
+                        update_post_meta($post_ID, "akp_rollover_image", $thumbnail_id);
+                        die(akp_rollover_image_box_html($thumbnail_id));
+                }
+        }
+    }
+    die('0');
+}
+add_action("wp_ajax_set-adverts_posts-akp_rollover_image-thumbnail", 'akp_set_rollover');
+
 // Process the custom metabox fields
 function akp_return_fields( $id = NULL ) {
 	global $post;
@@ -799,6 +894,7 @@ function akp_return_fields( $id = NULL ) {
         $output['akp_revenue_per_click'] = (get_post_meta( $id, 'akp_revenue_per_click' ) ? get_post_meta( $id, 'akp_revenue_per_click' ) : array(''));
         $output['akp_media_type'] = (get_post_meta( $id, 'akp_media_type' ) ? get_post_meta( $id, 'akp_media_type' ) : array(''));
         $output['akp_image_url'] = (get_post_meta( $id, 'akp_image_url' ) ? get_post_meta( $id, 'akp_image_url' ) : array(''));
+        $output['akp_rollover_image'] = (get_post_meta( $id, 'akp_rollover_image' ) ? get_post_meta( $id, 'akp_rollover_image' ) : array(''));
         $output['akp_image_alt'] = (get_post_meta( $id, 'akp_image_alt' ) ? get_post_meta( $id, 'akp_image_alt' ) : array(''));
         $output['akp_html5_url'] = (get_post_meta( $id, 'akp_html5_url' ) ? get_post_meta( $id, 'akp_html5_url' ) : array(''));
         $output['akp_html5_width'] = (get_post_meta( $id, 'akp_html5_width' ) ? get_post_meta( $id, 'akp_html5_width' ) : array(''));

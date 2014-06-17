@@ -38,7 +38,9 @@ function adkingpro_func( $atts ) {
                 'post_type'=>'adverts_posts',
                 'orderby'=>'rand',
                 'showposts'=>$render,
-                'advert_types'=>$type,
+                //'advert_types'=>$type, - removed to stop url forming
+                'taxonomy'=>'advert_types', 
+                'term'=>$type,
                 'meta_query' => array(
                     'relation' => 'OR',
                     array(
@@ -83,6 +85,12 @@ function adkingpro_func( $atts ) {
                 switch ($cfields['akp_media_type'][0]) {
                     case 'image':
                         $image = $cfields['akp_image_url'][0];
+                        $rollover = $cfields['akp_rollover_image'][0];
+                        $rollover_class = '';
+                        if (is_numeric($rollover) && $rollover > 0) {
+                            $rollover = wp_get_attachment_image_src($rollover, 'full');
+                            $rollover_class = ' rollover';
+                        }
                         $alt = $cfields['akp_image_alt'][0];
                         $nofollow = '';
                         if ($cfields['akp_nofollow'][0] == '1') $nofollow = ' rel="nofollow"';
@@ -92,10 +100,14 @@ function adkingpro_func( $atts ) {
                             $image = akp_get_featured_image($post_id, "akp_".$term->term_id);
                         $display_link = true;
                         if (!isset($cfields['akp_remove_url']) || (isset($cfields['akp_remove_url']) && $cfields['akp_remove_url'][0] == 1)) $display_link = false;
-                        $output .= "<div class='adkingprobanner ".$type." akpbanner banner".$post_id."' style='width: ".$term_meta['advert_width']."px; height: ".$term_meta['advert_height']."px;'>";
+                        $output .= "<div class='adkingprobanner ".$type.$rollover_class." akpbanner banner".$post_id."' style='width: ".$term_meta['advert_width']."px; height: ".$term_meta['advert_height']."px;'>";
                         if ($display_link)
                             $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'".$ga.">";
-                        $output .= "<img src='".$image."' style='max-width: ".$term_meta['advert_width']."px; max-height: ".$term_meta['advert_height']."px;' alt='".$alt."' />";
+                        if (is_array($rollover)) {
+                            $output .= "<img src='".$image."' style='max-width: ".$term_meta['advert_width']."px; max-height: ".$term_meta['advert_height']."px;' alt='".$alt."' class='akp_rollover_image' />";
+                            $output .= "<img src='".$rollover[0]."' style='max-width: ".$term_meta['advert_width']."px; max-height: ".$term_meta['advert_height']."px;' alt='".$alt."' class='akp_rollover_image over' />";
+                        } else
+                            $output .= "<img src='".$image."' style='max-width: ".$term_meta['advert_width']."px; max-height: ".$term_meta['advert_height']."px;' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
                         $output .= "</div>";
@@ -135,7 +147,7 @@ function adkingpro_func( $atts ) {
                         if ($rotate) $output .= "</div>";
                         break;
                 }
-                if (isset($post_id))
+                if (isset($post_id) && get_option('akp_track_impressions') == '1')
                     $output .= akp_log_impression($post_id);
             endwhile;
             if ($render > 1 || $render === -1) {
@@ -196,6 +208,12 @@ function adkingpro_func( $atts ) {
                 switch ($cfields['akp_media_type'][0]) {
                     case 'image':
                         $image = $cfields['akp_image_url'][0];
+                        $rollover = $cfields['akp_rollover_image'][0];
+                        $rollover_class = '';
+                        if (is_numeric($rollover) && $rollover > 0) {
+                            $rollover = wp_get_attachment_image_src($rollover, 'full');
+                            $rollover_class = ' rollover';
+                        }
                         $alt = $cfields['akp_image_alt'][0];
                         if ($image == '')
                             $image = akp_get_featured_image($post_id);
@@ -205,10 +223,14 @@ function adkingpro_func( $atts ) {
                         $target = '';
                         if ($cfields['akp_target'][0] !== 'none') $target = ' target="_'.$cfields['akp_target'][0].'"';
                         if (!isset($cfields['akp_remove_url']) || (isset($cfields['akp_remove_url']) && $cfields['akp_remove_url'][0] == 1)) $display_link = false;
-                        $output .= "<div class='adkingprobanner ".$type." akpbanner banner".$post_id."'>";
+                        $output .= "<div class='adkingprobanner ".$type.$rollover_class." akpbanner banner".$post_id."'>";
                         if ($display_link)
                             $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'".$ga.">";
-                        $output .= "<img src='".$image."' alt='".$alt."' />";
+                        if (is_array($rollover)) {
+                            $output .= "<img src='".$image."' alt='".$alt."' class='akp_rollover_image' />";
+                            $output .= "<img src='".$rollover[0]."' alt='".$alt."' class='akp_rollover_image over' />";
+                        } else
+                            $output .= "<img src='".$image."' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
                         $output .= "</div>";
@@ -248,7 +270,7 @@ function adkingpro_func( $atts ) {
                         if ($rotate) $output .= "</div>";
                         break;
                 }
-                if (isset($post_id))
+                if (isset($post_id) && get_option('akp_track_impressions') == '1')
                     $output .= akp_log_impression($post_id);
             endwhile;
             if ($render > 1) {
@@ -297,6 +319,12 @@ function adkingpro_func( $atts ) {
                 switch ($cfields['akp_media_type'][0]) {
                     case 'image':
                         $image = $cfields['akp_image_url'][0];
+                        $rollover = $cfields['akp_rollover_image'][0];
+                        $rollover_class = '';
+                        if (is_numeric($rollover) && $rollover > 0) {
+                            $rollover = wp_get_attachment_image_src($rollover, 'full');
+                            $rollover_class = ' rollover';
+                        }
                         $alt = $cfields['akp_image_alt'][0];
                         if ($image == '')
                             $image = akp_get_featured_image($post_id);
@@ -306,10 +334,14 @@ function adkingpro_func( $atts ) {
                         $target = '';
                         if ($cfields['akp_target'][0] !== 'none') $target = ' target="_'.$cfields['akp_target'][0].'"';
                         if (!isset($cfields['akp_remove_url']) || (isset($cfields['akp_remove_url']) && $cfields['akp_remove_url'][0] == 1)) $display_link = false;
-                        $output .= "<div class='adkingprobanner ".$type." banner".$post_id."'>";
+                        $output .= "<div class='adkingprobanner ".$type.$rollover_class." banner".$post_id."'>";
                         if ($display_link)
                             $output .= "<a href='".get_the_title()."'".$target.$nofollow." data-id='".$post_id."'".$ga.">";
-                        $output .= "<img src='".$image."' alt='".$alt."' />";
+                        if (is_array($rollover)) {
+                            $output .= "<img src='".$image."' alt='".$alt."' class='akp_rollover_image' />";
+                            $output .= "<img src='".$rollover[0]."' alt='".$alt."' class='akp_rollover_image over' />";
+                        } else
+                            $output .= "<img src='".$image."' alt='".$alt."' />";
                         if ($display_link)
                             $output .= "</a>";
                         $output .= "</div>";
@@ -347,7 +379,7 @@ function adkingpro_func( $atts ) {
                         $output .= "</a>";
                         break;
                 }
-                if (isset($post_id))
+                if (isset($post_id) && get_option('akp_track_impressions') == '1')
                     $output .= akp_log_impression($post_id);
             endwhile;
             wp_reset_postdata();

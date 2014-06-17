@@ -2,7 +2,7 @@
 
 // Log click on front end
 function akp_log_click_ajax() {
-    if (wp_verify_nonce( $_POST['ajaxnonce'], 'akpN0nc3' )) {
+    if (wp_verify_nonce( $_POST['ajaxnonce'], 'akpN0nc3' ) && get_option('akp_track_clicks') == '1') {
         $post_id = $_POST['post_id'];
         $timestamp = current_time('timestamp');
         $expire = strtotime(get_option('expiry_time'), $timestamp);

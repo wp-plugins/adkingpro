@@ -65,6 +65,26 @@
                 </tr>
                 
                 <tr valign="top">
+                <th scope="row"><?= __("Track Impressions", 'akptext' ); ?></th>
+                <td>
+                    <?php $track_impressions = get_option('akp_track_impressions'); ?>
+                    <input type="hidden" name="akp_track_impressions" value="0" />
+                    <input type="checkbox" name="akp_track_impressions" id="akp_track_impressions" value="1"<?php if ($track_impressions == 1) echo " checked" ?> />
+                </td>
+                <td>If unchecked, no impression tracking is logged</td>
+                </tr>
+                
+                <tr valign="top">
+                <th scope="row"><?= __("Track Clicks", 'akptext' ); ?></th>
+                <td>
+                    <?php $track_clicks = get_option('akp_track_clicks'); ?>
+                    <input type="hidden" name="akp_track_clicks" value="0" />
+                    <input type="checkbox" name="akp_track_clicks" id="akp_track_clicks" value="1"<?php if ($track_clicks == 1) echo " checked" ?> />
+                </td>
+                <td>If unchecked, no impression tracking is logged</td>
+                </tr>
+                
+                <tr valign="top">
                 <th scope="row"><?= __("Enable tracking via Google Analytics", 'akptext' ); ?></th>
                 <td>
                     <?php $ga_intergrated = get_option('akp_ga_intergrated'); ?>
