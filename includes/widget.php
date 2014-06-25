@@ -19,7 +19,7 @@ class AdKingPro_Widget extends WP_Widget {
             $speed = apply_filters( 'widget_speed', $instance['speed'] );
             $changespeed = apply_filters( 'widget_changespeed', $instance['changespeed'] );
             $code = 'type="'.$type.'"';
-            if ($banner !== '') $code = 'banner="'.$banner.'"';
+            if ($banner !== '') $code .= ' banner="'.$banner.'"';
             if ($render !== '' && is_numeric($render)) $code .= ' render="'.$render.'"';
             if ($rotate == 'true') $code .= ' rotate="true"';
             if ($rotate == 'true' && $effect !== '') $code .= ' effect="'.$effect.'"';
