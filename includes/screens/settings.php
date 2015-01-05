@@ -91,7 +91,7 @@
                     <input type="hidden" name="akp_ga_intergrated" value="0" />
                     <input type="checkbox" name="akp_ga_intergrated" id="akp_ga_intergrated" value="1"<?php if ($ga_intergrated == 1) echo " checked" ?> />
                 </td>
-                <td>This removes all tracking and reporting locally</td>
+                <td>This removes all tracking and reporting locally <strong style="font-style: italic;">(Recommended but requires Google Analytics to be used on site)</strong></td>
                 </tr>
 
                 <tr valign="top" class="akp_ga_disabled"<?php if ($ga_intergrated == 1) echo " style='display: none;'" ?>>
@@ -300,6 +300,20 @@
                     <?php $css = get_option('akp_custom_css'); ?>
                     <textarea name="akp_custom_css" style="width: 100%; height: 200px;"><?= $css ?></textarea>
                 </td>
+                </tr>
+                
+                <tr valign="top">
+                    <th scope="row" colspan="3"><h2><?= __("House-keeping", 'akptext' ); ?></h2></th>
+                </tr>
+                
+                <tr valign="top">
+                <th scope="row"><?= __("Remove all data on deletion of plugin", 'akptext' ); ?></th>
+                <td>
+                    <?php $clear_data = get_option('akp_clear_on_delete'); ?>
+                    <input type="hidden" name="akp_clear_on_delete" value="0" />
+                    <input type="checkbox" name="akp_clear_on_delete" id="akp_clear_on_delete" value="1"<?php if ($clear_data == 1) echo " checked" ?> />
+                </td>
+                <td>If checked, ALL data related to Ad King Pro will be removed from your environment.</td>
                 </tr>
             </table>
             <?php submit_button(__('Save Settings', 'akptext'), 'primary', 'submit', false, array('id'=>'akp_advert_settings_bottom_submit')); ?>

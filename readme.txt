@@ -3,8 +3,8 @@ Contributors: ashdurham
 Donate link: http://durham.net.au/donate/
 Tags: advertising, ads, ad, adverts, advert, advertisements, advertisement, advertise, stats, stat, statistics, statistic, promotions, promotion, banners, banner, tracking, track, detailed, adkingpro, ad king pro, page, post, reporting, reports, report, csv, pdf, revenue, charge, money, theme, themes, flash, adsense, text, resize, rotate, slideshow, multiple
 Requires at least: 3.0.1
-Tested up to: 3.9.1
-Stable tag: 1.9.15
+Tested up to: 4.0
+Stable tag: 1.9.16
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -136,6 +136,11 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 
 == Changelog ==
 
+= 1.9.16 =
+* Updates for 4.0
+* Option to remove all stored data on delete
+* Fix to widget banner ID dropdown
+
 = 1.9.15 =
 * Fix to widget output when using single banner calls and having the right advert type added as class
 
@@ -263,6 +268,10 @@ Having Trouble? Get support either on the support forums here or at [@kingproplu
 * Initial
 
 == Upgrade Notice ==
+
+= 1.9.16 =
+* Updates for 4.0
+* Option to remove all stored data on delete
 
 = 1.9.15 =
 * Fix to widget output when using single banner calls and having the right advert type added as class

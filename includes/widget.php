@@ -65,7 +65,7 @@ class AdKingPro_Widget extends WP_Widget {
             <label for="<?php echo $this->get_field_name( 'banner' ); ?>"><?= __( 'Banner ID#:', 'akptext' ); ?></label> 
             <select class="widefat" id="<?php echo $this->get_field_id( 'banner' ); ?>" name="<?php echo $this->get_field_name( 'banner' ); ?>">
                 <option value=''><?= __('Select Randomly', 'akptext') ?></option>
-                <?php $banners = get_posts(array('post_type'=>'adverts_posts'));
+                <?php $banners = get_posts(array('post_type'=>'adverts_posts', 'posts_per_page'=>-1));
                 foreach ($banners as $b) : ?>
                 <option value='<?= $b->ID ?>'<?php if ($b->ID == esc_attr( $banner )) echo ' selected'; ?>><?= $b->ID ?></option>
                 <?php endforeach; ?>

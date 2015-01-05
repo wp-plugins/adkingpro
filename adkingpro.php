@@ -3,7 +3,7 @@
     Plugin Name: Ad King Pro
     Plugin URI: http://kingpro.me/plugins/ad-king-pro/
     Description: Ad King Pro allows you to manage, display, document and report all of your custom advertising on your wordpress site.
-    Version: 1.9.15
+    Version: 1.9.16
     Author: Ash Durham
     Author URI: http://durham.net.au/
     License: GPL2
@@ -28,62 +28,78 @@
     // INSTALL
 
     global $akp_db_version;
-    $akp_db_version = "1.9.15";
+    $akp_db_version = "1.9.16";
 
     function akp_install() {
-       global $wpdb;
-       global $akp_db_version;
+        if ( ! current_user_can( 'activate_plugins' ) )
+            return;
+        
+        global $wpdb;
+        global $akp_db_version;
 
-       require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-       
-       akp_check_db_tables();
-       
-       $table_name = $wpdb->prefix . "terms";
-       $sql = "INSERT INTO $table_name 
-        (`name`, `slug`, `term_group`)
-        VALUES ('Sidebar', 'sidebar', '0')";
-       dbDelta($sql);
-       
-       $term_id = mysql_insert_id();
-       $table_name = $wpdb->prefix . "term_taxonomy";
-       $sql = "INSERT INTO $table_name 
-        (`term_id`, `taxonomy`, `description`, `parent`, `count`)
-        VALUES ('".$term_id."', 'advert_types', '', '0', '0')";
-       dbDelta($sql);
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-       add_option("apk_db_version", $akp_db_version);
-       
-       // Register AKP capabilities to all users
-       $role = get_role( 'subscriber' );
-       $role->add_cap( 'akp_edit_one' ); 
-       
-       $role = get_role( 'contributor' );
-       $role->add_cap( 'akp_edit_one' ); 
-       $role->add_cap( 'akp_edit_two' );
-       
-       $role = get_role( 'author' );
-       $role->add_cap( 'akp_edit_one' ); 
-       $role->add_cap( 'akp_edit_two' );
-       $role->add_cap( 'akp_edit_three' );
-       
-       $role = get_role( 'editor' );
-       $role->add_cap( 'akp_edit_one' ); 
-       $role->add_cap( 'akp_edit_two' );
-       $role->add_cap( 'akp_edit_three' );
-       $role->add_cap( 'akp_edit_four' );
-       
-       $role = get_role( 'administrator' );
-       $role->add_cap( 'akp_edit_one' ); 
-       $role->add_cap( 'akp_edit_two' );
-       $role->add_cap( 'akp_edit_three' );
-       $role->add_cap( 'akp_edit_four' );
-       $role->add_cap( 'akp_edit_five' );
+        akp_check_db_tables();
+
+        $table_name = $wpdb->prefix . "terms";
+        $sql = "INSERT INTO $table_name 
+         (`name`, `slug`, `term_group`)
+         VALUES ('Sidebar', 'sidebar', '0')";
+        dbDelta($sql);
+
+        $term_id = mysql_insert_id();
+        $table_name = $wpdb->prefix . "term_taxonomy";
+        $sql = "INSERT INTO $table_name 
+         (`term_id`, `taxonomy`, `description`, `parent`, `count`)
+         VALUES ('".$term_id."', 'advert_types', '', '0', '0')";
+        dbDelta($sql);
+
+        add_option("apk_db_version", $akp_db_version);
+
+        // Register AKP capabilities to all users
+        $role = get_role( 'subscriber' );
+        $role->add_cap( 'akp_edit_one' ); 
+
+        $role = get_role( 'contributor' );
+        $role->add_cap( 'akp_edit_one' ); 
+        $role->add_cap( 'akp_edit_two' );
+
+        $role = get_role( 'author' );
+        $role->add_cap( 'akp_edit_one' ); 
+        $role->add_cap( 'akp_edit_two' );
+        $role->add_cap( 'akp_edit_three' );
+
+        $role = get_role( 'editor' );
+        $role->add_cap( 'akp_edit_one' ); 
+        $role->add_cap( 'akp_edit_two' );
+        $role->add_cap( 'akp_edit_three' );
+        $role->add_cap( 'akp_edit_four' );
+
+        $role = get_role( 'administrator' );
+        $role->add_cap( 'akp_edit_one' ); 
+        $role->add_cap( 'akp_edit_two' );
+        $role->add_cap( 'akp_edit_three' );
+        $role->add_cap( 'akp_edit_four' );
+        $role->add_cap( 'akp_edit_five' );
     }
     
     // Register hooks at activation
     register_activation_hook(__FILE__,'akp_install');
     
     // END INSTALL
+    
+    // DEACTIVATE
+    
+    function akp_deactivate() {
+        if ( ! current_user_can( 'activate_plugins' ) )
+            return;
+        $plugin = isset( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
+        check_admin_referer( "deactivate-plugin_{$plugin}" );
+    }
+    
+    register_deactivation_hook( __FILE__, 'akp_deactivate' );
+    
+    // END DEACTIVATE
     
     function akp_languages_init() {
         load_plugin_textdomain('akptext', false, basename( dirname( __FILE__ ) ) . '/languages' );

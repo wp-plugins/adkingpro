@@ -1,4 +1,28 @@
 <?php
+global $adkingpro_options;
+$adkingpro_options = array(
+    'akp_clear_on_delete' => '0',
+    'akp_track_impressions' => '1',
+    'akp_track_clicks' => '1',
+    'akp_ga_intergrated' => '0',
+    'akp_ga_implemented' => 'universal',
+    'akp_ga_imp_action' => 'Impression',
+    'akp_ga_click_action' => 'Click',
+    'expiry_time' => '+6 hours',
+    'impression_expiry_time' => '+0 hours',
+    'week_starts' => 'monday',
+    'revenue_currency' => '$',
+    'pdf_theme' => 'default',
+    'akp_image_sizes' => '',
+    'akp_auth_role' => 'subscriber',
+    'akp_custom_css' => '/* Add any CSS you would like to modify your banner ads here */',
+    'akp_default_media_type' => 'image',
+    'akp_default_window_target' => 'blank',
+    'akp_default_nofollow' => '0',
+    'akp_default_remove_link' => '0',
+    'akp_default_rev_imp' => '0.00',
+    'akp_default_rev_click' => '0.00',
+);
 
 function akp_check_page($hook) {
     global $current_screen;
@@ -24,50 +48,23 @@ add_action( 'admin_notices', 'akp_admin_notice' );
 
 
 function register_akp_options() {
-  register_setting( 'akp-options', 'akp_track_impressions' );
-  register_setting( 'akp-options', 'akp_track_clicks' );
-  register_setting( 'akp-options', 'akp_ga_intergrated' );
-  register_setting( 'akp-options', 'akp_ga_implemented' );
-  register_setting( 'akp-options', 'akp_ga_imp_action' );
-  register_setting( 'akp-options', 'akp_ga_click_action' );
-  register_setting( 'akp-options', 'expiry_time' );
-  register_setting( 'akp-options', 'impression_expiry_time' );
-  register_setting( 'akp-options', 'week_start' );
-  register_setting( 'akp-options', 'revenue_currency' );
-  register_setting( 'akp-options', 'pdf_theme' );
-  register_setting( 'akp-options', 'akp_image_sizes' );
-  register_setting( 'akp-options', 'akp_auth_role' );
-  register_setting( 'akp-options', 'akp_custom_css' );
-  register_setting( 'akp-options', 'akp_default_media_type' );
-  register_setting( 'akp-options', 'akp_default_window_target' );
-  register_setting( 'akp-options', 'akp_default_nofollow' );
-  register_setting( 'akp-options', 'akp_default_remove_link' );
-  register_setting( 'akp-options', 'akp_default_rev_imp' );
-  register_setting( 'akp-options', 'akp_default_rev_click' );
+    global $adkingpro_options;
+    foreach ($adkingpro_options as $option=>$default_value) register_setting( 'akp-options', $option );
 }
 add_action( 'admin_init', 'register_akp_options' );
 
+function unregister_akp_options() {
+    global $adkingpro_options;
+    foreach ($adkingpro_options as $option=>$default_value) unregister_setting( 'akp-options', $option );
+}
+
+function delete_akp_options() {
+    global $adkingpro_options;
+    foreach ($adkingpro_options as $option=>$default_value) delete_option( $option );
+}
+
 // Default Options
-add_option( 'akp_track_impressions', '1' );
-add_option( 'akp_track_clicks', '1' );
-add_option( 'akp_ga_intergrated', '0' );
-add_option( 'akp_ga_implemented', 'universal' );
-add_option( 'akp_ga_imp_action', 'Impression' );
-add_option( 'akp_ga_click_action', 'Click' );
-add_option( 'expiry_time', '+6 hours' );
-add_option( 'impression_expiry_time', '+0 hours' );
-add_option( 'week_starts', 'monday' );
-add_option( 'revenue_currency', '$' );
-add_option( 'pdf_theme', 'default' );
-add_option( 'akp_image_sizes', '' );
-add_option( 'akp_auth_role', 'subscriber');
-add_option( 'akp_custom_css', '/* Add any CSS you would like to modify your banner ads here */' );
-add_option( 'akp_default_media_type', 'image' );
-add_option( 'akp_default_window_target', 'blank' );
-add_option( 'akp_default_nofollow', '0' );
-add_option( 'akp_default_remove_link', '0' );
-add_option( 'akp_default_rev_imp', '0.00' );
-add_option( 'akp_default_rev_click', '0.00' );
+foreach ($adkingpro_options as $option=>$default_value) add_option( $option, $default_value );
 
 function akp_allowed_cap() {
     $role = get_option('akp_auth_role');
@@ -139,7 +136,7 @@ function akp_create_post_type() {
             'show_in_nav_menus' => false,
             'rewrite' => false,
             'query_var' => false,
-            'menu_position' => 5,
+            'menu_position' => 55,
             'supports' => array( 'title', 'thumbnail' )
         )
     );
@@ -173,6 +170,7 @@ function wpt_akp_icons() {
         #toplevel_page_kpp_menu .wp-menu-image {
             background: url(<?= plugins_url('/images/kpp-icon_16x16_sat.png', dirname(__FILE__)) ?>) no-repeat center center !important;
         }
+        #toplevel_page_kpp_menu .wp-menu-image:before {display: none;}
 	#toplevel_page_kpp_menu:hover .wp-menu-image, #toplevel_page_kpp_menu.wp-has-current-submenu .wp-menu-image {
             background: url(<?= plugins_url('/images/kpp-icon_16x16.png', dirname(__FILE__)) ?>) no-repeat center center !important;
         }
