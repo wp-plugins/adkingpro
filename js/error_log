@@ -1,0 +1,1 @@
+[28-Sep-2014 01:20:04 America/Denver] PHP Fatal error:  Call to undefined function add_action() in /home3/ardwebd1/public_html/kingpro/wp-content/plugins/adkingpro/js/adkingpro-js.php on line 70
