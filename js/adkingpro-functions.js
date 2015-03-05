@@ -36,16 +36,15 @@ jQuery(document).ready(function($) {
     });
 });
 
-function track_click(post_id, ga) {
+function track_click(post_id, ga_fields) {
     if (typeof(post_id) == 'undefined') return false;
-    if (typeof(ga) == 'undefined') ga = false;
+    if (typeof(ga_fields) == 'undefined') ga_fields = false;
     
-    if (ga) {
-        ga = jQuery.parseJSON(ga);
-        if (ga.implemented == 'classic')
-            _gaq.push(['_trackEvent',ga.campaign, ga.click_action, ga.banner]);
-        else if (ga.implemented == 'universal')
-            ga('send', 'event', ga.campaign, ga.click_action, ga.banner);
+    if (ga_fields) {
+        if (ga_fields.implemented == 'classic')
+            _gaq.push(['_trackEvent',ga_fields.campaign, ga_fields.click_action, ga_fields.banner]);
+        else if (ga_fields.implemented == 'universal')
+            ga('send', 'event', ga_fields.campaign, ga_fields.click_action, ga_fields.banner);
     } else
         jQuery.post(AkpAjax.ajaxurl, {action: 'akplogclick', ajaxnonce : AkpAjax.ajaxnonce, post_id:post_id});
 }
