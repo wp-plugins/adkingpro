@@ -41,7 +41,7 @@ function track_click(post_id, ga) {
     if (typeof(ga) == 'undefined') ga = false;
     
     if (ga) {
-        ga = $.parseJSON(ga);
+        ga = jQuery.parseJSON(ga);
         if (ga.implemented == 'classic')
             _gaq.push(['_trackEvent',ga.campaign, ga.click_action, ga.banner]);
         else if (ga.implemented == 'universal')
